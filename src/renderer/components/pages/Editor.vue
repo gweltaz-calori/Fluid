@@ -2,25 +2,17 @@
     <div class="editor">
         <editor-properties-panel>
             <fluid-menu :options="menus" v-model="selectedPropertyMenu"></fluid-menu>
-            <editor-property v-for="property in currentMenuProperties" :key="property">
+            <editor-property v-for="property in currentMenu.properties" :key="property">
               <editor-property-header>
                 <editor-property-title>{{property}}</editor-property-title>
                 <editor-property-actions>
                   <editor-property-action>
-                      <fluid-icon-add></fluid-icon-add>
-                      <fluid-icon-remove></fluid-icon-remove>
+                      <fluid-icon-add v-if="currentMenu.animations.length == 0"></fluid-icon-add>
+                      <fluid-icon-remove v-else></fluid-icon-remove>
                   </editor-property-action>
                 </editor-property-actions>
               </editor-property-header>
               <editor-property-content>
-                <editor-sub-property>
-                  <editor-sub-property-name>Duration</editor-sub-property-name>
-                  <editor-sub-property-value>0</editor-sub-property-value>
-                </editor-sub-property>
-                <editor-sub-property>
-                  <editor-sub-property-name>Duration</editor-sub-property-name>
-                  <editor-sub-property-value>0</editor-sub-property-value>
-                </editor-sub-property>
                 <editor-sub-property>
                   <editor-sub-property-name>Duration</editor-sub-property-name>
                   <editor-sub-property-value>0</editor-sub-property-value>
@@ -46,6 +38,7 @@ import EditorSubProperty from "@/components/other/EditorSubProperty.vue";
 import EditorSubPropertyName from "@/components/other/EditorSubPropertyName.vue";
 import EditorSubPropertyValue from "@/components/other/EditorSubPropertyValue.vue";
 import FluidIconAdd from "@/components/icons/FluidIconAdd.vue";
+import FluidIconRemove from "@/components/icons/FluidIconRemove.vue";
 
 export default {
   components: {
@@ -55,6 +48,7 @@ export default {
     EditorPropertyAction,
     EditorPropertyTitle,
     FluidIconAdd,
+    FluidIconRemove,
     EditorPropertiesPanel,
     EditorPropertyHeader,
     EditorPropertyContent,
@@ -88,9 +82,8 @@ export default {
     };
   },
   computed: {
-    currentMenuProperties() {
-      return this.menus.find(menu => menu.key === this.selectedPropertyMenu)
-        .properties;
+    currentMenu() {
+      return this.menus.find(menu => menu.key === this.selectedPropertyMenu);
     }
   }
 };

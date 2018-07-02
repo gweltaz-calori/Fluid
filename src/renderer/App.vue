@@ -13,6 +13,7 @@ export default {};
   box-sizing: border-box;
   font-family: "Exo";
   text-decoration: none;
+  user-select: none;
 }
 
 html,

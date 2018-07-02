@@ -5,7 +5,7 @@
             <fluid-text-box @input="changeValue"></fluid-text-box>
         </div>
         <div v-else>
-            <fluid-combo-box @input="changeValue"></fluid-combo-box>
+            <fluid-combo-box v-model="test" :options="options" @input="changeValue"></fluid-combo-box>
         </div>
     </div>
 </template>
@@ -22,9 +22,15 @@ export default {
     },
     value: {}
   },
+  data() {
+    return {
+      test: "None",
+      options: ["None", "Opacity", "Move"]
+    };
+  },
   methods: {
     changeValue() {
-      this.$emit("input", this.$event.target.value);
+      //this.$emit("input", this.$event.target.value);
     }
   }
 };
