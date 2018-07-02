@@ -54,6 +54,12 @@ class Property {
   protected visible: boolean = true;
 }
 
+class Vector {
+  x: number = 0;
+  y: number = 0;
+  z: number = 0;
+}
+
 class Animation {
   duration: number = 1;
   delay: number = 0;

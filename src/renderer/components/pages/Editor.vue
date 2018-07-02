@@ -15,7 +15,11 @@
               <editor-property-content>
                 <editor-sub-property>
                   <editor-sub-property-name>Duration</editor-sub-property-name>
-                  <editor-sub-property-value>0</editor-sub-property-value>
+                  <editor-sub-property-value :options="testComboOptions" v-model="testCombo"></editor-sub-property-value>
+                </editor-sub-property>
+                <editor-sub-property>
+                  <editor-sub-property-name>Value</editor-sub-property-name>
+                  <editor-sub-property-value v-model="testRange" type="range"></editor-sub-property-value>
                 </editor-sub-property>
               </editor-property-content>
             </editor-property>
@@ -78,7 +82,10 @@ export default {
           animations: []
         }
       ],
-      selectedPropertyMenu: "animateIn"
+      selectedPropertyMenu: "animateIn",
+      testRange: 0,
+      testCombo: "None",
+      testComboOptions: ["None", "Opacity", "Move"]
     };
   },
   computed: {

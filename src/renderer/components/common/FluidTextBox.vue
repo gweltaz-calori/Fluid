@@ -21,7 +21,7 @@ input {
   font-style: normal;
   font-weight: normal;
   line-height: normal;
-  font-size: 13.4435px;
+  font-size: 11px;
 
   color: #ffffff;
 }

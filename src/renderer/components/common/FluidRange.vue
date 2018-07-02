@@ -1,5 +1,7 @@
 <template>
-    <input type="text">
+    <div class="range">
+        
+    </div>
 </template>
 
 <script>
