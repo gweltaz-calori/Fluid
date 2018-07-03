@@ -1,13 +1,41 @@
 <template>
-    <input @input="changeValue" :placeholder="placeholder" type="text">
+    <input @keyup.enter="exitInput($event)" @click="click" :value="value" @blur="validateValue($event)" :placeholder="placeholder" type="text">
 </template>
 
 <script>
+import SuperMath from "@/js/math";
 export default {
-  props: ["placeholder", "value"],
+  props: {
+    min: {
+      type: Number,
+      default: 0
+    },
+    max: {
+      type: Number,
+      default: 1
+    },
+    value: {},
+    placeholder: {}
+  },
+
   methods: {
-    changeValue() {
-      this.$emit("input", this.$event.target.value);
+    click(e) {
+      e.target.setSelectionRange(0, e.target.value.length);
+    },
+    exitInput(event) {
+      event.target.blur();
+      this.validateValue(event);
+    },
+    validateValue(event) {
+      event.target.value = SuperMath.clamp(
+        event.target.value,
+        this.min,
+        this.max
+      );
+      this.$emit(
+        "input",
+        SuperMath.clamp(event.target.value, this.min, this.max)
+      );
     }
   }
 };

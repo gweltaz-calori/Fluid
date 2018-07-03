@@ -1,8 +1,8 @@
 <template>
     <div class="sub-property-value-container">
-        <div v-if="type === 'range'">
+        <div class="range-value-type" v-if="type === 'range'">
             <fluid-range :value="value" @input="changeValue"></fluid-range>
-            <fluid-text-box :value="value" @input="changeValue"></fluid-text-box>
+            <fluid-text-box class="range-value-type-textbox" :value="value" @input="changeValue"></fluid-text-box>
         </div>
         <div v-else>
             <fluid-combo-box :value="value" :options="options" @input="changeValue"></fluid-combo-box>
@@ -32,6 +32,11 @@ export default {
 </script>
 
 <style scoped>
-.sub-property-value-container {
+.range-value-type {
+  display: flex;
+  align-items: center;
+}
+.range-value-type-textbox {
+  margin-left: 9px;
 }
 </style>
