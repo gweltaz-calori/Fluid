@@ -10,7 +10,7 @@
               <div class="select-option-check" :class="{'checked':option == value}">
                 <fluid-icon-check></fluid-icon-check>
               </div>
-              <div class="select-option-text" :class="{'active':option == value}">{{option}}</div>
+              <div class="select-option-text" :class="{'active':option == value}">{{option}}{{unit}}</div>
             </div>
         </div>
     </div>

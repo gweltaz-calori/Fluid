@@ -42,7 +42,7 @@ export default {
 }
 
 .slides {
-  margin-top: 16px;
+  margin-top: 26px;
   height: calc(100% - 30.5px);
 }
 
