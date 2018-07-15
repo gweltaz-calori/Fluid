@@ -2,6 +2,7 @@
     <div class="editor">
         <editor-actions-panel></editor-actions-panel>
         <editor-slides-panel></editor-slides-panel>
+        <editor-canvas-panel></editor-canvas-panel>
         <editor-properties-panel>
             <fluid-menu :options="menus" v-model="selectedPropertyMenu"></fluid-menu>
         </editor-properties-panel>
@@ -15,13 +16,15 @@ import FluidMenu from "@/components/common/FluidMenu.vue";
 import EditorPropertiesPanel from "@/components/other/editor/panels/EditorPropertiesPanel.vue";
 import EditorSlidesPanel from "@/components/other/editor/panels/EditorSlidesPanel.vue";
 import EditorActionsPanel from "@/components/other/editor/panels/EditorActionsPanel.vue";
+import EditorCanvasPanel from "@/components/other/editor/panels/EditorCanvasPanel.vue";
 
 export default {
   components: {
     FluidMenu,
     EditorPropertiesPanel,
     EditorSlidesPanel,
-    EditorActionsPanel
+    EditorActionsPanel,
+    EditorCanvasPanel
   },
   data() {
     return {

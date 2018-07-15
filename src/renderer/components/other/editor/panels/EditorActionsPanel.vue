@@ -1,7 +1,7 @@
 <template>
     <div class="panel">
       <div class="left-actions">
-        <fluid-select-input v-model="zoomLevel" :options="[50,75,100]" unit="%" :min="10" :max="100"></fluid-select-input>
+        <fluid-select-input v-model="zoomLevel" :options="availableZoomLevels" unit="%" :min="10" :max="100"></fluid-select-input>
       </div>
       <input placeholder="file name" type="text">
       <div class="right-actions">
@@ -12,14 +12,25 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import PlayIcon from "@/assets/icons/play.svg";
 
 export default {
   data() {
     return {
-      PlayIcon,
-      zoomLevel: 10
+      PlayIcon
     };
+  },
+  computed: {
+    zoomLevel: {
+      get() {
+        return this.$store.state.editor.settings.zoomLevel;
+      },
+      set(value) {
+        this.$store.commit("setZoomLevel", value);
+      }
+    },
+    ...mapGetters(["availableZoomLevels"])
   }
 };
 </script>
