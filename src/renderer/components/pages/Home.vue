@@ -9,14 +9,10 @@
 
 <script>
 import FigmaIcon from "@/assets/icons/figma.svg";
-import FluidButton from "@/components/common/FluidButton.vue";
 import FluidAnimatedLogo from "@/components/other/FluidAnimatedLogo.vue";
-import FluidBigTitle from "@/components/common/FluidBigTitle.vue";
 export default {
   components: {
-    FluidButton,
-    FluidAnimatedLogo,
-    FluidBigTitle
+    FluidAnimatedLogo
   },
   data() {
     return {

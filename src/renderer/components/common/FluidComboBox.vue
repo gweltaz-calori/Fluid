@@ -97,6 +97,7 @@ export default {
   font-weight: bold;
   line-height: normal;
   font-size: 11px;
+  cursor: default;
 }
 
 .combo-value {

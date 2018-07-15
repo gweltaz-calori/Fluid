@@ -1,6 +1,8 @@
 import Vue from "vue";
 import axios from "axios";
 
+import "@/components/common/common";
+import "@/components/icons/icons";
 import App from "./App";
 import router from "./router";
 import store from "./store";

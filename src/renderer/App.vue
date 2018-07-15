@@ -16,6 +16,10 @@ export default {};
   user-select: none;
 }
 
+*:focus {
+  outline: none;
+}
+
 html,
 body {
   height: 100%;
@@ -45,6 +49,7 @@ p {
 input {
   outline: 0;
   border: 0;
+  background: transparent;
 }
 
 button {
