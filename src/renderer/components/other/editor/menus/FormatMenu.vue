@@ -13,6 +13,7 @@
               <editor-property-content>
                 <editor-sub-property>
                     <fluid-file-uploader v-model="file" :filters="[{ name: 'Videos', extensions: ['webm', 'mp4'] }]"></fluid-file-uploader>
+                    <fluid-player-controls :playing="isPlaying" @playing="play" @pausing="pause"></fluid-player-controls> 
                 </editor-sub-property>
                 <editor-sub-property>
                     <editor-sub-property-name>Volume</editor-sub-property-name>
@@ -57,7 +58,8 @@ export default {
     return {
       MediaName,
       checkValue: false,
-      file: null
+      file: null,
+      isPlaying: false
     };
   },
   computed: {
@@ -77,6 +79,12 @@ export default {
       }
 
       this.addMediaToSelectedLayer(media);
+    },
+    play() {
+      this.isPlaying = true;
+    },
+    pause() {
+      this.isPlaying = false;
     }
   }
 };

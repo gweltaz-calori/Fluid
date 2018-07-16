@@ -17,7 +17,10 @@ export default {
           properties: ["openFile"],
           filters: this.filters
         },
-        filePath => this.$emit("input", filePath[0])
+        filePath => {
+          if (!filePath) return;
+          this.$emit("input", filePath[0]);
+        }
       );
     }
   },
