@@ -7,17 +7,26 @@ const state = {
       zoomLevel: 100,
       availableZoomLevels: [50, 75, 100]
     },
-    selectedLayer: null
+    selectedLayer: {
+      medias: []
+    }
   }
 };
 
 const mutations = {
   setZoomLevel(state, value) {
     state.editor.settings.zoomLevel = value;
+  },
+  addMediaToSelectedLayer(state, media) {
+    state.editor.selectedLayer.medias.push(media);
   }
 };
 
-const actions = {};
+const actions = {
+  addMediaToSelectedLayer({ commit }, media) {
+    commit("addMediaToSelectedLayer", media);
+  }
+};
 
 const getters = {
   availableZoomLevels: state => state.editor.settings.availableZoomLevels,

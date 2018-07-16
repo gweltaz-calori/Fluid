@@ -1,12 +1,40 @@
 <template>
     <div class="panel">
-        <slot></slot>
+        <fluid-menu v-model="selectedMenu" :options="menuOptions"></fluid-menu>
+        <component :is="selectedMenu"></component>
     </div>
 </template>
 
 <script>
+import FormatMenu from "@/components/other/editor/menus/FormatMenu.vue";
+import AnimateInMenu from "@/components/other/editor/menus/AnimateInMenu.vue";
+import AnimateOutMenu from "@/components/other/editor/menus/AnimateOutMenu.vue";
+
 export default {
-  components: {}
+  components: {
+    FormatMenu,
+    AnimateInMenu,
+    AnimateOutMenu
+  },
+  data() {
+    return {
+      menuOptions: [
+        {
+          name: "animate in",
+          key: "AnimateInMenu"
+        },
+        {
+          name: "animate out",
+          key: "AnimateOutMenu"
+        },
+        {
+          name: "format",
+          key: "FormatMenu"
+        }
+      ],
+      selectedMenu: "FormatMenu"
+    };
+  }
 };
 </script>
 
@@ -21,5 +49,9 @@ export default {
   width: 305px;
   height: 100%;
   padding: 18px 0;
+}
+
+.properties {
+  margin-top: 14px;
 }
 </style>

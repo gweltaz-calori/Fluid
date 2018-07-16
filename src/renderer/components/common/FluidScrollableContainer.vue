@@ -41,29 +41,33 @@ export default {
     },
     enter() {
       this.barVisible = true;
+    },
+    setBarHeight() {
+      TweenMax.set(this.$refs.trackBar, {
+        height:
+          this.$refs.scrollContainer.clientHeight *
+          this.$refs.scrollContent.clientHeight /
+          this.$refs.scrollContent.scrollHeight
+      });
     }
   },
   beforeDestroy() {
     this.draggable.removeEventListener("drag", this.onDrag);
     this.draggable.removeEventListener("release", this.leave);
+    window.removeEventListener("resize", this.setBarHeight);
   },
   mounted() {
-    TweenMax.set(this.$refs.trackBar, {
-      height:
-        this.$refs.scrollContainer.clientHeight *
-        this.$refs.scrollContent.clientHeight /
-        this.$refs.scrollContent.scrollHeight
-    });
+    this.setBarHeight();
 
     this.draggable = Draggable.create(this.$refs.trackBar, {
       cursor: "default",
       type: "y",
-      onUpdate: () => console.log("updateing"),
       bounds: this.$refs.trackBarContainer
     })[0];
 
     this.draggable.addEventListener("drag", this.onDrag);
     this.draggable.addEventListener("release", this.leave);
+    window.addEventListener("resize", this.setBarHeight);
   }
 };
 </script>

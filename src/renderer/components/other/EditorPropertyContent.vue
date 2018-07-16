@@ -10,5 +10,7 @@ export default {};
 
 <style scoped>
 .property-content {
+  margin-top: 10px;
+  padding: 0 6px;
 }
 </style>

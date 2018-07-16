@@ -11,7 +11,6 @@ export default {};
 <style scoped>
 .property-header {
   display: flex;
-  margin-bottom: 13px;
 
   justify-content: center;
 }

@@ -19,10 +19,10 @@ export default {};
   text-transform: uppercase;
   font-family: Exo;
   font-style: normal;
-  font-weight: 700;
+  font-weight: 800;
   line-height: normal;
   font-size: 11px;
 
-  color: rgba(255, 255, 255, 0.84);
+  color: rgba(255, 255, 255, 0.94);
 }
 </style>

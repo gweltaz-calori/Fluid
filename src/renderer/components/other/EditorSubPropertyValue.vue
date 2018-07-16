@@ -4,6 +4,7 @@
             <fluid-range :value="value" @input="changeValue"></fluid-range>
             <fluid-text-box class="range-value-type-textbox" :value="value" @input="changeValue"></fluid-text-box>
         </div>
+        <fluid-check-box v-else-if="type === 'checkbox'" :value="value" @input="changeValue"></fluid-check-box>
         <div v-else>
             <fluid-combo-box :value="value" :options="options" @input="changeValue"></fluid-combo-box>
         </div>
@@ -14,8 +15,9 @@
 import FluidRange from "@/components/common/FluidRange.vue";
 import FluidTextBox from "@/components/common/FluidTextBox.vue";
 import FluidComboBox from "@/components/common/FluidComboBox.vue";
+import FluidCheckBox from "@/components/common/FluidCheckBox.vue";
 export default {
-  components: { FluidRange, FluidTextBox, FluidComboBox },
+  components: { FluidRange, FluidTextBox, FluidComboBox, FluidCheckBox },
   props: {
     type: {
       type: String
