@@ -1,6 +1,6 @@
 <template>
-    <div class="property-actions">
-        <slot></slot> 
+    <div class="sub-property">
+        <slot></slot>
     </div>
 </template>
 
@@ -9,9 +9,9 @@ export default {};
 </script>
 
 <style scoped>
-.property-actions {
-  margin-left: auto;
-  display: inline-flex;
+.sub-property {
+  display: flex;
   align-items: center;
+  margin-bottom: 3px;
 }
 </style>

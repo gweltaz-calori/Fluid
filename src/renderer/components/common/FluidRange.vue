@@ -52,6 +52,10 @@ export default {
     })[0];
 
     this.draggable.addEventListener("drag", this.onDrag);
+
+    TweenMax.set(this.draggable.target, {
+      x: this.value * this.draggable.maxX / this.max
+    });
   }
 };
 </script>

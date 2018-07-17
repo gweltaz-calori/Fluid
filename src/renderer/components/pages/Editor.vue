@@ -1,7 +1,7 @@
 <template>
     <div class="editor">
         <editor-actions-panel></editor-actions-panel>
-        <editor-slides-panel></editor-slides-panel>
+        <!-- <editor-slides-panel></editor-slides-panel> -->
         <editor-canvas-panel></editor-canvas-panel>
         <editor-properties-panel></editor-properties-panel>
     </div>

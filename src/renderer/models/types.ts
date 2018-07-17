@@ -1,7 +1,7 @@
 class Media {
-  protected source: String;
-  protected volume: Number;
-  protected isPlaying: Boolean;
+  protected source: String = null;
+  protected volume: Number = 1;
+  protected isPlaying: Boolean = false;
   protected playOnMouseClick: Boolean = true;
 }
 

@@ -1,7 +1,11 @@
 <template>
     <div class="panel">
-        <fluid-menu v-model="selectedMenu" :options="menuOptions"></fluid-menu>
-        <component :is="selectedMenu"></component>
+        <fluid-scrollable-container height="100%" class="properties-container">
+          <fluid-menu v-model="selectedMenu" :options="menuOptions"></fluid-menu>
+          <keep-alive>
+            <component :is="selectedMenu"></component>
+          </keep-alive>
+        </fluid-scrollable-container>
     </div>
 </template>
 
@@ -53,5 +57,9 @@ export default {
 
 .properties {
   margin-top: 14px;
+}
+
+.properties-container {
+  height: 100%;
 }
 </style>

@@ -8,7 +8,8 @@ const state = {
       availableZoomLevels: [50, 75, 100]
     },
     selectedLayer: {
-      medias: []
+      videos: [],
+      audios: []
     }
   }
 };
@@ -17,14 +18,41 @@ const mutations = {
   setZoomLevel(state, value) {
     state.editor.settings.zoomLevel = value;
   },
-  addMediaToSelectedLayer(state, media) {
-    state.editor.selectedLayer.medias.push(media);
+  SET_VIDEO_PROPERTY(state, layer) {
+    state.editor.selectedLayer.videos[layer.index][layer.key] = layer.value;
+  },
+  SET_AUDIO_PROPERTY(state, layer) {
+    state.editor.selectedLayer.audios[layer.index][layer.key] = layer.value;
+  },
+  ADD_VIDEO(state, video) {
+    state.editor.selectedLayer.videos.push(video);
+  },
+  ADD_AUDIO(state, audio) {
+    state.editor.selectedLayer.audios.push(audio);
+  },
+  REMOVE_VIDEO(state) {
+    state.editor.selectedLayer.videos.pop();
+  },
+  REMOVE_AUDIO(state) {
+    state.editor.selectedLayer.audios.pop();
   }
 };
 
 const actions = {
-  addMediaToSelectedLayer({ commit }, media) {
-    commit("addMediaToSelectedLayer", media);
+  setSelectedLayer({ commit }, layer) {
+    commit("setSelectedLayer", layer);
+  },
+  addVideo({ commit }, data) {
+    commit("ADD_VIDEO", data);
+  },
+  addAudio({ commit }, data) {
+    commit("ADD_AUDIO", data);
+  },
+  removeAudio({ commit }) {
+    commit("REMOVE_AUDIO");
+  },
+  removeVideo({ commit }) {
+    commit("REMOVE_VIDEO");
   }
 };
 

@@ -1,5 +1,5 @@
 <template>
-    <div class="sub-property">
+    <div class="sub-property-container">
         <slot></slot>
     </div>
 </template>
@@ -9,9 +9,7 @@ export default {};
 </script>
 
 <style scoped>
-.sub-property {
-  display: flex;
-  align-items: center;
-  margin-bottom: 3px;
+.sub-property-container {
+  margin: 13.5px 0;
 }
 </style>

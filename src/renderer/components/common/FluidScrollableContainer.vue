@@ -3,20 +3,23 @@
         <div @scroll="scroll" ref="scrollContent" class="scroll-content" :style="{'height':'100%',width: 'calc(100% + 17px)'}">
             <slot></slot>
         </div>
-        <div ref="trackBarContainer" class="scroll-track" :class="{'visible':barVisible}">
+        <div v-show="enabled" ref="trackBarContainer" class="scroll-track" :class="{'visible':barVisible}">
             <div ref="trackBar" class="scroll-track-bar" ></div>
         </div>
     </div>
 </template>
 
 <script>
+import Render from "@/js/render";
 import Draggable from "gsap/Draggable";
 import TweenMax from "gsap/TweenMax";
 export default {
   data() {
     return {
       draggable: null,
-      barVisible: false
+      barVisible: false,
+      enabled: false,
+      lastScrollHeight: 0
     };
   },
   methods: {
@@ -49,12 +52,23 @@ export default {
           this.$refs.scrollContent.clientHeight /
           this.$refs.scrollContent.scrollHeight
       });
+    },
+    checkHeight() {
+      if (this.lastScrollHeight !== this.$refs.scrollContent.scrollHeight) {
+        this.setBarHeight();
+      }
+
+      this.lastScrollHeight = this.$refs.scrollContent.scrollHeight;
+      this.enabled =
+        this.$refs.scrollContent.scrollHeight >
+        this.$refs.scrollContent.clientHeight;
     }
   },
   beforeDestroy() {
     this.draggable.removeEventListener("drag", this.onDrag);
     this.draggable.removeEventListener("release", this.leave);
     window.removeEventListener("resize", this.setBarHeight);
+    Render.stop(this.checkHeight.bind(this));
   },
   mounted() {
     this.setBarHeight();
@@ -68,6 +82,16 @@ export default {
     this.draggable.addEventListener("drag", this.onDrag);
     this.draggable.addEventListener("release", this.leave);
     window.addEventListener("resize", this.setBarHeight);
+
+    this.enabled =
+      this.$refs.scrollContent.scrollHeight >
+      this.$refs.scrollContent.clientHeight;
+
+    this.lastScrollHeight = this.$refs.scrollContent.scrollHeight;
+
+    this.setBarHeight();
+
+    Render.start(this.checkHeight.bind(this));
   }
 };
 </script>

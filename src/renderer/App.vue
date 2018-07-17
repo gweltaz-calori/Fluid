@@ -137,6 +137,7 @@ body {
 
 body {
   background-color: #131313;
+  overflow: hidden;
 }
 
 h1,

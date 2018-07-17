@@ -23,7 +23,9 @@ export default {
       type: String
     },
     value: {},
-    options: {}
+    options: {},
+    max: {},
+    min: {}
   },
   methods: {
     changeValue(value) {
