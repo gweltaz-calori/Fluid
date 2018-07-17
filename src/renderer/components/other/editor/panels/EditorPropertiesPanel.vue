@@ -36,7 +36,7 @@ export default {
           key: "FormatMenu"
         }
       ],
-      selectedMenu: "FormatMenu"
+      selectedMenu: "AnimateInMenu"
     };
   }
 };

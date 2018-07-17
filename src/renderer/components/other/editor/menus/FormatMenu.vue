@@ -1,14 +1,13 @@
 <template>
-    <div>
-        <div class="properties">
+    <div class="properties">
           <editor-property>
               <editor-property-header>
                 <editor-property-title>{{MediaName.VIDEO}}</editor-property-title>
                 <editor-property-actions>
-                  <editor-property-action  @click.native="removeMedia(MediaName.VIDEO)">
+                  <editor-property-action v-if="selectedLayer.videos.length > 0 " @click.native="removeMedia(MediaName.VIDEO)">
                     <fluid-icon-minus></fluid-icon-minus>
                   </editor-property-action>
-                  <editor-property-action @click.native="addMedia(MediaName.VIDEO)">
+                  <editor-property-action v-else @click.native="addMedia(MediaName.VIDEO)">
                       <fluid-icon-add ></fluid-icon-add>
                   </editor-property-action>
                 </editor-property-actions>
@@ -34,10 +33,10 @@
               <editor-property-header>
                 <editor-property-title>{{MediaName.AUDIO}}</editor-property-title>
                 <editor-property-actions>
-                  <editor-property-action @click.native="removeMedia(MediaName.AUDIO)">
+                  <editor-property-action v-if="selectedLayer.audios.length > 0 " @click.native="removeMedia(MediaName.AUDIO)">
                     <fluid-icon-minus></fluid-icon-minus>
                   </editor-property-action>
-                  <editor-property-action @click.native="addMedia(MediaName.AUDIO)">
+                  <editor-property-action v-else @click.native="addMedia(MediaName.AUDIO)">
                       <fluid-icon-add ></fluid-icon-add>
                   </editor-property-action>
                 </editor-property-actions>
@@ -60,7 +59,6 @@
               </editor-property-content>
           </editor-property>
         </div>
-    </div>
 </template>
 
 <script>
@@ -107,6 +105,16 @@ export default {
           break;
         case MediaName.AUDIO:
           this.addAudio(new AudioMedia());
+          break;
+      }
+    },
+    canAddProperty(children, type) {
+      switch (type) {
+        case MediaName.VIDEO:
+          return children.length < VideoMedia.MAX_CHILDREN;
+          break;
+        case MediaName.AUDIO:
+          return children.length < AudioMedia.MAX_CHILDREN;
           break;
       }
     },

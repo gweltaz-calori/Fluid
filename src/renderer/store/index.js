@@ -9,7 +9,9 @@ const state = {
     },
     selectedLayer: {
       videos: [],
-      audios: []
+      audios: [],
+      animationsIn: [],
+      animationsOut: []
     }
   }
 };
@@ -27,6 +29,12 @@ const mutations = {
   ADD_VIDEO(state, video) {
     state.editor.selectedLayer.videos.push(video);
   },
+  ADD_ANIMATION_IN(state, animation) {
+    state.editor.selectedLayer.animationsIn.push(animation);
+  },
+  ADD_ANIMATION_OUT(state, animation) {
+    state.editor.selectedLayer.animationsOut.push(animation);
+  },
   ADD_AUDIO(state, audio) {
     state.editor.selectedLayer.audios.push(audio);
   },
@@ -35,6 +43,20 @@ const mutations = {
   },
   REMOVE_AUDIO(state) {
     state.editor.selectedLayer.audios.pop();
+  },
+  REMOVE_ANIMATION_IN(state) {
+    state.editor.selectedLayer.animationsIn.pop();
+  },
+  REMOVE_ANIMATION_OUT(state) {
+    state.editor.selectedLayer.animationsOut.pop();
+  },
+  SET_ANIMATION_IN_PROPERTY(state, layer) {
+    state.editor.selectedLayer.animationsIn[layer.index][layer.key] =
+      layer.value;
+  },
+  SET_ANIMATION_OUT_PROPERTY(state, layer) {
+    state.editor.selectedLayer.animationsOut[layer.index][layer.key] =
+      layer.value;
   }
 };
 
@@ -53,6 +75,12 @@ const actions = {
   },
   removeVideo({ commit }) {
     commit("REMOVE_VIDEO");
+  },
+  addAnimationIn({ commit }, animation) {
+    commit("ADD_ANIMATION_IN", animation);
+  },
+  addAnimationOut({ commit }, animation) {
+    commit("ADD_ANIMATION_OUT", animation);
   }
 };
 
