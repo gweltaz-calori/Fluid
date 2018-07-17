@@ -44,11 +44,19 @@ const mutations = {
   REMOVE_AUDIO(state) {
     state.editor.selectedLayer.audios.pop();
   },
-  REMOVE_ANIMATION_IN(state) {
-    state.editor.selectedLayer.animationsIn.pop();
+  REMOVE_ANIMATION_IN(state, index) {
+    if (index) {
+      state.editor.selectedLayer.animationsIn.splice(index, 1);
+    } else {
+      state.editor.selectedLayer.animationsIn.pop();
+    }
   },
-  REMOVE_ANIMATION_OUT(state) {
-    state.editor.selectedLayer.animationsOut.pop();
+  REMOVE_ANIMATION_OUT(state, index) {
+    if (index) {
+      state.editor.selectedLayer.animationsOut.splice(index, 1);
+    } else {
+      state.editor.selectedLayer.animationsOut.pop();
+    }
   },
   SET_ANIMATION_IN_PROPERTY(state, layer) {
     state.editor.selectedLayer.animationsIn[layer.index][layer.key] =
@@ -81,6 +89,12 @@ const actions = {
   },
   addAnimationOut({ commit }, animation) {
     commit("ADD_ANIMATION_OUT", animation);
+  },
+  removeAnimationIn({ commit }, index) {
+    commit("REMOVE_ANIMATION_IN", index);
+  },
+  removeAnimationOut({ commit }, index) {
+    commit("REMOVE_ANIMATION_OUT", index);
   }
 };
 

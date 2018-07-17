@@ -4,8 +4,8 @@
             <editor-property-header>
                 <editor-property-title>animations</editor-property-title>
                 <editor-property-actions>
-                    <editor-property-action v-if="selectedLayer.animationsIn.length > 0 ">
-                    <fluid-icon-minus></fluid-icon-minus>
+                    <editor-property-action v-if="selectedLayer.animationsIn.length > 0 " @click.native="removeAnimation()">
+                        <fluid-icon-minus></fluid-icon-minus>
                     </editor-property-action>
                     <editor-property-action v-else @click.native="addAnimation()">
                         <fluid-icon-add ></fluid-icon-add>
@@ -23,6 +23,10 @@
                         <editor-sub-property-row-value unit="s" @input="setAnimationValue(index,'duration',$event)" :value="animation.duration" type="textbox"></editor-sub-property-row-value>
                     </editor-sub-property-row>
                     <editor-sub-property-row>
+                        <editor-sub-property-row-name>Easing</editor-sub-property-row-name>
+                        <editor-sub-property-row-value :options="availableEasings" @input="setAnimationValue(index,'easing',$event)" :value="animation.easing" type="combo"></editor-sub-property-row-value>
+                    </editor-sub-property-row>
+                    <editor-sub-property-row>
                         <editor-sub-property-row-name>Delay</editor-sub-property-row-name>
                         <editor-sub-property-row-value unit="s" :options="availableAnimations" @input="setAnimationValue(index,'delay',$event)" :value="animation.delay" type="textbox"></editor-sub-property-row-value>
                     </editor-sub-property-row>
@@ -33,7 +37,11 @@
 </template>
 
 <script>
-import { Animation, AnimationPropertyType } from "@/models/types";
+import {
+  Animation,
+  AnimationPropertyType,
+  AnimationEasing
+} from "@/models/types";
 import { mapGetters, mapActions } from "vuex";
 
 import EditorProperty from "@/components/other/EditorProperty.vue";
@@ -66,12 +74,18 @@ export default {
     ...mapGetters(["selectedLayer"]),
     availableAnimations() {
       return Object.values(AnimationPropertyType);
+    },
+    availableEasings() {
+      return Object.values(AnimationEasing);
     }
   },
   methods: {
-    ...mapActions(["addAnimationIn"]),
+    ...mapActions(["addAnimationIn", "removeAnimationIn"]),
     addAnimation() {
       this.addAnimationIn(new Animation());
+    },
+    removeAnimation() {
+      this.removeAnimationIn();
     },
     setAnimationValue(index, key, value) {
       this.$store.commit("SET_ANIMATION_IN_PROPERTY", { index, key, value });

@@ -5,7 +5,7 @@ class Media {
   protected playOnMouseClick: Boolean = true;
 }
 
-enum AnimationEasing {
+export enum AnimationEasing {
   LINEAR = "Linear",
   QUAD_IN_OUT = "QuadInOut",
   QUAD_IN = "QuadIn",
