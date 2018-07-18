@@ -1,5 +1,5 @@
 export default class SuperMath {
-  static clamp(value, min, max) {
-    return Math.min(Math.max(value, min), max) || max;
+  static clamp(value, min, max, isMax = true) {
+    return Math.min(Math.max(value, min), max) || (isMax ? max : min);
   }
 }

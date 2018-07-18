@@ -6,9 +6,9 @@
         </div>
         <fluid-check-box v-else-if="type === 'checkbox'" :value="value" @input="changeValue"></fluid-check-box>
         <div v-else-if="type === 'textbox'" class="text-box-container">
-          <fluid-text-box :value="value" @input="changeValue"></fluid-text-box>
-          <span class="unit">{{unit}}</span>
+          <fluid-text-box :fallback-value="fallbackValue" :max="max" :min="min" :unit="unit" :value="value" @input="changeValue"></fluid-text-box>
         </div>
+        <fluid-editable-box v-else-if="type === 'editbox'" :fallback-value="fallbackValue" :max="max" :min="min" :unit="unit" :value="value" @input="changeValue"></fluid-editable-box>
         <div v-else>
             <fluid-combo-box :value="value" :options="options" @input="changeValue"></fluid-combo-box>
         </div>
@@ -30,7 +30,8 @@ export default {
     options: {},
     max: {},
     min: {},
-    unit: {}
+    unit: {},
+    fallbackValue: {}
   },
   methods: {
     changeValue(value) {
@@ -41,6 +42,10 @@ export default {
 </script>
 
 <style scoped>
+.sub-property-value-container {
+  display: flex;
+  align-items: center;
+}
 .range-value-type {
   display: flex;
   align-items: center;

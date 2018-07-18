@@ -5,31 +5,87 @@ class Media {
   protected playOnMouseClick: Boolean = true;
 }
 
-export enum AnimationEasing {
+enum AnimationEasingType {
   LINEAR = "Linear",
   QUAD_IN_OUT = "QuadInOut",
   QUAD_IN = "QuadIn",
   QUAD_OUT = "QuadOut"
 }
 
-export enum AnimationPropertyType {
-  OPACITY = "opacity",
-  Y = "moveY",
-  X = "moveX",
-  Z = "moveZ"
+export enum AnimationType {
+  ANIMATE_IN = "ANIMATE_IN",
+  ANIMATE_OUT = "ANIMATE_OUT"
+}
+
+enum AnimationPropertyType {
+  OPACITY = "Opacity",
+  Y = "MoveY",
+  X = "MoveX",
+  Z = "MoveZ",
+  SCALE = "Scale"
+}
+
+enum PropertyUnit {
+  PX = "px"
 }
 
 class AnimationProperty {
-  name: AnimationPropertyType = AnimationPropertyType.OPACITY;
-  value: number = 0;
+  name: String = "";
   unit: String = "";
+  min: number = 0;
+  max: number = Infinity;
+  constructor(name: String, min: number, max: number, unit: String = "") {
+    this.name = name;
+    this.unit = unit;
+    this.max = max;
+    this.min = min;
+  }
 }
 
+class AnimationEasing {
+  name: String = "";
+  constructor(name: String) {
+    this.name = name;
+  }
+}
+
+export const AVAILAIBLE_ANIMATION_PROPERTIES = [
+  new AnimationProperty(AnimationPropertyType.OPACITY, 0, 1),
+  new AnimationProperty(
+    AnimationPropertyType.Y,
+    -Infinity,
+    Infinity,
+    PropertyUnit.PX
+  ),
+  new AnimationProperty(
+    AnimationPropertyType.X,
+    -Infinity,
+    Infinity,
+    PropertyUnit.PX
+  ),
+  new AnimationProperty(
+    AnimationPropertyType.Z,
+    -Infinity,
+    Infinity,
+    PropertyUnit.PX
+  ),
+  new AnimationProperty(AnimationPropertyType.SCALE, -Infinity, Infinity)
+];
+
+export const AVAILAIBLE_ANIMATION_EASINGS = [
+  new AnimationEasing(AnimationEasingType.LINEAR),
+  new AnimationEasing(AnimationEasingType.QUAD_IN),
+  new AnimationEasing(AnimationEasingType.QUAD_IN_OUT),
+  new AnimationEasing(AnimationEasingType.QUAD_OUT)
+];
+
 export class Animation {
-  property: AnimationProperty = new AnimationProperty();
+  property: AnimationProperty = AVAILAIBLE_ANIMATION_PROPERTIES[0];
   duration: Number = 1;
   delay: Number = 0;
-  easing: AnimationEasing = AnimationEasing.LINEAR;
+  value: number = 0;
+  easing: AnimationEasing = AVAILAIBLE_ANIMATION_EASINGS[0];
+  static MAX_CHILDREN: number = Infinity;
 }
 
 export enum MediaName {

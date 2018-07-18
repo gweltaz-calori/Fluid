@@ -11,10 +11,10 @@ export default {
   props: ["options", "value"],
   methods: {
     changeActiveMenuItem(option) {
-      this.$emit("input", option.key);
+      this.$emit("input", option);
     },
     isActive(value) {
-      return this.value === value;
+      return this.value.key === value;
     }
   }
 };

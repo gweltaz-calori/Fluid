@@ -3,7 +3,7 @@
         <fluid-scrollable-container height="100%" class="properties-container">
           <fluid-menu v-model="selectedMenu" :options="menuOptions"></fluid-menu>
           <keep-alive>
-            <component :is="selectedMenu"></component>
+            <component :animation-type="selectedMenu.key" :is="selectedMenu.value"></component>
           </keep-alive>
         </fluid-scrollable-container>
     </div>
@@ -11,32 +11,37 @@
 
 <script>
 import FormatMenu from "@/components/other/editor/menus/FormatMenu.vue";
-import AnimateInMenu from "@/components/other/editor/menus/AnimateInMenu.vue";
-import AnimateOutMenu from "@/components/other/editor/menus/AnimateOutMenu.vue";
-
+import AnimateMenu from "@/components/other/editor/menus/AnimateMenu.vue";
+import { AnimationType } from "@/models/types";
 export default {
   components: {
     FormatMenu,
-    AnimateInMenu,
-    AnimateOutMenu
+    AnimateMenu
   },
   data() {
     return {
       menuOptions: [
         {
           name: "animate in",
-          key: "AnimateInMenu"
+          key: AnimationType.ANIMATE_IN,
+          value: "AnimateMenu"
         },
         {
           name: "animate out",
-          key: "AnimateOutMenu"
+          key: AnimationType.ANIMATE_OUT,
+          value: "AnimateMenu"
         },
         {
           name: "format",
-          key: "FormatMenu"
+          key: "FORMAT",
+          value: "FormatMenu"
         }
       ],
-      selectedMenu: "AnimateInMenu"
+      selectedMenu: {
+        name: "animate in",
+        key: AnimationType.ANIMATE_IN,
+        value: "AnimateMenu"
+      }
     };
   }
 };

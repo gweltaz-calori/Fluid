@@ -1,13 +1,13 @@
 <template>
     <div class="combo" @click="showOptions" v-on-clickaway="closeOptions">
-        <div class="combo-value">{{value}}</div>
+        <div class="combo-value">{{value.name}}</div>
         <fluid-icon-chevron @click="showOptions"></fluid-icon-chevron>
         <div v-show="optionsVisible" class="combo-options" :style="comboOptionsStyle">
-            <div class="combo-option" @click.stop="changeValue(option)" v-for="option in options" :key="option">
-              <div class="combo-option-check" :class="{'checked':option == value}">
+            <div class="combo-option" @click.stop="changeValue(option)" v-for="option in options" :key="option.name">
+              <div class="combo-option-check" :class="{'checked':option.name == value.name}">
                 <fluid-icon-check></fluid-icon-check>
               </div>
-              <div class="combo-option-text" :class="{'active':option == value}">{{option}}</div>
+              <div class="combo-option-text" :class="{'active':option.name == value.name}">{{option.name}}</div>
             </div>
         </div>
     </div>

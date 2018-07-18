@@ -1,15 +1,24 @@
 <template>
     <a class="button" :class="[theme,{'disabled':disabled}]" v-if="href" href="">
         <slot></slot>
-        <img v-if="icon" :src="icon" alt="">
+        <img class="button-icon" v-if="icon" :src="icon" alt="">
+        <span class="button-icon">
+          <slot name="icon"></slot>
+        </span>
     </a>
     <router-link :to="to" :class="[theme,{'disabled':disabled}]" class="button" v-else-if="to">
         <slot></slot>
-        <img v-if="icon" :src="icon" alt="">
+        <img class="button-icon" v-if="icon" :src="icon" alt="">
+        <span class="button-icon">
+          <slot name="icon"></slot>
+        </span>
     </router-link>
     <button :class="[theme,{'disabled':disabled}]" class="button" v-else>
         <slot></slot>
-        <img v-if="icon" :src="icon" alt="">
+        <img class="button-icon" v-if="icon" :src="icon" alt="">
+        <span class="button-icon">
+          <slot name="icon"></slot>
+        </span>
     </button>
 </template>
 
@@ -47,6 +56,11 @@ export default {
   background: rgba(169, 169, 169, 0.07);
   border-radius: 17.5097px;
   padding: 10px 14px;
+  transition: color 0.3s;
+}
+
+.button:hover {
+  color: rgba(255, 255, 255, 1);
 }
 
 .disabled {
@@ -54,7 +68,10 @@ export default {
   opacity: 0.3;
 }
 
-img {
+.button-icon {
   margin-left: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>

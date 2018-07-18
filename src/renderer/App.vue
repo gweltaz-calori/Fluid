@@ -122,6 +122,9 @@ export default {};
 *:focus {
   outline: none;
 }
+*::selection {
+  background-color: rgb(170, 170, 170);
+}
 
 html,
 body {
@@ -153,6 +156,7 @@ p {
 input {
   outline: 0;
   border: 0;
+  padding: 0;
   background: transparent;
 }
 

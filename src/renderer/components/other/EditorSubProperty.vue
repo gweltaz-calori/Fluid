@@ -10,6 +10,7 @@ export default {};
 
 <style scoped>
 .sub-property-container {
-  margin: 13.5px 0;
+  padding: 13.5px 0;
+  position: relative;
 }
 </style>

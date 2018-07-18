@@ -45,14 +45,14 @@ const mutations = {
     state.editor.selectedLayer.audios.pop();
   },
   REMOVE_ANIMATION_IN(state, index) {
-    if (index) {
+    if (index !== undefined && index !== null) {
       state.editor.selectedLayer.animationsIn.splice(index, 1);
     } else {
       state.editor.selectedLayer.animationsIn.pop();
     }
   },
   REMOVE_ANIMATION_OUT(state, index) {
-    if (index) {
+    if (index !== undefined && index !== null) {
       state.editor.selectedLayer.animationsOut.splice(index, 1);
     } else {
       state.editor.selectedLayer.animationsOut.pop();

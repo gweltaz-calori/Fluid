@@ -15,7 +15,14 @@ export default {
       default: 1
     },
     value: {},
-    placeholder: {}
+    placeholder: {},
+    unit: {},
+    hasMaxium: {
+      default: true
+    },
+    fallbackValue: {
+      default: "max"
+    }
   },
 
   methods: {
@@ -30,12 +37,11 @@ export default {
       event.target.value = SuperMath.clamp(
         event.target.value,
         this.min,
-        this.max
+        this.max,
+        this.fallbackValue === "max"
       );
-      this.$emit(
-        "input",
-        SuperMath.clamp(event.target.value, this.min, this.max)
-      );
+
+      this.$emit("input", event.target.value);
     }
   }
 };
