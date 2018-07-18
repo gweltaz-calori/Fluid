@@ -11,7 +11,8 @@ const state = {
       videos: [],
       audios: [],
       animationsIn: [],
-      animationsOut: []
+      animationsOut: [],
+      urls: []
     }
   }
 };
@@ -65,6 +66,15 @@ const mutations = {
   SET_ANIMATION_OUT_PROPERTY(state, layer) {
     state.editor.selectedLayer.animationsOut[layer.index][layer.key] =
       layer.value;
+  },
+  ADD_URL(state, url) {
+    state.editor.selectedLayer.urls.push(url);
+  },
+  REMOVE_URL(state) {
+    state.editor.selectedLayer.urls.pop();
+  },
+  SET_URL_PROPERTY(state, layer) {
+    state.editor.selectedLayer.urls[layer.index]["websiteUrl"] = layer.value;
   }
 };
 
@@ -95,6 +105,12 @@ const actions = {
   },
   removeAnimationOut({ commit }, index) {
     commit("REMOVE_ANIMATION_OUT", index);
+  },
+  addUrl({ commit }, url) {
+    commit("ADD_URL", url);
+  },
+  removeUrl({ commit }) {
+    commit("REMOVE_URL");
   }
 };
 

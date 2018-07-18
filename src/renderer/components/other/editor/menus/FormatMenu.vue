@@ -58,11 +58,35 @@
                 </editor-sub-property>
               </editor-property-content>
           </editor-property>
+          <editor-property>
+              <editor-property-header>
+                <editor-property-title>{{FormatType.URL}}</editor-property-title>
+                <editor-property-actions>
+                  <editor-property-action v-if="selectedLayer.urls.length > 0 " @click.native="removeUrl()">
+                    <fluid-icon-minus></fluid-icon-minus>
+                  </editor-property-action>
+                  <editor-property-action v-else @click.native="addFormatUrl()">
+                      <fluid-icon-add ></fluid-icon-add>
+                  </editor-property-action>
+                </editor-property-actions>
+              </editor-property-header>
+              <editor-property-content v-show="selectedLayer.urls.length > 0 ">
+                <editor-sub-property v-for="(url,index) in selectedLayer.urls" :key="url.websiteUrl">
+                 <fluid-input :value="url.websiteUrl" @input="setUrlValue(index,$event)" placeholder="website url"></fluid-input>
+                </editor-sub-property>
+              </editor-property-content>
+          </editor-property>
         </div>
 </template>
 
 <script>
-import { MediaName, VideoMedia, AudioMedia } from "@/models/types";
+import {
+  MediaName,
+  VideoMedia,
+  AudioMedia,
+  FormatType,
+  FormatUrl
+} from "@/models/types";
 import { mapGetters, mapActions } from "vuex";
 
 import EditorProperty from "@/components/other/EditorProperty.vue";
@@ -90,14 +114,22 @@ export default {
   },
   data() {
     return {
-      MediaName
+      MediaName,
+      FormatType
     };
   },
   computed: {
     ...mapGetters(["selectedLayer"])
   },
   methods: {
-    ...mapActions(["addVideo", "removeVideo", "removeAudio", "addAudio"]),
+    ...mapActions([
+      "addVideo",
+      "removeVideo",
+      "removeAudio",
+      "addAudio",
+      "addUrl",
+      "removeUrl"
+    ]),
     addMedia(type) {
       switch (type) {
         case MediaName.VIDEO:
@@ -107,6 +139,9 @@ export default {
           this.addAudio(new AudioMedia());
           break;
       }
+    },
+    addFormatUrl() {
+      this.addUrl(new FormatUrl());
     },
     canAddProperty(children, type) {
       switch (type) {
@@ -139,6 +174,9 @@ export default {
           break;
       }
       this.$store.commit(mutationName, { index, key, value });
+    },
+    setUrlValue(index, value) {
+      this.$store.commit("SET_URL_PROPERTY", { index, value });
     }
   }
 };

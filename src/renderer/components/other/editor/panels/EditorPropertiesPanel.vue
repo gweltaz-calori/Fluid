@@ -1,7 +1,7 @@
 <template>
     <div class="panel">
         <fluid-scrollable-container height="100%" class="properties-container">
-          <fluid-menu v-model="selectedMenu" :options="menuOptions"></fluid-menu>
+          <fluid-menu class="menu" v-model="selectedMenu" :options="menuOptions"></fluid-menu>
           <keep-alive>
             <component :animation-type="selectedMenu.key" :is="selectedMenu.value"></component>
           </keep-alive>
@@ -60,8 +60,8 @@ export default {
   padding: 18px 0;
 }
 
-.properties {
-  margin-top: 14px;
+.menu {
+  margin-bottom: 14px;
 }
 
 .properties-container {
