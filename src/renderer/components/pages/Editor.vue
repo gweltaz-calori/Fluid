@@ -12,6 +12,7 @@ import EditorPropertiesPanel from "@/components/other/editor/panels/EditorProper
 import EditorSlidesPanel from "@/components/other/editor/panels/EditorSlidesPanel.vue";
 import EditorActionsPanel from "@/components/other/editor/panels/EditorActionsPanel.vue";
 import EditorCanvasPanel from "@/components/other/editor/panels/EditorCanvasPanel.vue";
+import { mapActions } from "vuex";
 
 export default {
   components: {
@@ -20,8 +21,11 @@ export default {
     EditorActionsPanel,
     EditorCanvasPanel
   },
-  data() {
-    return {};
+  methods: {
+    ...mapActions(["setSelectedFrame"])
+  },
+  beforeMount() {
+    this.setSelectedFrame(0);
   }
 };
 </script>

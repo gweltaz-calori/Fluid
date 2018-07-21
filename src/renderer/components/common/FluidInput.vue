@@ -1,6 +1,6 @@
 <template>
     <div class="input-container"  @click="click" > 
-        <input class="input"  @keyup.enter="exitInput($event)" :value="value" @blur="validateValue($event)" :placeholder="placeholder" type="text">
+        <input ref="input" class="input"  @keyup.enter="exitInput($event)" :value="value" @blur="validateValue($event)" :placeholder="placeholder" type="text">
     </div>
 </template>
 
@@ -12,14 +12,14 @@ export default {
   },
   methods: {
     click(e) {
-      e.target.setSelectionRange(0, e.target.value.length);
+      this.$refs.input.setSelectionRange(0, this.$refs.input.value.length);
     },
     exitInput(event) {
       event.target.blur();
       this.validateValue(event);
     },
     validateValue(event) {
-      this.$emit("input", event.target.value);
+      this.$emit("input", this.$refs.input.value);
     }
   }
 };

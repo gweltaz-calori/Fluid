@@ -2,17 +2,24 @@
     <div class="panel">
       <div class="title">Slides</div>
       <fluid-scrollable-container height="100%" class="slides">
-        <editor-slide v-for="item in 30" :key="item"></editor-slide>
+        <editor-slide @click.native="setSelectedFrame(index)" v-for="(slide,index) in slides" :key="slide.id" :selected="currentSlide.id == slide.id"></editor-slide>
       </fluid-scrollable-container>
     </div>
 </template>
 
 <script>
+import { mapGetters, mapActions } from "vuex";
 import EditorSlide from "@/components/other/EditorSlide.vue";
 
 export default {
   components: {
     EditorSlide
+  },
+  computed: {
+    ...mapGetters(["slides", "currentSlide"])
+  },
+  methods: {
+    ...mapActions(["setSelectedFrame"])
   }
 };
 </script>

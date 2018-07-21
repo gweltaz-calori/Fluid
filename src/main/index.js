@@ -21,8 +21,8 @@ if (process.env.NODE_ENV !== "development") {
     .join(__dirname, "/static")
     .replace(/\\/g, "\\\\");
 }
-const menu = Menu.buildFromTemplate(template);
-Menu.setApplicationMenu(menu);
+/* const menu = Menu.buildFromTemplate(template);
+Menu.setApplicationMenu(menu); */
 
 let mainWindow;
 const winURL =

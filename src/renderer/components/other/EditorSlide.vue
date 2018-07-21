@@ -1,9 +1,15 @@
 <template>
-    <div class="slide"></div>
+    <div class="slide" :class="{'selected':selected}"></div>
 </template>
 
 <script>
-export default {};
+export default {
+  props: {
+    selected: {
+      default: false
+    }
+  }
+};
 </script>
 
 <style scoped>
@@ -12,6 +18,11 @@ export default {};
   height: 80px;
 
   background: #ffffff;
+  opacity: 0.1;
   border-radius: 4px;
+}
+
+.slide.selected {
+  opacity: 1;
 }
 </style>
