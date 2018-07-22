@@ -2,7 +2,7 @@
     <div class="panel">
       <div class="title">Slides</div>
       <fluid-scrollable-container height="100%" class="slides">
-        <editor-slide @click.native="setSelectedFrame(index)" v-for="(slide,index) in slides" :key="slide.id" :selected="currentSlide.id == slide.id"></editor-slide>
+        <editor-slide :slide="slide" @click.native="setSelectedFrame(index)" v-for="(slide,index) in slides" :key="slide.id" :selected="currentSlide.id == slide.id"></editor-slide>
       </fluid-scrollable-container>
     </div>
 </template>

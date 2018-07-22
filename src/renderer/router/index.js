@@ -3,6 +3,7 @@ import Router from "vue-router";
 
 import Home from "@/components/pages/Home.vue";
 import Editor from "@/components/pages/Editor.vue";
+import Player from "@/components/pages/Player.vue";
 import EditorLoader from "@/components/pages/EditorLoader.vue";
 
 Vue.use(Router);
@@ -13,6 +14,11 @@ export default new Router({
       name: "Home",
       component: Home,
       path: "/"
+    },
+    {
+      name: "Player",
+      component: Player,
+      path: "/play"
     },
     {
       name: "Editor",

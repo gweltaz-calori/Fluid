@@ -25,8 +25,7 @@ export default {
     ...mapActions(["setFrames"]),
     animateLoaderIn() {
       TweenMax.to(this.$refs.loader, 2, {
-        opacity: 1,
-        y: 0
+        opacity: 1
       });
       TweenMax.to(this.$refs.loader, 1, {
         ease: Linear.easeNone,
@@ -105,6 +104,5 @@ export default {
 
 .loader {
   opacity: 0;
-  transform: translateY(20px);
 }
 </style>

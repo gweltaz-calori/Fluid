@@ -1,28 +1,25 @@
 import { app, BrowserWindow, Menu } from "electron";
+import { openFile, saveFile, saveAsFile } from "./menuEvents";
+import "./events";
 
 const template = [
   {
     label: "File",
     submenu: [
-      { label: "Open", accelerator: "CmdOrCtrl+O" },
-      { label: "Save", accelerator: "CmdOrCtrl+S" },
-      { label: "Save As", accelerator: "Shift+CmdOrCtrl+S" },
+      { label: "Open", accelerator: "CmdOrCtrl+O", click: openFile },
+      { label: "Save", accelerator: "CmdOrCtrl+S", click: saveFile },
+      { label: "Save As", accelerator: "Shift+CmdOrCtrl+S", click: saveAsFile },
       { role: "close", label: "Exit" }
     ]
   }
 ];
 
-/**
- * Set `__static` path to static files in production
- * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
- */
 if (process.env.NODE_ENV !== "development") {
   global.__static = require("path")
     .join(__dirname, "/static")
     .replace(/\\/g, "\\\\");
 }
-/* const menu = Menu.buildFromTemplate(template);
-Menu.setApplicationMenu(menu); */
+const menu = Menu.buildFromTemplate(template);
 
 let mainWindow;
 const winURL =
@@ -31,9 +28,6 @@ const winURL =
     : `file://${__dirname}/index.html`;
 
 function createWindow() {
-  /**
-   * Initial window options
-   */
   mainWindow = new BrowserWindow({
     height: 563,
     useContentSize: true,
@@ -41,8 +35,14 @@ function createWindow() {
     backgroundColor: "#131313",
     webPreferences: {
       webSecurity: false
-    }
+    },
+    show: false
   });
+
+  mainWindow.setMenu(menu);
+
+  mainWindow.maximize();
+  mainWindow.show();
 
   mainWindow.loadURL(winURL);
 

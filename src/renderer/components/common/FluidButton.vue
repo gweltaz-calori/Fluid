@@ -1,19 +1,19 @@
 <template>
     <a class="button" :class="[theme,{'disabled':disabled}]" v-if="href" href="">
         <span><slot></slot></span>
-        <span class="button-icon">
+        <span v-if="$slots.icon" class="button-icon">
           <slot name="icon"></slot>
         </span>
     </a>
     <router-link :to="to" :class="[theme,{'disabled':disabled}]" class="button" v-else-if="to">
         <span><slot></slot></span>
-        <span class="button-icon">
+        <span v-if="$slots.icon" class="button-icon">
           <slot name="icon"></slot>
         </span>
     </router-link>
     <button :class="[theme,{'disabled':disabled}]" class="button" v-else>
         <span><slot></slot></span>
-        <span class="button-icon">
+        <span v-if="$slots.icon" class="button-icon">
           <slot name="icon"></slot>
         </span>
     </button>

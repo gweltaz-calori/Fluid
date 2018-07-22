@@ -6,13 +6,13 @@
       <input placeholder="file name" type="text">
       <div class="right-actions">
         <fluid-text-button>Export</fluid-text-button>
-        <fluid-text-button :icon="PlayIcon" focus="true">Play</fluid-text-button>
+        <fluid-text-button @click.native="enterPlayerMode" :icon="PlayIcon" focus="true">Play</fluid-text-button>
       </div>
     </div>
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 import PlayIcon from "@/assets/icons/play.svg";
 
 export default {
@@ -31,6 +31,9 @@ export default {
       }
     },
     ...mapGetters(["availableZoomLevels"])
+  },
+  methods: {
+    ...mapActions(["enterPlayerMode"])
   }
 };
 </script>

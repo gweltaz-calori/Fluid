@@ -2,12 +2,21 @@
     <div ref="panel" class="panel">
         <div :style="{'transform':`scale(${this.zoomLevel / 100})`}" ref="canvas" class="canvas" v-html="currentSlide.svg"></div>
         <editor-layer-selection-outline 
-        
-        :transform="selectionBounds.transform"
-        :top="selectionBounds.top" 
-        :left="selectionBounds.left" 
-        :height="selectionBounds.height"
-        :width="selectionBounds.width">
+        v-if="hoveredDomElement !== null"
+        :transform="hoverSelectionBounds.transform"
+        :top="hoverSelectionBounds.top" 
+        :left="hoverSelectionBounds.left" 
+        :height="hoverSelectionBounds.height"
+        :width="hoverSelectionBounds.width">
+      </editor-layer-selection-outline>
+
+      <editor-layer-selection-outline 
+        v-if="selectedDomElement"
+        :transform="clickSelectionBounds.transform"
+        :top="clickSelectionBounds.top" 
+        :left="clickSelectionBounds.left" 
+        :height="clickSelectionBounds.height"
+        :width="clickSelectionBounds.width">
       </editor-layer-selection-outline>
     </div>
 </template>
@@ -24,14 +33,23 @@ export default {
       y: 9,
       margin: 10,
       isHovering: false,
-      selectionBounds: {
+      isSelected: false,
+      hoverSelectionBounds: {
         top: 0,
         left: 0,
         width: 0,
         height: 0,
         transform: {}
       },
-      hoveredDomElement: null
+      clickSelectionBounds: {
+        top: 0,
+        left: 0,
+        width: 0,
+        height: 0,
+        transform: {}
+      },
+      hoveredDomElement: null,
+      selectedDomElement: null
     };
   },
   computed: {
@@ -58,7 +76,31 @@ export default {
       this.setHeight();
     },
     onSvgClick(e) {
-      //console.log(e.target);
+      if (
+        e.target === this.$refs.canvas.children[0] ||
+        this.selectedDomElement === e.target
+      ) {
+        return;
+      }
+      this.selectedDomElement = e.target;
+
+      let bounds = e.target.getBBox();
+
+      this.clickSelectionBounds.top = bounds.y;
+      this.clickSelectionBounds.left = bounds.x;
+      this.clickSelectionBounds.width = bounds.width;
+      this.clickSelectionBounds.height = bounds.height;
+      this.clickSelectionBounds.transform = e.target.getScreenCTM();
+    },
+    onSvgClickOut(event) {
+      if (!this.selectedDomElement) return;
+
+      let isClickInside = this.selectedDomElement.contains(event.target);
+
+      if (!isClickInside) {
+        console.log("clicked outside element");
+        this.selectedDomElement = null;
+      }
     },
     onSvgMouseEnter() {
       this.isHovering = true;
@@ -75,23 +117,34 @@ export default {
       );
     },
     onSvgMouseMove(e) {
-      if (this.hoveredDomElement === e.target) return;
+      if (this.hoveredDomElement === e.target) {
+        return;
+      }
+      //element changed reset the hovered
+      this.hoveredDomElement = null;
+
+      //check that the target is not the svg root
+      if (e.target === this.$refs.canvas.children[0]) {
+        return;
+      }
 
       this.hoveredDomElement = e.target;
 
-      let bounds = e.target.getBoundingClientRect();
+      let bounds = e.target.getBBox();
 
-      this.selectionBounds.top = bounds.top;
-      this.selectionBounds.left = bounds.left;
-      this.selectionBounds.width = bounds.width;
-      this.selectionBounds.height = bounds.height;
-      this.selectionBounds.transform = e.target.getCTM();
+      this.hoverSelectionBounds.top = bounds.y;
+      this.hoverSelectionBounds.left = bounds.x;
+      this.hoverSelectionBounds.width = bounds.width;
+      this.hoverSelectionBounds.height = bounds.height;
+      this.hoverSelectionBounds.transform = e.target.getScreenCTM();
     },
     addingSvgEvents() {
+      this.parseNode(this.$refs.canvas.children[0]);
       this.x = this.$refs.canvas.children[0].clientWidth;
       this.y = this.$refs.canvas.children[0].clientHeight;
       this.$refs.canvas.children[0].style.width = "100%";
       this.$refs.canvas.children[0].style.height = "auto";
+      this.$refs.canvas.children[0].style.pointerEvents = " bounding-box";
       this.$refs.canvas.children[0].addEventListener(
         "click",
         this.onSvgClick.bind(this)
@@ -126,10 +179,32 @@ export default {
         "mouseleave",
         this.onSvgMouseLeave.bind(this)
       );
+    },
+    parseNode(node) {
+      let width = node.getAttributeNS(null, "width");
+      let height = node.getAttributeNS(null, "height");
+
+      if (
+        parseFloat(width) >=
+          parseFloat(
+            this.$refs.canvas.children[0].getAttributeNS(null, "width")
+          ) &&
+        parseFloat(height) >=
+          parseFloat(
+            this.$refs.canvas.children[0].getAttributeNS(null, "height")
+          )
+      ) {
+        node.style.pointerEvents = "none"; //disable events for layers that are bigger than the frame
+      }
+
+      for (let child of node.children) {
+        this.parseNode(child);
+      }
     }
   },
   beforeDestroy() {
     window.removeEventListener("resize", this.onResize);
+    document.removeEventListener("click", this.onSvgClickOut);
     this.removingSvgEvents();
   },
   beforeUpdate() {
@@ -143,6 +218,7 @@ export default {
   },
   mounted() {
     window.addEventListener("resize", this.onResize);
+    document.addEventListener("click", this.onSvgClickOut);
 
     this.addingSvgEvents();
     this.setWidth();

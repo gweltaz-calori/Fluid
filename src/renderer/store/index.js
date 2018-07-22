@@ -1,5 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import { ipcRenderer } from "electron";
 
 const state = {
   editor: {
@@ -400,7 +401,9 @@ const state = {
       animationsIn: [],
       animationsOut: [],
       urls: []
-    }
+    },
+    hasChanges: false,
+    isPlaying: false
   }
 };
 
@@ -468,6 +471,9 @@ const mutations = {
   },
   SET_SELECTED_FRAME(state, index) {
     state.editor.selectedFrame = state.editor.frames[index];
+  },
+  ENTERING_PLAY_MODE(state) {
+    state.editor.isPlaying = true;
   }
 };
 
@@ -510,6 +516,10 @@ const actions = {
   },
   setSelectedFrame({ commit }, index) {
     commit("SET_SELECTED_FRAME", index);
+  },
+  enterPlayerMode({ commit }) {
+    commit("ENTERING_PLAY_MODE");
+    ipcRenderer.send("ENTERING_PLAY_MODE");
   }
 };
 

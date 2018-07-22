@@ -3,6 +3,7 @@
 </template>
 
 <script>
+import SuperMath from "@/js/math";
 export default {
   props: {
     top: {
@@ -17,20 +18,21 @@ export default {
   },
   computed: {
     style() {
-      console.log(this.transform);
-      console.log(
-        `matrix(${this.transform.a},${this.transform.b},${this.transform.c},${
-          this.transform.d
-        },${this.transform.e},${this.transform.f})`
+      let angle = Math.round(
+        SuperMath.toDegrees(Math.atan2(this.transform.b, this.transform.a))
       );
+
       return {
-        top: `${this.top}px`,
-        left: `${this.left}px`,
+        top: `0px`,
+        left: `0px`,
         width: `${this.width}px`,
         height: `${this.height}px`,
+        transformOrigin: "0 0",
         transform: `matrix(${this.transform.a},${this.transform.b},${
           this.transform.c
-        },${this.transform.d},0,0)`
+        },${this.transform.d},${this.transform.e},${
+          this.transform.f
+        }) translate(${this.left}px,${this.top}px)`
       };
     }
   }
