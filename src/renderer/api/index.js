@@ -67,6 +67,7 @@ export const getImages = async (key, frames) => {
     },
     params: {
       format: "svg",
+      svg_include_id: true,
       ids: frames
         .map(frame => {
           return frame.id;

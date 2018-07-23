@@ -98,7 +98,6 @@ export default {
       let isClickInside = this.selectedDomElement.contains(event.target);
 
       if (!isClickInside) {
-        console.log("clicked outside element");
         this.selectedDomElement = null;
       }
     },

@@ -39,6 +39,7 @@ export default {
   font-size: 11px;
   text-transform: uppercase;
   text-align: center;
+  cursor: pointer;
 
   color: rgba(255, 255, 255, 0.5);
 }

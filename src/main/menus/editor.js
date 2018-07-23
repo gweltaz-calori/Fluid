@@ -1,4 +1,5 @@
-import { dialog, ipcMain } from "electron";
+import { Menu } from "electron";
+
 export const openFile = () => {
   dialog.showOpenDialog(
     {
@@ -7,7 +8,6 @@ export const openFile = () => {
     },
     filePath => {
       if (!filePath) return;
-      ipcMain.send("ON_FILE_OPENED", filePath[0]);
     }
   );
 };
@@ -18,8 +18,19 @@ export const saveFile = () => {
     },
     filePath => {
       if (!filePath) return;
-      ipcMain.send("ON_FILE_SAVED", filePath);
     }
   );
 };
 export const saveAsFile = () => {};
+
+export default Menu.buildFromTemplate([
+  {
+    label: "File",
+    submenu: [
+      { label: "Open", accelerator: "CmdOrCtrl+O", click: openFile },
+      { label: "Save", accelerator: "CmdOrCtrl+S", click: saveFile },
+      { label: "Save As", accelerator: "Shift+CmdOrCtrl+S", click: saveAsFile },
+      { role: "close", label: "Exit" }
+    ]
+  }
+]);
