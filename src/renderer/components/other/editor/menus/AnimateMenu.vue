@@ -94,7 +94,7 @@ export default {
     return {};
   },
   computed: {
-    ...mapGetters(["selectedLayer"]),
+    ...mapGetters(["fluid"]),
     availableAnimations() {
       return AVAILAIBLE_ANIMATION_PROPERTIES;
     },
@@ -104,10 +104,10 @@ export default {
     animations() {
       switch (this.animationType) {
         case AnimationType.ANIMATE_IN:
-          return this.selectedLayer.animationsIn;
+          return this.fluid.animationsIn;
           break;
         case AnimationType.ANIMATE_OUT:
-          return this.selectedLayer.animationsOut;
+          return this.fluid.animationsOut;
           break;
       }
     }

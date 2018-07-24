@@ -1744,13 +1744,15 @@ const state = {
       }
     ],
     selectedFrame: null,
-    selectedLayer: {
+    fluid: {
       videos: [],
       audios: [],
       animationsIn: [],
       animationsOut: [],
       urls: []
     },
+    hightlightedLayer: {},
+    currentSelectedLayer: {},
     hasChanges: false,
     isPlaying: false
   }
@@ -1761,59 +1763,57 @@ const mutations = {
     state.editor.settings.zoomLevel = value;
   },
   SET_VIDEO_PROPERTY(state, layer) {
-    state.editor.selectedLayer.videos[layer.index][layer.key] = layer.value;
+    state.editor.fluid.videos[layer.index][layer.key] = layer.value;
   },
   SET_AUDIO_PROPERTY(state, layer) {
-    state.editor.selectedLayer.audios[layer.index][layer.key] = layer.value;
+    state.editor.fluid.audios[layer.index][layer.key] = layer.value;
   },
   ADD_VIDEO(state, video) {
-    state.editor.selectedLayer.videos.push(video);
+    state.editor.fluid.videos.push(video);
   },
   ADD_ANIMATION_IN(state, animation) {
-    state.editor.selectedLayer.animationsIn.push(animation);
+    state.editor.fluid.animationsIn.push(animation);
   },
   ADD_ANIMATION_OUT(state, animation) {
-    state.editor.selectedLayer.animationsOut.push(animation);
+    state.editor.fluid.animationsOut.push(animation);
   },
   ADD_AUDIO(state, audio) {
-    state.editor.selectedLayer.audios.push(audio);
+    state.editor.fluid.audios.push(audio);
   },
   REMOVE_VIDEO(state) {
-    state.editor.selectedLayer.videos.pop();
+    state.editor.fluid.videos.pop();
   },
   REMOVE_AUDIO(state) {
-    state.editor.selectedLayer.audios.pop();
+    state.editor.fluid.audios.pop();
   },
   REMOVE_ANIMATION_IN(state, index) {
     if (index !== undefined && index !== null) {
-      state.editor.selectedLayer.animationsIn.splice(index, 1);
+      state.editor.fluid.animationsIn.splice(index, 1);
     } else {
-      state.editor.selectedLayer.animationsIn.pop();
+      state.editor.fluid.animationsIn.pop();
     }
   },
   REMOVE_ANIMATION_OUT(state, index) {
     if (index !== undefined && index !== null) {
-      state.editor.selectedLayer.animationsOut.splice(index, 1);
+      state.editor.fluid.animationsOut.splice(index, 1);
     } else {
-      state.editor.selectedLayer.animationsOut.pop();
+      state.editor.fluid.animationsOut.pop();
     }
   },
   SET_ANIMATION_IN_PROPERTY(state, layer) {
-    state.editor.selectedLayer.animationsIn[layer.index][layer.key] =
-      layer.value;
+    state.editor.fluid.animationsIn[layer.index][layer.key] = layer.value;
   },
   SET_ANIMATION_OUT_PROPERTY(state, layer) {
-    state.editor.selectedLayer.animationsOut[layer.index][layer.key] =
-      layer.value;
+    state.editor.fluid.animationsOut[layer.index][layer.key] = layer.value;
   },
   ADD_URL(state, url) {
-    state.editor.selectedLayer.urls.push(url);
+    state.editor.fluid.urls.push(url);
   },
   REMOVE_URL(state) {
-    state.editor.selectedLayer.urls.pop();
+    state.editor.fluid.urls.pop();
   },
   SET_URL_PROPERTY(state, layer) {
-    state.editor.selectedLayer.urls[layer.index]["websiteUrl"] = layer.value;
+    state.editor.fluid.urls[layer.index]["websiteUrl"] = layer.value;
   },
   SET_FRAMES(state, frames) {
     state.editor.frames = frames;
@@ -1824,13 +1824,22 @@ const mutations = {
   ENTERING_PLAY_MODE(state) {
     state.editor.isPlaying = true;
   },
-  TOGGLE_LAYER_VISIBILITY(state, value) {}
+  TOGGLE_LAYER_VISIBILITY(state) {
+    if (state.editor.hightlightedLayer.visible === undefined) {
+      Vue.set(state.editor.hightlightedLayer, "visible", true);
+    }
+    state.editor.hightlightedLayer.visible = !state.editor.hightlightedLayer
+      .visible;
+  },
+  SET_CURRENT_HIGHLIGHTED_LAYER(state, layer) {
+    state.editor.hightlightedLayer = layer;
+  },
+  SET_CURRENT_SELECTED_LAYER(state, layer) {
+    state.editor.currentSelectedLayer = layer;
+  }
 };
 
 const actions = {
-  setSelectedLayer({ commit }, layer) {
-    commit("setSelectedLayer", layer);
-  },
   addVideo({ commit }, data) {
     commit("ADD_VIDEO", data);
   },
@@ -1871,16 +1880,23 @@ const actions = {
     commit("ENTERING_PLAY_MODE");
     ipcRenderer.send("ENTERING_PLAY_MODE");
   },
-  toggleLayerVisibility({ commit }, value) {
-    commit("TOGGLE_LAYER_VISIBILITY", value);
+  toggleLayerVisibility({ commit }) {
+    commit("TOGGLE_LAYER_VISIBILITY");
+  },
+  setCurrentHighlightedLayer({ commit }, layer) {
+    commit("SET_CURRENT_HIGHLIGHTED_LAYER", layer);
+  },
+  setCurrentSelectedLayer({ commit }, layer) {
+    commit("SET_CURRENT_SELECTED_LAYER", layer);
   }
 };
 
 const getters = {
   availableZoomLevels: state => state.editor.settings.availableZoomLevels,
   zoomLevel: state => state.editor.settings.zoomLevel,
-  selectedLayer: state => state.editor.selectedLayer,
+  fluid: state => state.editor.fluid,
   slides: state => state.editor.frames,
+  currentSelectedLayer: state => state.editor.currentSelectedLayer,
   currentSlide: state => state.editor.selectedFrame
 };
 

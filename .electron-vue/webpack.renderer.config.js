@@ -97,6 +97,10 @@ let rendererConfig = {
             name: "fonts/[name]--[folder].[ext]"
           }
         }
+      },
+      {
+        test: /\.worker\.js$/,
+        use: { loader: "worker-loader" }
       }
     ]
   },
@@ -167,7 +171,15 @@ if (process.env.NODE_ENV === "production") {
       "process.env.NODE_ENV": '"production"'
     }),
     new webpack.LoaderOptionsPlugin({
-      minimize: true
+      minimize: true,
+      options: {
+        worker: {
+          output: {
+            filename: "thread-worker.js",
+            chunkFilename: "[id].thread-worker.js"
+          }
+        }
+      }
     })
   );
 }

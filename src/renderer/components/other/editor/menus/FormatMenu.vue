@@ -4,7 +4,7 @@
               <editor-property-header>
                 <editor-property-title>{{MediaName.VIDEO}}</editor-property-title>
                 <editor-property-actions>
-                  <editor-property-action v-if="selectedLayer.videos.length > 0 " @click.native="removeMedia(MediaName.VIDEO)">
+                  <editor-property-action v-if="fluid.videos.length > 0 " @click.native="removeMedia(MediaName.VIDEO)">
                     <fluid-icon-minus></fluid-icon-minus>
                   </editor-property-action>
                   <editor-property-action v-else @click.native="addMedia(MediaName.VIDEO)">
@@ -12,8 +12,8 @@
                   </editor-property-action>
                 </editor-property-actions>
               </editor-property-header>
-              <editor-property-content v-show="selectedLayer.videos.length > 0 ">
-                <editor-sub-property v-for="(videoMedia,index) in selectedLayer.videos" :key="videoMedia.source">
+              <editor-property-content v-show="fluid.videos.length > 0 ">
+                <editor-sub-property v-for="(videoMedia,index) in fluid.videos" :key="videoMedia.source">
                   <editor-sub-property-row>
                     <fluid-file-uploader @input="setMediaValue(MediaName.VIDEO,index,'source',$event)" :value="videoMedia.source" :filters="[{ name: 'Videos', extensions: ['webm', 'mp4'] }]"></fluid-file-uploader>
                     <fluid-player-controls :playing="videoMedia.isPlaying"></fluid-player-controls> 
@@ -33,7 +33,7 @@
               <editor-property-header>
                 <editor-property-title>{{MediaName.AUDIO}}</editor-property-title>
                 <editor-property-actions>
-                  <editor-property-action v-if="selectedLayer.audios.length > 0 " @click.native="removeMedia(MediaName.AUDIO)">
+                  <editor-property-action v-if="fluid.audios.length > 0 " @click.native="removeMedia(MediaName.AUDIO)">
                     <fluid-icon-minus></fluid-icon-minus>
                   </editor-property-action>
                   <editor-property-action v-else @click.native="addMedia(MediaName.AUDIO)">
@@ -41,8 +41,8 @@
                   </editor-property-action>
                 </editor-property-actions>
               </editor-property-header>
-              <editor-property-content v-show="selectedLayer.audios.length > 0 ">
-                <editor-sub-property v-for="(media,index) in selectedLayer.audios" :key="media.source">
+              <editor-property-content v-show="fluid.audios.length > 0 ">
+                <editor-sub-property v-for="(media,index) in fluid.audios" :key="media.source">
                   <editor-sub-property-row>
                     <fluid-file-uploader @input="setMediaValue(MediaName.AUDIO,index,'source',$event)" :value="media.source" :filters="[{ name: 'Audios', extensions: ['mp3', 'wav','ogg'] }]"></fluid-file-uploader>
                     <fluid-player-controls :playing="media.isPlaying"></fluid-player-controls> 
@@ -62,7 +62,7 @@
               <editor-property-header>
                 <editor-property-title>{{FormatType.URL}}</editor-property-title>
                 <editor-property-actions>
-                  <editor-property-action v-if="selectedLayer.urls.length > 0 " @click.native="removeUrl()">
+                  <editor-property-action v-if="fluid.urls.length > 0 " @click.native="removeUrl()">
                     <fluid-icon-minus></fluid-icon-minus>
                   </editor-property-action>
                   <editor-property-action v-else @click.native="addFormatUrl()">
@@ -70,8 +70,8 @@
                   </editor-property-action>
                 </editor-property-actions>
               </editor-property-header>
-              <editor-property-content v-show="selectedLayer.urls.length > 0 ">
-                <editor-sub-property v-for="(url,index) in selectedLayer.urls" :key="url.websiteUrl">
+              <editor-property-content v-show="fluid.urls.length > 0 ">
+                <editor-sub-property v-for="(url,index) in fluid.urls" :key="url.websiteUrl">
                  <fluid-input :value="url.websiteUrl" @input="setUrlValue(index,$event)" placeholder="website url"></fluid-input>
                 </editor-sub-property>
               </editor-property-content>
@@ -119,7 +119,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["selectedLayer"])
+    ...mapGetters(["fluid"])
   },
   methods: {
     ...mapActions([
