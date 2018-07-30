@@ -12,7 +12,7 @@
   width: 24.44px;
   height: 24.44px;
   border-radius: 50%;
-  cursor: pointer;
+  cursor: default;
   background: rgba(255, 255, 255, 0.14);
 }
 </style>

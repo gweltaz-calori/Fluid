@@ -20,16 +20,16 @@
                     </editor-sub-property-row>
                     <editor-sub-property-row>
                         <editor-sub-property-row-name>Value</editor-sub-property-row-name>
-                        <editor-sub-property-row-value fallback-value="min" :max="Infinity" :unit="animation.property.unit" @input="setAnimationValue(index,'value',$event)" :value="animation.value" type="editbox"></editor-sub-property-row-value>
+                        <editor-sub-property-row-value fallback-value="min" :max="Infinity" :formatter="animation.property.formatter" @input="setAnimationValue(index,'value',$event)" :value="animation.value" type="range"></editor-sub-property-row-value>
                     </editor-sub-property-row>
                     <editor-sub-property-row>
                         <editor-sub-property-row-name >Duration</editor-sub-property-row-name>
-                        <editor-sub-property-row-value fallback-value="min" :max="Infinity" unit="s" @input="setAnimationValue(index,'duration',$event)" :value="animation.duration" type="editbox"></editor-sub-property-row-value>
+                        <editor-sub-property-row-value fallback-value="min" :max="Infinity" :formatter="secondFormatter" @input="setAnimationValue(index,'duration',$event)" :value="animation.duration" type="range"></editor-sub-property-row-value>
                     </editor-sub-property-row>
                     
                     <editor-sub-property-row>
                         <editor-sub-property-row-name>Delay</editor-sub-property-row-name>
-                        <editor-sub-property-row-value fallback-value="min" :max="Infinity" unit="s" :options="availableAnimations" @input="setAnimationValue(index,'delay',$event)" :value="animation.delay" type="editbox"></editor-sub-property-row-value>
+                        <editor-sub-property-row-value fallback-value="min" :max="Infinity" :formatter="secondFormatter" :options="availableAnimations" @input="setAnimationValue(index,'delay',$event)" :value="animation.delay" type="range"></editor-sub-property-row-value>
                         
                     </editor-sub-property-row>
                     <editor-sub-property-row>
@@ -53,6 +53,7 @@
 </template>
 
 <script>
+import SecondFormatter from "@/formatter/SecondFormatter";
 import {
   Animation,
   AnimationType,
@@ -91,7 +92,9 @@ export default {
     EditorSubPropertyActions
   },
   data() {
-    return {};
+    return {
+      secondFormatter: new SecondFormatter()
+    };
   },
   computed: {
     ...mapGetters(["fluid"]),

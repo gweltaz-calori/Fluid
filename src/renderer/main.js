@@ -1,6 +1,10 @@
 import Vue from "vue";
 import axios from "axios";
 
+import "./events";
+
+import AngleFormatter from "./formatter/AngleFormatter";
+
 import "@/components/common/common";
 import "@/components/icons/icons";
 import App from "./App";

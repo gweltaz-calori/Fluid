@@ -22,7 +22,7 @@ export default {
     EditorCanvasPanel
   },
   methods: {
-    ...mapActions(["setSelectedFrame"])
+    ...mapActions(["setSelectedFrame", "slides"])
   },
   beforeMount() {
     this.setSelectedFrame(0);

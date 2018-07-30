@@ -39,12 +39,16 @@ export default {
   font-size: 11px;
   text-transform: uppercase;
   text-align: center;
-  cursor: pointer;
-
+  cursor: default;
+  transition: color 0.05s;
   color: rgba(255, 255, 255, 0.5);
 }
 .button.focus {
   color: #ffffff;
+}
+
+.button:hover {
+  color: rgba(255, 255, 255, 1);
 }
 
 img {

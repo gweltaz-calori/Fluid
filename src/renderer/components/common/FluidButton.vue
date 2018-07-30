@@ -47,7 +47,7 @@ export default {
   line-height: normal;
   font-size: 13.1323px;
   text-align: center;
-  cursor: pointer;
+  cursor: default;
 
   color: rgba(255, 255, 255, 0.84);
   background: rgba(169, 169, 169, 0.07);

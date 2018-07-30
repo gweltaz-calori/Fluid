@@ -18,5 +18,6 @@ export default {};
   margin-right: 21px;
 
   color: rgba(255, 255, 255, 0.5);
+  width: 44px;
 }
 </style>

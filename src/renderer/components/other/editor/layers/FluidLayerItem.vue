@@ -23,7 +23,7 @@
             </div>
           </div>
           <div :class="{'disabled':layer.visible === false}" class="layer-content" v-if="isContainer && open">
-              <fluid-layer-item :indent-level="indentLevel+1" :is-parent-selected="isCurrentSelectedLayer" v-for="(subLayer, index) in layer.children" :layer="subLayer" :key="subLayer.id"></fluid-layer-item>
+              <fluid-layer-item :indent-level="indentLevel+1" :is-parent-selected="isCurrentSelectedLayer" v-for="(subLayer) in layer.children" :layer="subLayer" :key="subLayer.id"></fluid-layer-item>
           </div>
         </span>
     </div>

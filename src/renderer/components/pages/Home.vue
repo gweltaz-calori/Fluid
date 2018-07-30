@@ -3,11 +3,11 @@
         <fluid-animated-logo class="logo"></fluid-animated-logo>
         <fluid-big-title class="info"></fluid-big-title>
         <fluid-button-input v-model="figmaLinkUrl" class="figma-import-button" v-if="linkInputActive" placeholder="PASTE FIGMA LINK">
-          <fluid-input-button-action @click.native="checkFigmaLink">
+          <fluid-input-button-action  @click.native="checkFigmaLink">
             <fluid-icon-arrow ></fluid-icon-arrow>
           </fluid-input-button-action>
         </fluid-button-input>
-        <fluid-button v-else @click.native="toggleInput" class="figma-import-button">
+        <fluid-button ref="buttonInput" v-else @click.native="toggleInput" class="figma-import-button">
           import from figma
           <fluid-icon-figma slot="icon"></fluid-icon-figma>
         </fluid-button>
@@ -44,6 +44,11 @@ export default {
     },
     toggleInput() {
       this.linkInputActive = !this.linkInputActive;
+    }
+  },
+  mounted() {
+    if (this.$route.params.fromMenu) {
+      this.$refs.buttonInput.$el.click();
     }
   }
 };

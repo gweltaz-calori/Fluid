@@ -31,7 +31,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  cursor: pointer;
+  cursor: default;
 
   font-family: Exo;
   font-style: normal;
@@ -47,10 +47,15 @@ export default {
   background: transparent;
   margin: 0 2px;
   user-select: none;
+  transition: color 0.15s;
 }
 
 .menu-option.active {
   color: rgba(255, 255, 255, 0.84);
   background: rgba(169, 169, 169, 0.07);
+}
+
+.menu-option:hover {
+  color: rgba(255, 255, 255, 1);
 }
 </style>

@@ -17,7 +17,7 @@ import { TweenMax } from "gsap/TweenMax";
 export default {
   data() {
     return {
-      steps: ["ALMOST READY", "CREATING IMAGES", "FETCHING FRAMES"],
+      steps: ["ALMOST READY", "CREATING SLIDES", "FETCHING FRAMES"],
       currentStep: null
     };
   },

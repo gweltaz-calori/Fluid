@@ -1,6 +1,7 @@
 <template>
     <div class="layers">
-        <fluid-layer-item :layer="currentSlide"></fluid-layer-item>
+        <fluid-layer-item v-if="currentSlide.id" :layer="currentSlide"></fluid-layer-item>
+        <fluid-text-info class="layers-info" v-else>No layers found</fluid-text-info>
     </div>
 </template>
 
@@ -17,4 +18,9 @@ export default {
 </script>
 
 <style scoped>
+.layers-info {
+  display: flex;
+  text-align: center;
+  justify-content: center;
+}
 </style>

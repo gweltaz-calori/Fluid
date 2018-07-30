@@ -1,6 +1,7 @@
 <template>
     <div class="property-action" :class="{'visible':visible}">
         <slot></slot> 
+        <div class="property-action-background"></div>
     </div>
 </template>
 
@@ -19,13 +20,29 @@ export default {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
+  cursor: default;
   margin-left: 10px;
   height: 24px;
   width: 24px;
 
   pointer-events: none;
   opacity: 0;
+  position: relative;
+}
+
+.property-action-background {
+  position: absolute;
+  background-color: rgba(169, 169, 169, 0.04);
+  border-radius: 39px;
+  padding: 15px;
+  height: 100%;
+  width: 100%;
+  opacity: 0;
+  transition: opacity 0.05s;
+}
+
+.property-action-background:hover {
+  opacity: 1;
 }
 
 .property-action.visible {

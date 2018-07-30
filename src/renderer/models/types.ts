@@ -1,3 +1,5 @@
+import PixelFormatter from "../formatter/PixelFormatter";
+
 class Media {
   protected source: String = null;
   protected volume: Number = 1;
@@ -25,18 +27,19 @@ enum AnimationPropertyType {
   SCALE = "Scale"
 }
 
-enum PropertyUnit {
-  PX = "px"
-}
-
 class AnimationProperty {
   name: String = "";
-  unit: String = "";
+  formatter?: Object;
   min: number = 0;
   max: number = Infinity;
-  constructor(name: String, min: number, max: number, unit: String = "") {
+  constructor(
+    name: String,
+    min: number,
+    max: number,
+    formatter: Object = null
+  ) {
     this.name = name;
-    this.unit = unit;
+    this.formatter = formatter;
     this.max = max;
     this.min = min;
   }
@@ -55,19 +58,19 @@ export const AVAILAIBLE_ANIMATION_PROPERTIES = [
     AnimationPropertyType.Y,
     -Infinity,
     Infinity,
-    PropertyUnit.PX
+    new PixelFormatter()
   ),
   new AnimationProperty(
     AnimationPropertyType.X,
     -Infinity,
     Infinity,
-    PropertyUnit.PX
+    new PixelFormatter()
   ),
   new AnimationProperty(
     AnimationPropertyType.Z,
     -Infinity,
     Infinity,
-    PropertyUnit.PX
+    new PixelFormatter()
   ),
   new AnimationProperty(AnimationPropertyType.SCALE, -Infinity, Infinity)
 ];
@@ -107,8 +110,7 @@ export class AudioMedia extends Media {
   static MAX_CHILDREN: number = 2;
 }
 
-
 export class FormatUrl {
-  websiteUrl:String = ""
+  websiteUrl: String = "";
   static MAX_CHILDREN: number = 1;
 }

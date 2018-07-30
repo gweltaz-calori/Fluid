@@ -25,6 +25,6 @@ export default {};
 }
 
 .property-container {
-  padding: 18px 30px;
+  padding: 12px 24px;
 }
 </style>

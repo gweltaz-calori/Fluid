@@ -31,6 +31,9 @@ export default {
     input(event) {
       this.$emit("input", event.target.value);
     }
+  },
+  mounted() {
+    this.focus();
   }
 };
 </script>
@@ -67,7 +70,7 @@ input {
   width: 24.44px;
   height: 24.44px;
   border-radius: 50%;
-  cursor: pointer;
+  cursor: default;
   background: rgba(255, 255, 255, 0.14);
 }
 </style>

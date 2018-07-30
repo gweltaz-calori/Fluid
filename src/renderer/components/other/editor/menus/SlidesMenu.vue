@@ -1,7 +1,8 @@
 <template>
-    <div class="slides">
+    <div v-if="slides.length > 0" class="slides">
         <editor-slide :slide="slide" @click.native="setSelectedFrame(index)" v-for="(slide,index) in slides" :key="slide.id" :selected="currentSlide.id == slide.id"></editor-slide>
     </div>
+    <fluid-text-info class="slides-info" v-else>No slides found</fluid-text-info>
 </template>
 
 <script>
@@ -30,5 +31,10 @@ export default {
 .slides {
   margin-top: 26px;
   height: 100%;
+}
+.slides-info {
+  display: flex;
+  text-align: center;
+  justify-content: center;
 }
 </style>

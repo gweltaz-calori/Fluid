@@ -17,18 +17,6 @@
     "postinstall": ""
   },
   "build": {
-    "fileAssociations ": [
-      {
-        "ext": "fluid",
-        "name": "Editor Fluid file",
-        "role": "Editor"
-      },
-      {
-        "ext": "pfluid",
-        "name": "Slideshow Fluid file",
-        "role": "Show"
-      }
-    ],
     "productName": "fluid",
     "appId": "org.simulatedgreg.electron-vue",
     "directories": {
