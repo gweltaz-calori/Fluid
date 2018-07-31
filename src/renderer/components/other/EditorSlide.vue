@@ -1,12 +1,10 @@
 <template>
-    <div class="slide" :class="{'selected':selected}">
-      <!-- <div ref="preview" v-html="slide.svg"></div> -->
-      <canvas ref="canvas"></canvas>
+    <div ref="slide" class="slide" :class="{'selected':selected}">
+      <div ref="canvas"></div>
     </div>
 </template>
 
 <script>
-import { rasterize } from "@/utils/svgRasterizer";
 export default {
   props: {
     selected: {
@@ -17,24 +15,19 @@ export default {
   data() {
     return {};
   },
+  methods: {
+    setScale() {
+      this.$refs.slide.style.transformOrigin = "top left";
+      this.$refs.slide.style.height = `${this.$el.clientWidth /
+        this.slide.absoluteBoundingBox.width *
+        this.slide.absoluteBoundingBox.height}px`;
+      this.$refs.slide.style.transform = `scale(${this.$el.clientWidth /
+        this.slide.absoluteBoundingBox.width})`;
+    }
+  },
   mounted() {
-    let ctx = this.$refs.canvas.getContext("2d");
-    rasterize(this.slide.svg).then(bitmap => {
-      this.$refs.canvas.width = this.$el.clientWidth;
-      this.$refs.canvas.height =
-        this.slide.absoluteBoundingBox.height *
-        this.$el.clientWidth /
-        this.slide.absoluteBoundingBox.width;
-      ctx.drawImage(
-        bitmap,
-        0,
-        0,
-        this.$el.clientWidth,
-        this.slide.absoluteBoundingBox.height *
-          this.$el.clientWidth /
-          this.slide.absoluteBoundingBox.width
-      );
-    });
+    this.setScale();
+    this.$refs.canvas.appendChild(this.slide.draw());
   }
 };
 </script>

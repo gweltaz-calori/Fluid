@@ -9,9 +9,7 @@ const state = {
       availableZoomLevels: [50, 75, 100]
     },
     frames: [],
-    selectedFrame: {
-      svg: ""
-    },
+    selectedFrame: {},
     fluid: {
       videos: [],
       audios: [],

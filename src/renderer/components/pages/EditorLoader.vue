@@ -12,8 +12,9 @@
 
 <script>
 import { mapActions } from "vuex";
-import { getFrames, getImages } from "@/api";
+import { getPages } from "@/api";
 import { TweenMax } from "gsap/TweenMax";
+import Importer from "@/importer/Importer";
 export default {
   data() {
     return {
@@ -51,12 +52,12 @@ export default {
   },
   async beforeMount() {
     this.currentStep = this.steps[2];
-    const frames = await getFrames(this.$route.params.key);
-
+    const pages = await getPages(this.$route.params.key);
     this.currentStep = this.steps[1];
-    const framesWithImages = await getImages(this.$route.params.key, frames);
+
+    let firstPage = Importer.loadPage(pages[0]);
     this.currentStep = this.steps[0];
-    this.setFrames(framesWithImages);
+    this.setFrames(firstPage.children);
     await this.animateLoaderOut();
     this.$router.push({
       name: "Editor"

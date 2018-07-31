@@ -1,6 +1,7 @@
 import axios from "axios";
-const sortFramesByPosition = frames => {
+const sortFramesOnPageByPosition = page => {
   let rows = [];
+  let frames = page.children.filter(layer => layer.type === "FRAME");
 
   for (let frame of frames) {
     let row = rows.find(row => {
@@ -43,63 +44,28 @@ const sortFramesByPosition = frames => {
     sortedFrames = sortedFrames.concat(sortedRow);
   }
 
-  return sortedFrames;
+  page.children = sortedFrames;
+
+  return page;
 };
 
-export const getFrames = async key => {
+export const getPages = async key => {
   let response = await axios({
     method: "GET",
     url: `https://api.figma.com/v1/files/${key}`,
     headers: {
       "X-Figma-Token": "2415-33f208e7-a549-4dcc-88f3-eeff30ca3a10"
-    }
-  });
-
-  return sortFramesByPosition(response.data.document.children[0].children);
-};
-
-export const getImages = async (key, frames) => {
-  let response = await axios({
-    method: "GET",
-    url: `https://api.figma.com/v1/images/${key}`,
-    headers: {
-      "X-Figma-Token": "2415-33f208e7-a549-4dcc-88f3-eeff30ca3a10"
     },
     params: {
-      format: "svg",
-      svg_include_id: true,
-      ids: frames
-        .map(frame => {
-          return frame.id;
-        })
-        .join(",")
+      geometry: "paths"
     }
   });
-  const imageUrls = response.data.images;
-  const promises = [];
 
-  for (let imageUrl in imageUrls) {
-    let promise = getImageContents(imageUrl, imageUrls[imageUrl]);
-    promises.push(promise);
+  let sortedPages = [];
+
+  for (let page of response.data.document.children) {
+    sortedPages.push(sortFramesOnPageByPosition(page));
   }
 
-  const svgContents = await Promise.all(promises);
-
-  for (let svgContent of svgContents) {
-    let frame = frames.find(frame => frame.id === svgContent.id);
-    frame.svg = svgContent.svg;
-  }
-
-  return frames;
-};
-
-export const getImageContents = async (imageId, imageUrl) => {
-  const response = await axios({
-    method: "GET",
-    url: imageUrl
-  });
-  return {
-    id: imageId,
-    svg: response.data
-  };
+  return sortedPages;
 };

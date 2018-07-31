@@ -1,10 +1,11 @@
 <template>
     <div ref="panel" class="panel">
-        <div :style="{'transform':`scale(${this.zoomLevel / 100})`}" ref="canvas" class="canvas" ></div>
+        <div  ref="canvas" class="canvas" ></div>
     </div>
 </template>
 
 <script>
+//:style="{'transform':`scale(${this.zoomLevel / 100})`}"
 import { mapGetters } from "vuex";
 import EditorLayerSelectionOutline from "@/components/other/EditorLayerSelectionOutline.vue";
 
@@ -21,27 +22,31 @@ export default {
     ...mapGetters(["zoomLevel", "currentSlide"])
   },
   watch: {
-    zoomLevel() {}
-  },
-  methods: {
-    setWidth() {
-      this.$refs.canvas.style.width = `${this.$el.clientWidth -
-        2 * this.margin}px`;
-    },
-    setHeight() {
-      this.$refs.canvas.style.height = `${(this.$el.clientWidth -
-        2 * this.margin) /
-        (this.x / this.y)}px`;
-    },
-    onResize() {
-      this.setWidth();
-      this.setHeight();
+    zoomLevel() {},
+    currentSlide() {
+      this.$refs.canvas.removeChild(this.$refs.canvas.children[0]);
+      this.$refs.canvas.appendChild(this.currentSlide.draw());
     }
   },
+  methods: {
+    setScale() {
+      this.$refs.canvas.style.transform = `scale(${(this.$el.clientWidth -
+        2 * this.margin) /
+        this.currentSlide.absoluteBoundingBox.width})`;
+    },
+    onResize() {
+      this.setScale();
+    }
+  },
+  beforeDestroy() {
+    window.removeEventListener("resize", this.onResize);
+  },
   mounted() {
+    this.setScale();
+
     window.addEventListener("resize", this.onResize);
-    this.setWidth();
-    this.setHeight();
+
+    this.$refs.canvas.appendChild(this.currentSlide.draw());
   }
 };
 </script>
