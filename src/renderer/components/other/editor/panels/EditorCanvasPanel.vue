@@ -8,13 +8,14 @@
 import { mapGetters, mapActions } from "vuex";
 import { getNodeFromEvent } from "@/editor/tree-actions";
 import Importer from "@/importer/Importer";
+import Mouse from "@/js/mouse";
 
 export default {
   data() {
     return {};
   },
   computed: {
-    ...mapGetters(["zoomLevel", "currentSlide"])
+    ...mapGetters(["zoomLevel", "currentSlide", "highlightedLayer"])
   },
   watch: {
     zoomLevel() {},
@@ -26,13 +27,17 @@ export default {
       "setSelectedFrame",
       "selectNodes",
       "deselectAllNodes",
-      "setNodesTree"
+      "setNodesTree",
+      "setHighlightedLayer",
+      "setCanvasBounds"
     ]),
     hover(e) {
       const node = getNodeFromEvent(e, this.$refs.canvas);
-      //@todo store node as hightlighted layer
 
       if (node) {
+        this.setHighlightedLayer(node.id);
+      } else {
+        this.setHighlightedLayer();
       }
     },
     onKeyUp(e) {
@@ -58,6 +63,8 @@ export default {
       const node = getNodeFromEvent(e, this.$refs.canvas);
       if (node) {
         this.selectNodes([node.id]);
+
+        this.setHighlightedLayer(node.id);
       }
     },
     setDimensions() {
@@ -67,12 +74,18 @@ export default {
       this.$refs.canvas.style.transform = `scale(${panelDimensions.width /
         slideBounds.width})`;
     },
+    onResize() {
+      this.setDimensions();
+      this.setCanvasBounds(this.$refs.canvas.getBoundingClientRect());
+    },
     addListeners() {
       this.$refs.canvas.addEventListener("mousedown", this.onClick);
       this.$refs.canvas.addEventListener("mousemove", this.onMouseMove);
       this.$refs.canvas.addEventListener("dblclick", this.onDoubleClick);
       document.addEventListener("keydown", this.onKeyDown);
       document.addEventListener("keyup", this.onKeyUp);
+      window.addEventListener("resize", this.onResize);
+      Mouse.start();
     },
     removeListeners() {
       this.$refs.canvas.removeEventListener("mousedown", this.onClick);
@@ -80,6 +93,8 @@ export default {
       this.$refs.canvas.removeEventListener("dblclick", this.onDoubleClick);
       document.removeEventListener("keydown", this.onKeyDown);
       document.removeEventListener("keyup", this.onKeyUp);
+      window.removeEventListener("resize", this.onResize);
+      Mouse.stop();
     }
   },
   beforeDestroy() {
@@ -604,7 +619,7 @@ export default {
     this.setNodesTree(tree);
     this.$refs.canvas.appendChild(this.currentSlide.draw({}));
 
-    this.setDimensions();
+    this.onResize();
   }
 };
 </script>
@@ -621,7 +636,5 @@ export default {
   align-items: center;
   cursor: url("../../../../assets/icons/cursor.png") 2 2, auto;
   z-index: 0;
-}
-.canvas {
 }
 </style>

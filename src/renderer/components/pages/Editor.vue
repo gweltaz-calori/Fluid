@@ -4,14 +4,12 @@
         <editor-slides-panel></editor-slides-panel>
         <editor-canvas-panel></editor-canvas-panel>
         <editor-properties-panel></editor-properties-panel>
-        <fluid-canvas-overlay>
-        </fluid-canvas-overlay>
+        <fluid-layer-selection></fluid-layer-selection>
     </div>
 </template>
 
 <script>
 import FluidLayerSelection from "@/components/other/editor/layers/FluidLayerSelection.vue";
-import FluidCanvasOverlay from "@/components/other/editor/layers/FluidCanvasOverlay.vue";
 
 import EditorPropertiesPanel from "@/components/other/editor/panels/EditorPropertiesPanel.vue";
 import EditorSlidesPanel from "@/components/other/editor/panels/EditorSlidesPanel.vue";
@@ -25,17 +23,7 @@ export default {
     EditorSlidesPanel,
     EditorActionsPanel,
     EditorCanvasPanel,
-    FluidCanvasOverlay,
     FluidLayerSelection
-  },
-  computed: {
-    ...mapGetters(["hightlightedLayer"])
-  },
-  methods: {
-    ...mapActions(["setSelectedFrame", "slides"])
-  },
-  beforeMount() {
-    //this.setSelectedFrame(0);
   }
 };
 </script>

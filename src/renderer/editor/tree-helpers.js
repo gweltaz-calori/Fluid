@@ -7,8 +7,8 @@ export const isRoot = node =>
   node.type === "FRAME" &&
   node.relativeTransform[1][2] === node.absoluteBoundingBox.y;
 
-export function containsPoint(node, point) {
-  const position = {
+export function getPosition(node) {
+  return {
     x:
       node.absoluteBoundingBox.x -
       store.getters.currentSlide.absoluteBoundingBox.x,
@@ -17,8 +17,33 @@ export function containsPoint(node, point) {
       store.getters.currentSlide.absoluteBoundingBox.y,
     width: node.size.x,
     height: node.size.y
-  }; // in case the root frame bounds isnt 0 // in case the root frame bounds isnt 0
+  };
+}
 
+export function getPositionRelativeToCanvas(node) {
+  const { left, top, width, height } = store.getters.canvasBounds;
+
+  const scaleX = store.getters.currentSlide.absoluteBoundingBox.width / width;
+  const scaleY = store.getters.currentSlide.absoluteBoundingBox.height / height;
+
+  return {
+    width: node.size.x / scaleX,
+    height: node.size.y / scaleY,
+    x:
+      left +
+      (node.absoluteBoundingBox.x -
+        store.getters.currentSlide.absoluteBoundingBox.x) /
+        scaleX,
+    y:
+      top +
+      (node.absoluteBoundingBox.y -
+        store.getters.currentSlide.absoluteBoundingBox.y) /
+        scaleY
+  };
+}
+
+export function containsPoint(node, point) {
+  const position = getPosition(node);
   return (
     point.x >= position.x &&
     point.x <= position.x + position.width &&

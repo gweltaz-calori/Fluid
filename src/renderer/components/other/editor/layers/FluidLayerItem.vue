@@ -69,7 +69,11 @@ export default {
     }
   },
   methods: {
-    ...mapActions(["toggleNodeVisibility", "selectNodes"]),
+    ...mapActions([
+      "toggleNodeVisibility",
+      "selectNodes",
+      "setHighlightedLayer"
+    ]),
     toggleOpening() {
       this.open = !this.open;
     },
@@ -78,12 +82,14 @@ export default {
         return;
       }
       this.highlighted = false;
+      this.setHighlightedLayer();
     },
     enter() {
       if (this.isRoot) {
         return;
       }
       this.highlighted = true;
+      this.setHighlightedLayer(this.layer.id);
     },
     toggleVisibility() {
       this.toggleNodeVisibility(this.layer.id);

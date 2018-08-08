@@ -13,12 +13,19 @@ const state = {
     nodesTree: {},
     selectedFrame: {},
     selectedLayers: [],
+    highlightedLayer: null,
     fluid: {
       videos: [],
       audios: [],
       animationsIn: [],
       animationsOut: [],
       urls: []
+    },
+    canvasBounds: {
+      x: 0,
+      y: 0,
+      width: 0,
+      height: 0
     }
   }
 };
@@ -106,6 +113,12 @@ const mutations = {
   },
   SET_NODES_TREE(state, tree) {
     state.editor.nodesTree = tree;
+  },
+  SET_HIGHLIGHTED_LAYER(state, id) {
+    state.editor.highlightedLayer = id;
+  },
+  SET_CANVAS_BOUNDS(state, bounds) {
+    state.editor.canvasBounds = bounds;
   }
 };
 
@@ -155,11 +168,10 @@ const actions = {
   toggleLayerVisibility({ commit }) {
     commit("TOGGLE_LAYER_VISIBILITY");
   },
-  setCurrentHighlightedLayer({ commit }, layer) {
-    commit("SET_CURRENT_HIGHLIGHTED_LAYER", layer);
-  },
-  setCurrentSelectedLayer({ commit }, layer) {
-    commit("SET_CURRENT_SELECTED_LAYER", layer);
+  setHighlightedLayer({ commit }, layer) {
+    if (layer !== state.editor.highlightedLayer) {
+      commit("SET_HIGHLIGHTED_LAYER", layer);
+    }
   },
   selectNodes({ commit }, nodeIds) {
     commit("SELECT_NODES", nodeIds);
@@ -172,6 +184,9 @@ const actions = {
   },
   setNodesTree({ commit }, tree) {
     commit("SET_NODES_TREE", tree);
+  },
+  setCanvasBounds({ commit }, bounds) {
+    commit("SET_CANVAS_BOUNDS", bounds);
   }
 };
 
@@ -181,7 +196,10 @@ const getters = {
   fluid: state => state.editor.fluid,
   slides: state => state.editor.frames,
   currentSlide: state => state.editor.selectedFrame,
-  selectedLayers: state => state.editor.selectedLayers
+  selectedLayers: state => state.editor.selectedLayers,
+  highlightedLayer: state => state.editor.highlightedLayer,
+  nodesTree: state => state.editor.nodesTree,
+  canvasBounds: state => state.editor.canvasBounds
 };
 
 Vue.use(Vuex);

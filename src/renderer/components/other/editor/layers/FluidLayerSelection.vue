@@ -1,61 +1,93 @@
 <template>
-    <div :style="style" class="selection"></div>
+    <div class="canvas-container">
+      <canvas ref="selectionCanvas"></canvas>
+      <canvas ref="highlightCanvas"></canvas>
+    </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
+import { getPositionRelativeToCanvas, isRoot } from "@/editor/tree-helpers";
 export default {
-  props: {
-    layer: {}
-  },
   computed: {
-    ...mapGetters(["canvasLayerElement"]),
-    style() {
-      if (!this.layer) return {};
+    ...mapGetters(["highlightedLayer", "selectedLayers", "nodesTree"])
+  },
+  watch: {
+    highlightedLayer() {
+      if (this.highlightedLayer) {
+        const node = this.nodesTree[this.highlightedLayer];
 
-      let el = this.canvasLayerElement(this.layer.id);
+        if (isRoot(node)) return;
 
-      if (!el) return;
+        const bounds = getPositionRelativeToCanvas(node);
 
-      let bounds = el.getBoundingClientRect();
-
-      return {
-        top: `${bounds.top}px`,
-        left: `${bounds.left}px`,
-        width: `${bounds.width}px`,
-        height: `${bounds.height}px`
-      };
-
-      /* let matrix;
-
-      //svg node
-      if (el.getScreenCTM) {
-        let transform = el.getScreenCTM();
-        matrix = `matrix(${transform.a},${transform.b},${transform.c},${
-          transform.d
-        },${transform.e},${transform.f})`;
+        this.draw(bounds, this.highlightCtx, this.$refs.highlightCanvas);
       } else {
-        matrix = getComputedStyle(el).transform;
+        this.clear(this.highlightCtx, this.$refs.highlightCanvas);
       }
-
-      return {
-        top: `0px`,
-        left: `0px`,
-        width: `${width}px`,
-        height: `${height}px`,
-        transformOrigin: "0 0",
-        transform: `${matrix} translate(${left}px,${top}px)`
-      }; */
+    },
+    selectedLayers() {
+      if (this.selectedLayers) {
+        const nodes = this.selectedLayers.map(
+          layerId => this.nodesTree[layerId]
+        );
+        for (let node of nodes) {
+          if (isRoot(node)) return;
+          const bounds = getPositionRelativeToCanvas(node);
+          this.draw(bounds, this.selectionCtx, this.$refs.selectionCanvas);
+        }
+      } else {
+        this.clear(this.selectionCtx, this.$refs.selectionCanvas);
+      }
     }
+  },
+  methods: {
+    draw(bounds, ctx, canvas) {
+      this.clear(ctx, canvas);
+
+      ctx.strokeStyle = "#1f8aff";
+      ctx.lineWidth = 2;
+
+      ctx.strokeRect(bounds.x, bounds.y, bounds.width, bounds.height);
+    },
+    clear(ctx, canvas) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    },
+    setDimensions() {
+      let { width, height } = document.documentElement.getBoundingClientRect();
+
+      [this.$refs.selectionCanvas, this.$refs.highlightCanvas].map(canvas => {
+        canvas.width = width;
+        canvas.height = height;
+      });
+    }
+  },
+  beforeDestroy() {
+    window.removeEventListener("resize", this.onResize);
+  },
+  mounted() {
+    this.selectionCtx = this.$refs.selectionCanvas.getContext("2d");
+    this.highlightCtx = this.$refs.highlightCanvas.getContext("2d");
+    this.setDimensions();
+
+    window.addEventListener("resize", this.setDimensions);
   }
 };
 </script>
 
 <style scoped>
-.selection {
-  position: absolute;
-  z-index: 9999;
-  border: solid 2px #1f8aff;
+.canvas-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
+}
+canvas {
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
 </style>

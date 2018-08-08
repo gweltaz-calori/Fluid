@@ -1,10 +1,15 @@
 import { isLeaf, isRoot, containsPoint } from "./tree-helpers";
 import TreeWalker from "./tree-walker";
+import Mouse from "@/js/mouse";
 
 import store from "@/store";
 
 export function getNodeFromEvent(e, canvas) {
-  const { x, y } = e;
+  let { x, y } = e;
+  if (!x || !y) {
+    x = Mouse.x;
+    y = Mouse.y;
+  }
   const { left, top, width, height } = canvas.getBoundingClientRect();
 
   const isDirect = e.ctrlKey || e.metaKey;
@@ -70,6 +75,7 @@ function getDirectNodeAtPoint(point) {
 function getNodeAtPointInGroup(point) {
   const candidates = getCandidates(point);
   let result = candidates.shift();
+
   while (candidates.length > 0) {
     if (store.getters.selectedLayers.includes(result.parentId)) {
       break;
@@ -100,7 +106,8 @@ function getNodeAtPoint(point) {
 function parentIdsWithSelectedDescendants(selectedNodes) {
   let parents = [];
 
-  for (let node of selectedNodes) {
+  for (let nodeId of selectedNodes) {
+    let node = store.getters.nodesTree[nodeId];
     let nodeParent = node.parentNode;
     while (nodeParent) {
       parents.push(nodeParent.id);
