@@ -1,6 +1,6 @@
 <template>
     <div class="menu">
-        <div :class="{'active':isActive(option.key)}" @click="changeActiveMenuItem(option)" v-for="option in options" :key="option.key" class="menu-option">
+        <div :class="{'active':isActive(option.key)}" @mousedown.stop="changeActiveMenuItem(option)" v-for="option in options" :key="option.key" class="menu-option">
             {{option.name}}
         </div>
     </div>

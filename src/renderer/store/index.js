@@ -8,20 +8,18 @@ const state = {
       zoomLevel: 100,
       availableZoomLevels: [50, 75, 100]
     },
-    //this hold the ref inside the canvas
-    canvasTreeIndex: {},
     frames: [],
+    //index each node with his id
+    nodesTree: {},
     selectedFrame: {},
+    selectedLayers: [],
     fluid: {
       videos: [],
       audios: [],
       animationsIn: [],
       animationsOut: [],
       urls: []
-    },
-    selectedLayers: [],
-    hasChanges: false,
-    isPlaying: false
+    }
   }
 };
 
@@ -93,42 +91,21 @@ const mutations = {
   ENTERING_PLAY_MODE(state) {
     state.editor.isPlaying = true;
   },
-  TOGGLE_LAYER_VISIBILITY(state) {
-    if (state.editor.hightlightedLayer.visible === undefined) {
-      Vue.set(state.editor.hightlightedLayer, "visible", true);
-    }
-    state.editor.hightlightedLayer.visible = !state.editor.hightlightedLayer
-      .visible;
-
-    let canvasElement = this.getters.canvasLayerElement(
-      state.editor.hightlightedLayer.id
-    );
-
-    if (canvasElement) {
-      if (!state.editor.hightlightedLayer.visible) {
-        canvasElement.style.display = "none";
-      } else {
-        canvasElement.style.display = "block";
-      }
-    }
+  ADD_NODES_TO_SELECTION(state, nodeIds) {
+    state.editor.selectedLayers.push(...nodeIds);
   },
-  SET_CURRENT_HIGHLIGHTED_LAYER(state, layer) {
-    state.editor.hightlightedLayer = layer;
+  DESELECT_ALL_NODES(state) {
+    state.editor.selectedLayers = [state.editor.selectedFrame.id];
   },
-  SET_CURRENT_SELECTED_LAYER(state, layer) {
-    state.editor.currentSelectedLayer = layer;
+  SELECT_NODES(state, nodeIds) {
+    state.editor.selectedLayers = [...nodeIds];
   },
-  SET_CANVAS_TREE_INDEX(state, tree) {
-    state.editor.canvasTreeIndex = tree;
+  TOGGLE_NODE_VISIBILITY(state, nodeId) {
+    const node = state.editor.nodesTree[nodeId];
+    node.visible = !node.visible;
   },
-  ADD_LAYER_TO_SELECTION(state, layerId) {
-    state.editor.selectedLayers.push(layerId);
-  },
-  REMOVE_LAYER_FROM_SELECTION(state, index) {
-    state.editor.selectedLayers.splice(index, 1);
-  },
-  SET_SELECTION_FROM_INDEX(state, index) {
-    state.editor.selectedLayers = [state.editor.frames[index].id];
+  SET_NODES_TREE(state, tree) {
+    state.editor.nodesTree = tree;
   }
 };
 
@@ -163,12 +140,13 @@ const actions = {
   removeUrl({ commit }) {
     commit("REMOVE_URL");
   },
-  setFrames({ commit }, frames) {
+  setFrames({ commit, dispatch }, frames) {
     commit("SET_FRAMES", frames);
+    dispatch("setSelectedFrame", 0);
   },
   setSelectedFrame({ commit }, index) {
     commit("SET_SELECTED_FRAME", index);
-    commit("SET_SELECTION_FROM_INDEX", index);
+    commit("DESELECT_ALL_NODES");
   },
   enterPlayerMode({ commit }) {
     commit("ENTERING_PLAY_MODE");
@@ -183,17 +161,17 @@ const actions = {
   setCurrentSelectedLayer({ commit }, layer) {
     commit("SET_CURRENT_SELECTED_LAYER", layer);
   },
-  setCanvasTreeIndex({ commit }, tree) {
-    commit("SET_CANVAS_TREE_INDEX", tree);
+  selectNodes({ commit }, nodeIds) {
+    commit("SELECT_NODES", nodeIds);
   },
-  addLayerToSelection({ commit }, layerId) {
-    commit("ADD_LAYER_TO_SELECTION", layerId);
+  deselectAllNodes({ commit }) {
+    commit("DESELECT_ALL_NODES");
   },
-  removeLayerFromSelection({ commit }, index) {
-    commit("REMOVE_LAYER_FROM_SELECTION", index);
+  toggleNodeVisibility({ commit }, nodeId) {
+    commit("TOGGLE_NODE_VISIBILITY", nodeId);
   },
-  setSelectionFromIndex({ commit }, index) {
-    commit("SET_SELECTION_FROM_INDEX", index);
+  setNodesTree({ commit }, tree) {
+    commit("SET_NODES_TREE", tree);
   }
 };
 
@@ -202,10 +180,7 @@ const getters = {
   zoomLevel: state => state.editor.settings.zoomLevel,
   fluid: state => state.editor.fluid,
   slides: state => state.editor.frames,
-  currentSelectedLayer: state => state.editor.currentSelectedLayer,
   currentSlide: state => state.editor.selectedFrame,
-  canvasLayerElement: state => id => state.editor.canvasTreeIndex[id],
-  hightlightedLayer: state => state.editor.hightlightedLayer,
   selectedLayers: state => state.editor.selectedLayers
 };
 

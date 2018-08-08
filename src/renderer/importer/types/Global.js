@@ -1,4 +1,5 @@
 import SuperMath from "../utils/SuperMath";
+import Fluid from "../external/Fluid";
 
 export default class Global {
   constructor(id, name, type, visible, relativeTransform) {
@@ -6,6 +7,7 @@ export default class Global {
     this.name = name;
     this.visible = visible || true;
     this.type = type;
+    this.fluid = new Fluid();
     this.relativeTransform = relativeTransform || [[1, 0, 0], [0, 1, 0]];
     this.relativeTransform.push([0, 0, 1]); //add the transform for 3 axis (z)
   }

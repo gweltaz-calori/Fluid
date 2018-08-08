@@ -1,5 +1,5 @@
 <template>
-    <div class="panel">
+    <div class="panel" @mousedown="deselectAllNodes">
       <fluid-scrollable-container height="100%" class="slides">
         <fluid-menu class="menu" v-model="selectedMenu" :options="menuOptions"></fluid-menu>
         <keep-alive>
@@ -12,6 +12,7 @@
 <script>
 import SlidesMenu from "@/components/other/editor/menus/SlidesMenu.vue";
 import LayersMenu from "@/components/other/editor/menus/LayersMenu.vue";
+import { mapActions } from "vuex";
 
 export default {
   components: {
@@ -38,6 +39,9 @@ export default {
         value: "SlidesMenu"
       }
     };
+  },
+  methods: {
+    ...mapActions(["deselectAllNodes"])
   }
 };
 </script>

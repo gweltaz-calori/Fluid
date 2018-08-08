@@ -1,22 +1,17 @@
 <template>
-    <div ref="panel" class="panel">
-        <div ref="canvas" class="canvas" ></div>
+    <div ref="panel" class="panel" @mousedown="deselectAllNodes">
+        <div @mousedown.stop ref="canvas" class="canvas" ></div>
     </div>
 </template>
 
 <script>
-//:style="{'transform':`scale(${this.zoomLevel / 100})`}"
 import { mapGetters, mapActions } from "vuex";
 import { getNodeFromEvent } from "@/editor/tree-actions";
 import Importer from "@/importer/Importer";
 
 export default {
   data() {
-    return {
-      x: 16,
-      y: 9,
-      margin: 10
-    };
+    return {};
   },
   computed: {
     ...mapGetters(["zoomLevel", "currentSlide"])
@@ -26,15 +21,44 @@ export default {
     currentSlide() {}
   },
   methods: {
-    ...mapActions(["setCanvasTreeIndex", "setFrames", "setSelectedFrame"]),
+    ...mapActions([
+      "setFrames",
+      "setSelectedFrame",
+      "selectNodes",
+      "deselectAllNodes",
+      "setNodesTree"
+    ]),
+    hover(e) {
+      const node = getNodeFromEvent(e, this.$refs.canvas);
+      //@todo store node as hightlighted layer
+
+      if (node) {
+      }
+    },
+    onKeyUp(e) {
+      if (e.repeat) return;
+      this.hover(e);
+    },
+    onKeyDown(e) {
+      if (e.repeat) return;
+      this.hover(e);
+    },
     onClick(e) {
-      getNodeFromEvent(e, this.$refs.canvas);
+      const node = getNodeFromEvent(e, this.$refs.canvas);
+      if (node) {
+        this.selectNodes([node.id]);
+      } else {
+        this.deselectAllNodes();
+      }
     },
     onMouseMove(e) {
-      getNodeFromEvent(e, this.$refs.canvas);
+      this.hover(e);
     },
     onDoubleClick(e) {
-      getNodeFromEvent(e, this.$refs.canvas);
+      const node = getNodeFromEvent(e, this.$refs.canvas);
+      if (node) {
+        this.selectNodes([node.id]);
+      }
     },
     setDimensions() {
       const slideBounds = this.currentSlide.absoluteBoundingBox;
@@ -42,15 +66,28 @@ export default {
 
       this.$refs.canvas.style.transform = `scale(${panelDimensions.width /
         slideBounds.width})`;
+    },
+    addListeners() {
+      this.$refs.canvas.addEventListener("mousedown", this.onClick);
+      this.$refs.canvas.addEventListener("mousemove", this.onMouseMove);
+      this.$refs.canvas.addEventListener("dblclick", this.onDoubleClick);
+      document.addEventListener("keydown", this.onKeyDown);
+      document.addEventListener("keyup", this.onKeyUp);
+    },
+    removeListeners() {
+      this.$refs.canvas.removeEventListener("mousedown", this.onClick);
+      this.$refs.canvas.removeEventListener("mousemove", this.onMouseMove);
+      this.$refs.canvas.removeEventListener("dblclick", this.onDoubleClick);
+      document.removeEventListener("keydown", this.onKeyDown);
+      document.removeEventListener("keyup", this.onKeyUp);
     }
   },
-  beforeDestroy() {},
+  beforeDestroy() {
+    this.removeListeners();
+  },
   mounted() {
-    this.$refs.canvas.addEventListener("mousedown", this.onClick);
-    this.$refs.canvas.addEventListener("mousemove", this.onMouseMove);
-    this.$refs.canvas.addEventListener("dblclick", this.onDoubleClick);
-
-    let firstPage = Importer.loadPage({
+    this.addListeners();
+    let { page, tree } = Importer.loadPage({
       id: "0:1",
       name: "Page 1",
       type: "CANVAS",
@@ -563,8 +600,8 @@ export default {
         a: 1
       }
     });
-    this.setFrames(firstPage.children);
-    this.setSelectedFrame(0);
+    this.setFrames(page.children);
+    this.setNodesTree(tree);
     this.$refs.canvas.appendChild(this.currentSlide.draw({}));
 
     this.setDimensions();

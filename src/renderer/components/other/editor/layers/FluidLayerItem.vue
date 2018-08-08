@@ -1,26 +1,27 @@
 <template>
     <div class="layer" :class="{'selected':isCurrentSelectedLayer,'parent-selected':isParentSelected}">
         <span >
-          <div @click="setCurrentSelectedLayer(layer)" class="layer-header" @mouseenter="enter" @mouseleave="leave">
+          <div @mousedown.stop="onHeaderClick" class="layer-header" @mouseenter.stop="enter" @mouseleave.stop="leave">
             <span class="layer-indentations">
                 
               <span class="layer-indent" v-for="(indent,index) in indentLevel" :key="index"></span>
-              <div @click="toggleOpening" class="layer-icon-arrow-wrapper" :class="{'disabled':layer.visible === false}" v-if="isContainer">
+              <div @mousedown.stop="toggleOpening" class="layer-icon-arrow-wrapper" :class="{'disabled':layer.visible === false}" v-if="isContainer">
                   <fluid-icon-arrow-down class="layer-icon-arrow" :class="{'opened':open}"></fluid-icon-arrow-down>
               </div> 
             </span>
-            <div class="layer-header-background"></div>
             <div v-if="highlighted" class="layer-header-overlay"></div>
             
             <span :class="{'disabled':layer.visible === false}" class="layer-name">{{layer.name}}</span>
             <div :class="{'disabled':layer.visible === false}" class="layer-actions">
-                <div @click="toggleLayerVisibility" class="visibility-icon-wrapper" v-if="highlighted">
+                <div @mousedown.stop="toggleVisibility" class="visibility-icon-wrapper" v-if="highlighted && !isRoot">
                     <fluid-icon-eye class="layer-action layer-icon-visibility"></fluid-icon-eye>
                 </div>
-                <div class="is-animated-icon-wrapper">
+                <div v-if="hasAnimations" class="is-animated-icon-wrapper">
                     <fluid-icon-is-animated class="layer-action layer-icon-is-animated"></fluid-icon-is-animated>
                 </div>
             </div>
+            
+            <div :class="{'root-layer':isRoot}" class="layer-header-background"></div>
           </div>
           <div :class="{'disabled':layer.visible === false}" class="layer-content" v-if="isContainer && open">
               <fluid-layer-item :indent-level="indentLevel+1" :is-parent-selected="isCurrentSelectedLayer" v-for="(subLayer) in layer.children" :layer="subLayer" :key="subLayer.id"></fluid-layer-item>
@@ -32,6 +33,7 @@
 <script>
 import FluidLayerItem from "@/components/other/editor/layers/FluidLayerItem.vue";
 import { mapActions, mapGetters } from "vuex";
+import { isRoot } from "@/editor/tree-helpers";
 export default {
   components: { FluidLayerItem },
   name: "fluid-layer-item",
@@ -51,34 +53,47 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["currentSelectedLayer", "canvasLayerElement"]),
+    ...mapGetters(["selectedLayers"]),
     isContainer() {
       return this.layer.children;
     },
     isCurrentSelectedLayer() {
-      return this.currentSelectedLayer.id === this.layer.id;
+      return !isRoot(this.layer) && this.selectedLayers.includes(this.layer.id);
+    },
+    isRoot() {
+      return isRoot(this.layer);
+    },
+    hasAnimations() {
+      this.layer.fluid.animationsIn.length > 0 ||
+        this.layer.fluid.animationsOut.length > 0;
     }
   },
   methods: {
-    ...mapActions([
-      "toggleLayerVisibility",
-      "setCurrentHighlightedLayer",
-      "setCurrentSelectedLayer"
-    ]),
+    ...mapActions(["toggleNodeVisibility", "selectNodes"]),
     toggleOpening() {
       this.open = !this.open;
     },
-    highlight(value) {
-      this.highlighted = value;
-    },
     leave() {
-      this.setCurrentHighlightedLayer(null);
-      this.highlight(false);
+      if (this.isRoot) {
+        return;
+      }
+      this.highlighted = false;
     },
     enter() {
-      this.setCurrentHighlightedLayer(this.layer);
-      this.highlight(true);
-      //console.log(this.canvasLayerElement(this.layer.id));
+      if (this.isRoot) {
+        return;
+      }
+      this.highlighted = true;
+    },
+    toggleVisibility() {
+      this.toggleNodeVisibility(this.layer.id);
+    },
+    onHeaderClick() {
+      if (this.isRoot) {
+        return;
+      }
+
+      this.selectNodes([this.layer.id]);
     }
   }
 };
@@ -132,7 +147,7 @@ export default {
   left: 0;
   bottom: 0;
   right: 0;
-  border: solid rgba(169, 169, 169, 0.5) 1px;
+  border: solid #1f8aff 1px;
   pointer-events: none;
 }
 
@@ -144,6 +159,7 @@ export default {
   right: 0;
   height: 39.64px;
   width: 100%;
+
   pointer-events: none;
 }
 
@@ -186,9 +202,6 @@ export default {
   margin-left: 7px;
 }
 
-.layer-content {
-}
-
 .layer-indentations {
   display: flex;
   position: relative;
@@ -206,11 +219,20 @@ export default {
   flex-shrink: 0;
 }
 
+.root-layer {
+  background: rgba(169, 169, 169, 0.03);
+  z-index: -1;
+}
+
 .layer.selected .layer-header-background {
-  background: rgba(169, 169, 169, 0.07);
+  background: #1f8aff;
+
+  z-index: -1;
 }
 
 .layer.parent-selected .layer-header-background {
-  background: rgba(169, 169, 169, 0.02);
+  background: rgba(31, 138, 255, 0.05);
+
+  z-index: -1;
 }
 </style>

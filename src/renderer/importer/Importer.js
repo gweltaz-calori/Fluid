@@ -5,13 +5,14 @@ const serializeNode = node => {
   return new Node(node);
 };
 
-const parseNode = node => {
+const parseNode = (node, tree) => {
   let serializedNode = serializeNode(node);
+  tree[node.id] = serializedNode;
 
   if (node.children) {
     let groupMask;
     for (let nodeChild of node.children) {
-      let subSerializedNode = parseNode(nodeChild);
+      let subSerializedNode = parseNode(nodeChild, tree);
       if (groupMask) {
         subSerializedNode.groupMask = groupMask;
       }
@@ -28,6 +29,9 @@ const parseNode = node => {
 
 export default class Importer {
   static loadPage(page) {
-    return parseNode(page);
+    let tree = {};
+    let parsedPage = parseNode(page, tree);
+
+    return { page: parsedPage, tree };
   }
 }
