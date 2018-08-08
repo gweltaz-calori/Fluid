@@ -48,6 +48,16 @@ export default {
       if (e.repeat) return;
       this.hover(e);
     },
+    onMouseDown(e) {
+      let time = performance.now();
+      if (e.target && time - e.target.__oldTime <= 400) {
+        e.__type = "dblclick";
+        this.onDoubleClick(e);
+      } else {
+        this.onClick(e);
+      }
+      e.target.__oldTime = performance.now();
+    },
     onClick(e) {
       const node = getNodeFromEvent(e, this.$refs.canvas);
       if (node) {
@@ -79,18 +89,16 @@ export default {
       this.setCanvasBounds(this.$refs.canvas.getBoundingClientRect());
     },
     addListeners() {
-      this.$refs.canvas.addEventListener("mousedown", this.onClick);
+      this.$refs.canvas.addEventListener("mousedown", this.onMouseDown);
       this.$refs.canvas.addEventListener("mousemove", this.onMouseMove);
-      this.$refs.canvas.addEventListener("dblclick", this.onDoubleClick);
       document.addEventListener("keydown", this.onKeyDown);
       document.addEventListener("keyup", this.onKeyUp);
       window.addEventListener("resize", this.onResize);
       Mouse.start();
     },
     removeListeners() {
-      this.$refs.canvas.removeEventListener("mousedown", this.onClick);
+      this.$refs.canvas.removeEventListener("mousedown", this.onMouseDown);
       this.$refs.canvas.removeEventListener("mousemove", this.onMouseMove);
-      this.$refs.canvas.removeEventListener("dblclick", this.onDoubleClick);
       document.removeEventListener("keydown", this.onKeyDown);
       document.removeEventListener("keyup", this.onKeyUp);
       window.removeEventListener("resize", this.onResize);

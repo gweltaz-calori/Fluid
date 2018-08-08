@@ -14,7 +14,7 @@ export function getNodeFromEvent(e, canvas) {
 
   const isDirect = e.ctrlKey || e.metaKey;
 
-  const isDoubleClick = e.type === "dblclick";
+  const isDoubleClick = e.__type === "dblclick";
 
   const scaleX = store.getters.currentSlide.absoluteBoundingBox.width / width;
   const scaleY = store.getters.currentSlide.absoluteBoundingBox.height / height;
