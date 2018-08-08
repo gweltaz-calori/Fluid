@@ -22,5 +22,3 @@ export default class Render {
     return renders;
   }
 }
-
-Render.render();

@@ -12,21 +12,20 @@ export default class Group extends FrameBase {
       opts.size,
       opts.absoluteBoundingBox,
       opts.relativeTransform,
-      opts.isMask
+      opts.isMask,
+      opts.effects
     );
   }
 
-  draw() {
-    let el = super.draw();
+  draw(tree) {
+    let el = super.draw(tree);
 
     el.style.top = `${this.absoluteBoundingBox.y -
       this.parentNode.absoluteBoundingBox.y}px`;
     el.style.left = `${this.absoluteBoundingBox.x -
       this.parentNode.absoluteBoundingBox.x}px`;
 
-    for (let child of this.children) {
-      el.appendChild(child.draw());
-    }
+    tree[this.id] = el;
 
     return el;
   }

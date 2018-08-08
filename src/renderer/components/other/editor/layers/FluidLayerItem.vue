@@ -1,7 +1,7 @@
 <template>
     <div class="layer" :class="{'selected':isCurrentSelectedLayer,'parent-selected':isParentSelected}">
         <span >
-          <div @click="setCurrentSelectedLayer(layer)" class="layer-header" @mouseenter="enter" @mouseleave="highlight(false)">
+          <div @click="setCurrentSelectedLayer(layer)" class="layer-header" @mouseenter="enter" @mouseleave="leave">
             <span class="layer-indentations">
                 
               <span class="layer-indent" v-for="(indent,index) in indentLevel" :key="index"></span>
@@ -51,7 +51,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["currentSelectedLayer"]),
+    ...mapGetters(["currentSelectedLayer", "canvasLayerElement"]),
     isContainer() {
       return this.layer.children;
     },
@@ -71,9 +71,14 @@ export default {
     highlight(value) {
       this.highlighted = value;
     },
+    leave() {
+      this.setCurrentHighlightedLayer(null);
+      this.highlight(false);
+    },
     enter() {
       this.setCurrentHighlightedLayer(this.layer);
       this.highlight(true);
+      //console.log(this.canvasLayerElement(this.layer.id));
     }
   }
 };

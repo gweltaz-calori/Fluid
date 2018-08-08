@@ -58,6 +58,7 @@ export default {
   width: 305px;
   height: 100%;
   padding: 18px 0;
+  z-index: 1;
 }
 
 .menu {

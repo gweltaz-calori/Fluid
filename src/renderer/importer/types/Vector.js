@@ -49,12 +49,12 @@ export default class Vector extends Global {
     }
   }
 
-  draw() {
+  draw(tree) {
     switch (this.type) {
       case "RECTANGLE":
-        return this._drawHtml();
+        return this._drawHtml(tree);
       default:
-        return this._drawSvg();
+        return this._drawSvg(tree);
     }
   }
 
@@ -102,15 +102,10 @@ export default class Vector extends Global {
       y -= hasDropShadow.offset.y;
     }
 
-    return {
-      x,
-      y,
-      width,
-      height
-    };
+    return { x, y, width, height };
   }
 
-  _drawSvg() {
+  _drawSvg(tree) {
     let { x, y, width, height } = this.getSVGBounds();
     let transform = this.getSVGTransform();
 
@@ -161,19 +156,6 @@ export default class Vector extends Global {
     filter.setAttributeNS(null, "id", filterId);
     filter.setAttributeNS(null, "filterUnits", "userSpaceOnUse");
     filter.setAttributeNS(null, "color-interpolation-filters", "sRGB");
-
-    /*  if (transform.rotation === 0) {
-      path.setAttributeNS(null, "transform", `translate(${x} ${y})`);
-    } else {
-      path.setAttributeNS(
-        null,
-        "transform",
-        `translate(${transform.translate.x + x} ${transform.translate.y +
-          y}) rotate(${transform.rotation}) scale(${transform.scale.x} ${
-          transform.scale.y
-        })`
-      );
-    } */
 
     path.setAttributeNS(
       null,
@@ -262,12 +244,15 @@ export default class Vector extends Global {
       el.style.clipPath = `url(#${this.groupMask.maskName})`;
     }
 
+    tree[this.id] = svg;
+
     el.appendChild(svg);
 
     return el;
   }
 
-  _drawHtml() {
+  _drawHtml(tree) {
+    let transform = this.getSVGTransform();
     let elWrapper = document.createElement("div");
     let el = document.createElement("div");
     el.style.position = "absolute";
@@ -277,11 +262,12 @@ export default class Vector extends Global {
     el.style.left = `${this.absoluteBoundingBox.x -
       this.parentNode.absoluteBoundingBox.x}px`;
     el.style.opacity = this.opacity;
+    el.style.transform = `rotate(${transform.rotation}deg)`;
 
     el.setAttribute("type", this.type);
 
-    el.style.width = `${this.absoluteBoundingBox.width}px`;
-    el.style.height = `${this.absoluteBoundingBox.height}px`;
+    el.style.width = `${this.size.x}px`;
+    el.style.height = `${this.size.y}px`;
     elWrapper.style.width = `${this.absoluteBoundingBox.width}px`;
     elWrapper.style.height = `${this.absoluteBoundingBox.height}px`;
     elWrapper.style.pointerEvents = "none";
@@ -311,6 +297,8 @@ export default class Vector extends Global {
     }
 
     elWrapper.appendChild(el);
+
+    tree[this.id] = el;
 
     return elWrapper;
   }

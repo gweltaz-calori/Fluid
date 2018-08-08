@@ -27,7 +27,7 @@ export default {
   },
   mounted() {
     this.setScale();
-    this.$refs.canvas.appendChild(this.slide.draw());
+    this.$refs.canvas.appendChild(this.slide.draw({}));
   }
 };
 </script>

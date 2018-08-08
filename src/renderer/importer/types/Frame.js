@@ -12,24 +12,21 @@ export default class Frame extends FrameBase {
       opts.size,
       opts.absoluteBoundingBox,
       opts.relativeTransform,
-      opts.isMask
+      opts.isMask,
+      opts.effects
     );
 
     this.clipsContent = opts.clipsContent;
   }
 
-  draw() {
-    let el = super.draw();
+  draw(tree) {
+    let el = super.draw(tree);
     el.style.position = "relative";
     el.style.top = 0;
     el.style.left = 0;
 
     if (this.clipsContent) {
       el.style.overflow = "hidden";
-    }
-
-    for (let child of this.children) {
-      el.appendChild(child.draw());
     }
 
     return el;

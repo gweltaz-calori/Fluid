@@ -7,8 +7,8 @@ export default class Rectangle extends Vector {
     this.rectangleCornerRadii = opts.rectangleCornerRadii || [0, 0, 0, 0];
   }
 
-  draw() {
-    let elWrapper = super.draw();
+  draw(tree) {
+    let elWrapper = super.draw(tree);
     elWrapper.children[0].style.borderTopLeftRadius = `${
       this.rectangleCornerRadii[0]
     }px`;

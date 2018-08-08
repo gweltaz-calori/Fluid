@@ -10,7 +10,6 @@
 </template>
 
 <script>
-import Render from "@/js/render";
 import Draggable from "gsap/Draggable";
 import TweenMax from "gsap/TweenMax";
 export default {
@@ -68,7 +67,6 @@ export default {
     this.draggable.removeEventListener("drag", this.onDrag);
     this.draggable.removeEventListener("release", this.leave);
     window.removeEventListener("resize", this.setBarHeight);
-    Render.stop(this.checkHeight.bind(this));
   },
   mounted() {
     this.setBarHeight();
@@ -90,8 +88,6 @@ export default {
     this.lastScrollHeight = this.$refs.scrollContent.scrollHeight;
 
     this.setBarHeight();
-
-    Render.start(this.checkHeight.bind(this));
   }
 };
 </script>

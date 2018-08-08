@@ -8,6 +8,8 @@ const state = {
       zoomLevel: 100,
       availableZoomLevels: [50, 75, 100]
     },
+    //this hold the ref inside the canvas
+    canvasTreeIndex: {},
     frames: [],
     selectedFrame: {},
     fluid: {
@@ -17,8 +19,7 @@ const state = {
       animationsOut: [],
       urls: []
     },
-    hightlightedLayer: {},
-    currentSelectedLayer: {},
+    selectedLayers: [],
     hasChanges: false,
     isPlaying: false
   }
@@ -98,12 +99,36 @@ const mutations = {
     }
     state.editor.hightlightedLayer.visible = !state.editor.hightlightedLayer
       .visible;
+
+    let canvasElement = this.getters.canvasLayerElement(
+      state.editor.hightlightedLayer.id
+    );
+
+    if (canvasElement) {
+      if (!state.editor.hightlightedLayer.visible) {
+        canvasElement.style.display = "none";
+      } else {
+        canvasElement.style.display = "block";
+      }
+    }
   },
   SET_CURRENT_HIGHLIGHTED_LAYER(state, layer) {
     state.editor.hightlightedLayer = layer;
   },
   SET_CURRENT_SELECTED_LAYER(state, layer) {
     state.editor.currentSelectedLayer = layer;
+  },
+  SET_CANVAS_TREE_INDEX(state, tree) {
+    state.editor.canvasTreeIndex = tree;
+  },
+  ADD_LAYER_TO_SELECTION(state, layerId) {
+    state.editor.selectedLayers.push(layerId);
+  },
+  REMOVE_LAYER_FROM_SELECTION(state, index) {
+    state.editor.selectedLayers.splice(index, 1);
+  },
+  SET_SELECTION_FROM_INDEX(state, index) {
+    state.editor.selectedLayers = [state.editor.frames[index].id];
   }
 };
 
@@ -143,6 +168,7 @@ const actions = {
   },
   setSelectedFrame({ commit }, index) {
     commit("SET_SELECTED_FRAME", index);
+    commit("SET_SELECTION_FROM_INDEX", index);
   },
   enterPlayerMode({ commit }) {
     commit("ENTERING_PLAY_MODE");
@@ -156,6 +182,18 @@ const actions = {
   },
   setCurrentSelectedLayer({ commit }, layer) {
     commit("SET_CURRENT_SELECTED_LAYER", layer);
+  },
+  setCanvasTreeIndex({ commit }, tree) {
+    commit("SET_CANVAS_TREE_INDEX", tree);
+  },
+  addLayerToSelection({ commit }, layerId) {
+    commit("ADD_LAYER_TO_SELECTION", layerId);
+  },
+  removeLayerFromSelection({ commit }, index) {
+    commit("REMOVE_LAYER_FROM_SELECTION", index);
+  },
+  setSelectionFromIndex({ commit }, index) {
+    commit("SET_SELECTION_FROM_INDEX", index);
   }
 };
 
@@ -165,7 +203,10 @@ const getters = {
   fluid: state => state.editor.fluid,
   slides: state => state.editor.frames,
   currentSelectedLayer: state => state.editor.currentSelectedLayer,
-  currentSlide: state => state.editor.selectedFrame
+  currentSlide: state => state.editor.selectedFrame,
+  canvasLayerElement: state => id => state.editor.canvasTreeIndex[id],
+  hightlightedLayer: state => state.editor.hightlightedLayer,
+  selectedLayers: state => state.editor.selectedLayers
 };
 
 Vue.use(Vuex);

@@ -13,7 +13,7 @@ export default class Text extends Vector {
     this.styleOverrideTable = opts.styleOverrideTable || {};
   }
 
-  draw() {
+  draw(tree) {
     let el = document.createElement("div");
     el.style.position = "absolute";
     el.style.top = `${this.absoluteBoundingBox.y -
@@ -70,6 +70,8 @@ export default class Text extends Vector {
     }
 
     el.setAttribute("type", this.type);
+
+    tree[this.id] = el;
 
     return el;
   }

@@ -46,7 +46,7 @@ export default {
 .panel {
   position: absolute;
   padding: 18px 0;
-
+  z-index: 1;
   top: 0;
   left: 0;
   bottom: 0;
