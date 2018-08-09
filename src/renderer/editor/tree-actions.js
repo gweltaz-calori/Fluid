@@ -1,4 +1,4 @@
-import { isLeaf, isRoot, containsPoint } from "./tree-helpers";
+import { isLeaf, isRoot, containsPoint, isVisible } from "./tree-helpers";
 import TreeWalker from "./tree-walker";
 import Mouse from "@/js/mouse";
 
@@ -40,7 +40,7 @@ function getCandidates(point) {
   const candidates = [];
 
   TreeWalker.preOrder(store.getters.currentSlide, node => {
-    if (!isRoot(node) && containsPoint(node, point)) {
+    if (!isRoot(node) && isVisible(node) && containsPoint(node, point)) {
       candidates.push(node);
     }
   });

@@ -49,12 +49,12 @@ export default class Vector extends Global {
     }
   }
 
-  draw(tree) {
+  draw(htmlTree) {
     switch (this.type) {
       case "RECTANGLE":
-        return this._drawHtml(tree);
+        return this._drawHtml(htmlTree);
       default:
-        return this._drawSvg(tree);
+        return this._drawSvg(htmlTree);
     }
   }
 
@@ -105,7 +105,7 @@ export default class Vector extends Global {
     return { x, y, width, height };
   }
 
-  _drawSvg(tree) {
+  _drawSvg(htmlTree) {
     let { x, y, width, height } = this.getSVGBounds();
     let transform = this.getSVGTransform();
 
@@ -244,14 +244,14 @@ export default class Vector extends Global {
       el.style.clipPath = `url(#${this.groupMask.maskName})`;
     }
 
-    tree[this.id] = svg;
+    htmlTree[this.id] = svg;
 
     el.appendChild(svg);
 
     return el;
   }
 
-  _drawHtml(tree) {
+  _drawHtml(htmlTree) {
     let transform = this.getSVGTransform();
     let elWrapper = document.createElement("div");
     let el = document.createElement("div");
@@ -298,7 +298,7 @@ export default class Vector extends Global {
 
     elWrapper.appendChild(el);
 
-    tree[this.id] = el;
+    htmlTree[this.id] = el;
 
     return elWrapper;
   }

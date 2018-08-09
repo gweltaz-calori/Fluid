@@ -11,6 +11,8 @@ const state = {
     frames: [],
     //index each node with his id
     nodesTree: {},
+    // index html node with id
+    nodesTreeHtmlRefs: {},
     selectedFrame: {},
     selectedLayers: [],
     highlightedLayer: null,
@@ -110,6 +112,12 @@ const mutations = {
   TOGGLE_NODE_VISIBILITY(state, nodeId) {
     const node = state.editor.nodesTree[nodeId];
     node.visible = !node.visible;
+
+    if (node.visible) {
+      state.editor.nodesTreeHtmlRefs[nodeId].style.display = "block";
+    } else {
+      state.editor.nodesTreeHtmlRefs[nodeId].style.display = "none";
+    }
   },
   SET_NODES_TREE(state, tree) {
     state.editor.nodesTree = tree;
@@ -119,6 +127,9 @@ const mutations = {
   },
   SET_CANVAS_BOUNDS(state, bounds) {
     state.editor.canvasBounds = bounds;
+  },
+  SET_NODES_TREE_HTML_REFS(state, refTree) {
+    state.editor.nodesTreeHtmlRefs = refTree;
   }
 };
 
@@ -184,6 +195,9 @@ const actions = {
   },
   setNodesTree({ commit }, tree) {
     commit("SET_NODES_TREE", tree);
+  },
+  setNodesTreeHtmlRefs({ commit }, tree) {
+    commit("SET_NODES_TREE_HTML_REFS", tree);
   },
   setCanvasBounds({ commit }, bounds) {
     commit("SET_CANVAS_BOUNDS", bounds);

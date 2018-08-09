@@ -5,7 +5,7 @@
       </div>
       <input placeholder="file name" type="text">
       <div class="right-actions">
-        <fluid-text-button>Export</fluid-text-button>
+        <fluid-text-button>Sync</fluid-text-button>
         <fluid-text-button @click.native="enterPlayerMode" :icon="PlayIcon" focus="true">Play</fluid-text-button>
       </div>
     </div>

@@ -27,11 +27,19 @@ const parseNode = (node, tree) => {
   return serializedNode;
 };
 
+const setTree = (node, tree) => {};
+
 export default class Importer {
   static loadPage(page) {
     let tree = {};
     let parsedPage = parseNode(page, tree);
 
     return { page: parsedPage, tree };
+  }
+
+  static drawRootFrame(frame) {
+    let htmlTree = {}; //holds html refs using id
+    let drawedFrame = frame.draw(htmlTree);
+    return { frame: drawedFrame, htmlTree };
   }
 }

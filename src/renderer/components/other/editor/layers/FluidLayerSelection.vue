@@ -32,7 +32,10 @@ export default {
           layerId => this.nodesTree[layerId]
         );
         for (let node of nodes) {
-          if (isRoot(node)) return;
+          if (isRoot(node)) {
+            this.clear(this.selectionCtx, this.$refs.selectionCanvas);
+            return;
+          }
           const bounds = getPositionRelativeToCanvas(node);
           this.draw(bounds, this.selectionCtx, this.$refs.selectionCanvas);
         }

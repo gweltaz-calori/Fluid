@@ -5,15 +5,15 @@
             <span class="layer-indentations">
                 
               <span class="layer-indent" v-for="(indent,index) in indentLevel" :key="index"></span>
-              <div @mousedown.stop="toggleOpening" class="layer-icon-arrow-wrapper" :class="{'disabled':layer.visible === false}" v-if="isContainer">
+              <div @mousedown.stop="toggleOpening" class="layer-icon-arrow-wrapper" :class="{'hidden':layer.visible === false}" v-if="isContainer">
                   <fluid-icon-arrow-down class="layer-icon-arrow" :class="{'opened':open}"></fluid-icon-arrow-down>
               </div> 
             </span>
-            <div v-if="highlighted" class="layer-header-overlay"></div>
+            <div v-if="isHighlightedLayer" class="layer-header-overlay"></div>
             
-            <span :class="{'disabled':layer.visible === false}" class="layer-name">{{layer.name}}</span>
-            <div :class="{'disabled':layer.visible === false}" class="layer-actions">
-                <div @mousedown.stop="toggleVisibility" class="visibility-icon-wrapper" v-if="highlighted && !isRoot">
+            <span :class="{'hidden':layer.visible === false}" class="layer-name">{{layer.name}}</span>
+            <div :class="{'hidden':layer.visible === false}" class="layer-actions">
+                <div @mousedown.stop="toggleVisibility" class="visibility-icon-wrapper" v-if="hovered && !isRoot">
                     <fluid-icon-eye class="layer-action layer-icon-visibility"></fluid-icon-eye>
                 </div>
                 <div v-if="hasAnimations" class="is-animated-icon-wrapper">
@@ -23,7 +23,7 @@
             
             <div :class="{'root-layer':isRoot}" class="layer-header-background"></div>
           </div>
-          <div :class="{'disabled':layer.visible === false}" class="layer-content" v-if="isContainer && open">
+          <div :class="{'hidden':layer.visible === false}" class="layer-content" v-if="isContainer && open">
               <fluid-layer-item :indent-level="indentLevel+1" :is-parent-selected="isCurrentSelectedLayer" v-for="(subLayer) in layer.children" :layer="subLayer" :key="subLayer.id"></fluid-layer-item>
           </div>
         </span>
@@ -49,16 +49,20 @@ export default {
   data() {
     return {
       open: false,
-      highlighted: false
+      disabled: false,
+      hovered: false
     };
   },
   computed: {
-    ...mapGetters(["selectedLayers"]),
+    ...mapGetters(["selectedLayers", "highlightedLayer"]),
     isContainer() {
       return this.layer.children;
     },
     isCurrentSelectedLayer() {
       return !isRoot(this.layer) && this.selectedLayers.includes(this.layer.id);
+    },
+    isHighlightedLayer() {
+      return !isRoot(this.layer) && this.highlightedLayer === this.layer.id;
     },
     isRoot() {
       return isRoot(this.layer);
@@ -81,21 +85,34 @@ export default {
       if (this.isRoot) {
         return;
       }
-      this.highlighted = false;
+
+      this.hovered = false;
+
+      this.disabled = false;
       this.setHighlightedLayer();
     },
     enter() {
       if (this.isRoot) {
         return;
       }
-      this.highlighted = true;
+
+      this.hovered = true;
+
+      if (this.disabled) {
+        return;
+      }
+
       this.setHighlightedLayer(this.layer.id);
     },
     toggleVisibility() {
       this.toggleNodeVisibility(this.layer.id);
+      if (!this.layer.visible) {
+        this.setHighlightedLayer(null);
+        this.disabled = true; //prevent hover event while the user hasn't left the layer , once he left we can
+      }
     },
     onHeaderClick() {
-      if (this.isRoot) {
+      if (this.isRoot || this.disabled) {
         return;
       }
 
@@ -114,7 +131,7 @@ export default {
   cursor: default;
 }
 
-.disabled {
+.hidden {
   opacity: 0.2;
 }
 

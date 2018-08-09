@@ -29,7 +29,8 @@ export default {
       "deselectAllNodes",
       "setNodesTree",
       "setHighlightedLayer",
-      "setCanvasBounds"
+      "setCanvasBounds",
+      "setNodesTreeHtmlRefs"
     ]),
     hover(e) {
       const node = getNodeFromEvent(e, this.$refs.canvas);
@@ -625,7 +626,12 @@ export default {
     });
     this.setFrames(page.children);
     this.setNodesTree(tree);
-    this.$refs.canvas.appendChild(this.currentSlide.draw({}));
+
+    let { frame, htmlTree } = Importer.drawRootFrame(this.currentSlide);
+
+    this.setNodesTreeHtmlRefs(htmlTree);
+
+    this.$refs.canvas.appendChild(frame);
 
     this.onResize();
   }

@@ -19,8 +19,8 @@ export default class Frame extends FrameBase {
     this.clipsContent = opts.clipsContent;
   }
 
-  draw(tree) {
-    let el = super.draw(tree);
+  draw(htmlTree) {
+    let el = super.draw(htmlTree);
     el.style.position = "relative";
     el.style.top = 0;
     el.style.left = 0;

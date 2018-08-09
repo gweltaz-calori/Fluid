@@ -8,5 +8,6 @@ export default class Canvas {
       y: 0
     });
     this.children = [];
+    this.visible = true;
   }
 }

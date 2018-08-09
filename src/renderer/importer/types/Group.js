@@ -17,15 +17,13 @@ export default class Group extends FrameBase {
     );
   }
 
-  draw(tree) {
-    let el = super.draw(tree);
+  draw(htmlTree) {
+    let el = super.draw(htmlTree);
 
     el.style.top = `${this.absoluteBoundingBox.y -
       this.parentNode.absoluteBoundingBox.y}px`;
     el.style.left = `${this.absoluteBoundingBox.x -
       this.parentNode.absoluteBoundingBox.x}px`;
-
-    tree[this.id] = el;
 
     return el;
   }

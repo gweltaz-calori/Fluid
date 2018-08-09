@@ -2,10 +2,23 @@ import store from "@/store";
 
 export const isBranch = node => ["GROUP", "FRAME"].includes(node.type);
 export const isLeaf = node => !isBranch(node);
+export const isCanvas = node => node.type === "CANVAS";
 export const isRoot = node =>
   node.relativeTransform[0][2] === node.absoluteBoundingBox.x &&
   node.type === "FRAME" &&
   node.relativeTransform[1][2] === node.absoluteBoundingBox.y;
+
+export const isVisible = node => {
+  let visible = node.visible;
+  let parent = node.parentNode;
+
+  while (visible && (parent && !isCanvas(parent))) {
+    visible = parent.visible && visible;
+    parent = parent.parentNode;
+  }
+
+  return visible;
+};
 
 export function getPosition(node) {
   return {

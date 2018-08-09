@@ -33,7 +33,7 @@ export default class FrameBase extends Global {
     }
   }
 
-  draw(tree) {
+  draw(htmlTree) {
     let el = document.createElement("div");
     el.style.width = `${this.absoluteBoundingBox.width}px`;
     el.style.height = `${this.absoluteBoundingBox.height}px`;
@@ -46,8 +46,10 @@ export default class FrameBase extends Global {
     el.setAttribute("type", this.type);
 
     for (let child of this.children) {
-      el.appendChild(child.draw(tree));
+      el.appendChild(child.draw(htmlTree));
     }
+
+    htmlTree[this.id] = el;
 
     return el;
   }
