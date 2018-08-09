@@ -116,6 +116,8 @@ export default {
       }
 
       this.$refs.canvas.appendChild(frame);
+
+      this.onResize();
     }
   },
   beforeDestroy() {
@@ -408,8 +410,6 @@ export default {
     });
     this.setFrames(page.children);
     this.setNodesTree(tree);
-
-    this.onResize();
   }
 };
 </script>

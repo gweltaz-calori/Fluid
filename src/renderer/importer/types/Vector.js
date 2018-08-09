@@ -262,7 +262,12 @@ export default class Vector extends Global {
     el.style.left = `${this.absoluteBoundingBox.x -
       this.parentNode.absoluteBoundingBox.x}px`;
     el.style.opacity = this.opacity;
-    el.style.transform = `rotate(${transform.rotation}deg)`;
+    el.style.transformOrigin = "top left";
+    el.style.transform = `translate(${transform.translate.x}px, ${
+      transform.translate.y
+    }px) rotate(${transform.rotation}deg) scale(${transform.scale.x},${
+      transform.scale.y
+    })`;
 
     el.setAttribute("type", this.type);
 

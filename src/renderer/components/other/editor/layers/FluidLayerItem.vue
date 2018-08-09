@@ -88,7 +88,6 @@ export default {
 
       this.hovered = false;
 
-      this.disabled = false;
       this.setHighlightedLayer();
     },
     enter() {
@@ -98,17 +97,12 @@ export default {
 
       this.hovered = true;
 
-      if (this.disabled) {
-        return;
-      }
-
       this.setHighlightedLayer(this.layer.id);
     },
     toggleVisibility() {
       this.toggleNodeVisibility(this.layer.id);
       if (!this.layer.visible) {
         this.setHighlightedLayer(null);
-        this.disabled = true; //prevent hover event while the user hasn't left the layer , once he left we can
       }
     },
     onHeaderClick() {

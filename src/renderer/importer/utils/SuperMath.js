@@ -7,6 +7,10 @@ export default class SuperMath {
     return (radians * 180) / Math.PI;
   }
 
+  static toRadians(degrees) {
+    return (degrees * Math.PI) / 180;
+  }
+
   static multiplyMatrix(m1, m2) {
     var result = [];
     for (var i = 0; i < m1.length; i++) {

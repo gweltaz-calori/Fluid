@@ -55,6 +55,8 @@ export default class Global {
     }
     rotation = SuperMath.toDegrees(rotation);
 
+    rotation = parseFloat(rotation.toFixed(3));
+
     return { rotation, translate, skew, scale };
   }
 }

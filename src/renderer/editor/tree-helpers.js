@@ -1,4 +1,5 @@
 import store from "@/store";
+import SuperMath from "@/importer/utils/SuperMath";
 
 export const isBranch = node => ["GROUP", "FRAME"].includes(node.type);
 export const isLeaf = node => !isBranch(node);
@@ -29,7 +30,12 @@ export function getPosition(node) {
       node.absoluteBoundingBox.y -
       store.getters.currentSlide.absoluteBoundingBox.y,
     width: node.size.x,
-    height: node.size.y
+    height: node.size.y,
+    relativeTransform: {
+      x: node.relativeTransform[0][2],
+      y: node.relativeTransform[1][2]
+    }
+    //todo retrieve parent relative transform
   };
 }
 
@@ -38,6 +44,8 @@ export function getPositionRelativeToCanvas(node) {
 
   const scaleX = store.getters.currentSlide.absoluteBoundingBox.width / width;
   const scaleY = store.getters.currentSlide.absoluteBoundingBox.height / height;
+
+  const transform = node.getSVGTransform();
 
   return {
     width: node.size.x / scaleX,
@@ -51,16 +59,58 @@ export function getPositionRelativeToCanvas(node) {
       top +
       (node.absoluteBoundingBox.y -
         store.getters.currentSlide.absoluteBoundingBox.y) /
-        scaleY
+        scaleY,
+    transform: {
+      translate: {
+        x: transform.translate.x / scaleX,
+        y: transform.translate.y / scaleY
+      },
+      rotation: transform.rotation,
+      scale: transform.scale
+    },
+    absoluteBoundingBox: {
+      width: node.absoluteBoundingBox.width / scaleX,
+      height: node.absoluteBoundingBox.height / scaleY
+    }
+  };
+}
+
+function rotateAroundPoint({ x, y }, radianAngle) {
+  const sin = Math.sin(radianAngle);
+  const cos = Math.cos(radianAngle);
+
+  return {
+    x: x * cos + y * -sin,
+    y: x * sin + y * cos
   };
 }
 
 export function containsPoint(node, point) {
   const position = getPosition(node);
-  return (
-    point.x >= position.x &&
-    point.x <= position.x + position.width &&
-    point.y >= position.y &&
-    point.y <= position.y + position.height
-  );
+  const { rotation } = node.getSVGTransform();
+
+  if (rotation === 0) {
+    return (
+      point.x >= position.x &&
+      point.x <= position.x + position.width &&
+      point.y >= position.y &&
+      point.y <= position.y + position.height
+    );
+  } else {
+    let rotatedBounds = {
+      width: position.width,
+      height: position.height,
+      ...rotateAroundPoint(
+        { x: position.relativeTransform.x, y: position.relativeTransform.y },
+        SuperMath.toRadians(-rotation)
+      )
+    };
+    let rotatedPoint = rotateAroundPoint(point, SuperMath.toRadians(-rotation));
+    return (
+      rotatedPoint.x >= rotatedBounds.x &&
+      rotatedPoint.x <= rotatedBounds.x + rotatedBounds.width &&
+      rotatedPoint.y >= rotatedBounds.y &&
+      rotatedPoint.y <= rotatedBounds.y + rotatedBounds.height
+    );
+  }
 }

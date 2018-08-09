@@ -8,6 +8,7 @@
 <script>
 import { mapGetters } from "vuex";
 import { getPositionRelativeToCanvas, isRoot } from "@/editor/tree-helpers";
+import SuperMath from "@/importer/utils/SuperMath";
 export default {
   computed: {
     ...mapGetters(["highlightedLayer", "selectedLayers", "nodesTree"])
@@ -51,7 +52,15 @@ export default {
       ctx.strokeStyle = "#1f8aff";
       ctx.lineWidth = 2;
 
-      ctx.strokeRect(bounds.x, bounds.y, bounds.width, bounds.height);
+      ctx.save();
+      ctx.translate(
+        bounds.x + bounds.transform.translate.x,
+        bounds.y + bounds.transform.translate.y
+      );
+      ctx.rotate(SuperMath.toRadians(bounds.transform.rotation));
+      ctx.scale(bounds.transform.scale.x, bounds.transform.scale.y);
+      ctx.strokeRect(0, 0, bounds.width, bounds.height);
+      ctx.restore();
     },
     clear(ctx, canvas) {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
