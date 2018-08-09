@@ -1,6 +1,6 @@
 <template>
     <div v-if="slides.length > 0" class="slides">
-        <editor-slide :slide="slide" @click.native="setSelectedFrame(index)" v-for="(slide,index) in slides" :key="slide.id" :selected="currentSlide.id == slide.id"></editor-slide>
+        <editor-slide :slide="slide" @mousedown.native="setSelectedFrame(index)" v-for="(slide,index) in slides" :key="slide.id" :selected="currentSlide.id == slide.id"></editor-slide>
     </div>
     <fluid-text-info class="slides-info" v-else>No slides found</fluid-text-info>
 </template>
