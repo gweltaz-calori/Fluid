@@ -211,6 +211,10 @@ const getters = {
   slides: state => state.editor.frames,
   currentSlide: state => state.editor.selectedFrame,
   selectedLayers: state => state.editor.selectedLayers,
+  isSelectedLayerMultiSelection: state =>
+    state.editor.selectedLayers.length > 1,
+  selectedLayersFromTree: state =>
+    state.editor.selectedLayers.map(id => state.editor.nodesTree[id]),
   highlightedLayer: state => state.editor.highlightedLayer,
   nodesTree: state => state.editor.nodesTree,
   canvasBounds: state => state.editor.canvasBounds

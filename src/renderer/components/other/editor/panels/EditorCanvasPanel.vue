@@ -132,32 +132,32 @@ export default {
       children: [
         {
           id: "1:2",
-          name: "slide",
+          name: "Frame",
           type: "FRAME",
           blendMode: "PASS_THROUGH",
           children: [
             {
-              id: "1:15",
+              id: "1:4",
               name: "Rectangle",
               type: "RECTANGLE",
               blendMode: "PASS_THROUGH",
               absoluteBoundingBox: {
-                x: 1922.098450422287,
-                y: 7664.098419189453,
-                width: 497.803165435791,
-                height: 497.803165435791
+                x: -137.99999725818634,
+                y: -420,
+                width: 506.2884466648102,
+                height: 506.2884466648102
               },
               constraints: {
                 vertical: "TOP",
                 horizontal: "LEFT"
               },
               relativeTransform: [
-                [0.7071067690849304, -0.7071067690849304, 934.544189453125],
-                [0.7071067690849304, 0.7071067690849304, 291.0984191894531]
+                [0.7071067690849304, -0.7071067690849304, 791.1442260742188],
+                [0.7071067690849304, 0.7071067690849304, 405]
               ],
               size: {
-                x: 388,
-                y: 316
+                x: 358,
+                y: 358
               },
               fills: [
                 {
@@ -173,53 +173,7 @@ export default {
               ],
               fillGeometry: [
                 {
-                  path: "M 0 0 L 388 0 L 388 316 L 0 316 L 0 0 Z",
-                  windingRule: "NONZERO"
-                }
-              ],
-              strokes: [],
-              strokeWeight: 1,
-              strokeAlign: "INSIDE",
-              strokeGeometry: [],
-              exportSettings: [],
-              effects: []
-            },
-            {
-              id: "1:16",
-              name: "Ellipse",
-              type: "ELLIPSE",
-              blendMode: "PASS_THROUGH",
-              absoluteBoundingBox: {
-                x: 1388,
-                y: 7546,
-                width: 302,
-                height: 302
-              },
-              constraints: {
-                vertical: "TOP",
-                horizontal: "LEFT"
-              },
-              relativeTransform: [[1, 0, 177], [0, 1, 173]],
-              size: {
-                x: 302,
-                y: 302
-              },
-              fills: [
-                {
-                  type: "SOLID",
-                  blendMode: "NORMAL",
-                  color: {
-                    r: 1,
-                    g: 0.611764705882353,
-                    b: 0.611764705882353,
-                    a: 1
-                  }
-                }
-              ],
-              fillGeometry: [
-                {
-                  path:
-                    "M 302 151 C 302 234.39500427246094 234.39500427246094 302 151 302 C 67.6050033569336 302 0 234.39500427246094 0 151 C 0 67.6050033569336 67.6050033569336 0 151 0 C 234.39500427246094 0 302 67.6050033569336 302 151 Z",
+                  path: "M 0 0 L 358 0 L 358 358 L 0 358 L 0 0 Z",
                   windingRule: "NONZERO"
                 }
               ],
@@ -232,19 +186,19 @@ export default {
             }
           ],
           absoluteBoundingBox: {
-            x: 1211,
-            y: 7373,
-            width: 1920,
-            height: 1080
+            x: -676,
+            y: -825,
+            width: 2014,
+            height: 1363
           },
           constraints: {
             vertical: "TOP",
             horizontal: "LEFT"
           },
-          relativeTransform: [[1, 0, 1211], [0, 1, 7373]],
+          relativeTransform: [[1, 0, -676], [0, 1, -825]],
           size: {
-            x: 1920,
-            y: 1080
+            x: 2014,
+            y: 1363
           },
           backgroundColor: {
             r: 1,
@@ -253,133 +207,110 @@ export default {
             a: 1
           },
           clipsContent: true,
-          exportSettings: [
-            {
-              suffix: "",
-              format: "SVG",
-              constraint: {
-                type: "SCALE",
-                value: 1
-              }
-            }
-          ],
+          exportSettings: [],
           effects: []
         },
         {
-          id: "1:14",
-          name: "slide",
+          id: "1:3",
+          name: "Frame",
           type: "FRAME",
           blendMode: "PASS_THROUGH",
           children: [
             {
-              id: "1:17",
-              name: "Ellipse",
-              type: "ELLIPSE",
+              id: "1:6",
+              name: "Frame",
+              type: "FRAME",
               blendMode: "PASS_THROUGH",
+              children: [
+                {
+                  id: "1:5",
+                  name: "Rectangle",
+                  type: "RECTANGLE",
+                  blendMode: "PASS_THROUGH",
+                  absoluteBoundingBox: {
+                    x: 2802.0000203847885,
+                    y: -816.3743286132812,
+                    width: 489.0370783209801,
+                    height: 489.0370783209801
+                  },
+                  constraints: {
+                    vertical: "TOP",
+                    horizontal: "LEFT"
+                  },
+                  relativeTransform: [
+                    [0.4999999701976776, -0.8660253882408142, 709.037109375],
+                    [0.8660253882408142, 0.4999999701976776, 8.62567138671875]
+                  ],
+                  size: {
+                    x: 358,
+                    y: 358
+                  },
+                  fills: [
+                    {
+                      type: "SOLID",
+                      blendMode: "NORMAL",
+                      color: {
+                        r: 0.7686274509803922,
+                        g: 0.7686274509803922,
+                        b: 0.7686274509803922,
+                        a: 1
+                      }
+                    }
+                  ],
+                  fillGeometry: [
+                    {
+                      path: "M 0 0 L 358 0 L 358 358 L 0 358 L 0 0 Z",
+                      windingRule: "NONZERO"
+                    }
+                  ],
+                  strokes: [],
+                  strokeWeight: 1,
+                  strokeAlign: "INSIDE",
+                  strokeGeometry: [],
+                  exportSettings: [],
+                  effects: []
+                }
+              ],
               absoluteBoundingBox: {
-                x: 3980,
-                y: 7762,
-                width: 302,
-                height: 302
+                x: 2403,
+                y: -825,
+                width: 989,
+                height: 506
               },
               constraints: {
                 vertical: "TOP",
                 horizontal: "LEFT"
               },
-              relativeTransform: [[1, 0, 809], [0, 1, 389]],
+              relativeTransform: [[1, 0, 1025], [0, 1, 0]],
               size: {
-                x: 302,
-                y: 302
+                x: 989,
+                y: 506
               },
-              fills: [
-                {
-                  type: "SOLID",
-                  blendMode: "NORMAL",
-                  color: {
-                    r: 1,
-                    g: 0.611764705882353,
-                    b: 0.611764705882353,
-                    a: 1
-                  }
-                }
-              ],
-              fillGeometry: [
-                {
-                  path:
-                    "M 302 151 C 302 234.39500427246094 234.39500427246094 302 151 302 C 67.6050033569336 302 0 234.39500427246094 0 151 C 0 67.6050033569336 67.6050033569336 0 151 0 C 234.39500427246094 0 302 67.6050033569336 302 151 Z",
-                  windingRule: "NONZERO"
-                }
-              ],
-              strokes: [],
-              strokeWeight: 1,
-              strokeAlign: "INSIDE",
-              strokeGeometry: [],
-              exportSettings: [],
-              effects: []
-            },
-            {
-              id: "1:18",
-              name: "Rectangle",
-              type: "RECTANGLE",
-              blendMode: "PASS_THROUGH",
-              absoluteBoundingBox: {
-                x: 3289.9999961853027,
-                y: 7664.098694562912,
-                width: 497.803165435791,
-                height: 497.803165435791
+              backgroundColor: {
+                r: 0,
+                g: 0,
+                b: 0,
+                a: 0
               },
-              constraints: {
-                vertical: "TOP",
-                horizontal: "LEFT"
-              },
-              relativeTransform: [
-                [-0.7071067690849304, -0.7071067690849304, 616.8031616210938],
-                [0.7071067690849304, -0.7071067690849304, 514.54443359375]
-              ],
-              size: {
-                x: 388,
-                y: 316
-              },
-              fills: [
-                {
-                  type: "SOLID",
-                  blendMode: "NORMAL",
-                  color: {
-                    r: 0.7686274509803922,
-                    g: 0.7686274509803922,
-                    b: 0.7686274509803922,
-                    a: 1
-                  }
-                }
-              ],
-              fillGeometry: [
-                {
-                  path: "M 0 0 L 388 0 L 388 316 L 0 316 L 0 0 Z",
-                  windingRule: "NONZERO"
-                }
-              ],
-              strokes: [],
-              strokeWeight: 1,
-              strokeAlign: "INSIDE",
-              strokeGeometry: [],
+              clipsContent: true,
               exportSettings: [],
               effects: []
             }
           ],
           absoluteBoundingBox: {
-            x: 3171,
-            y: 7373,
-            width: 1920,
-            height: 1080
+            x: 1378,
+            y: -825,
+            width: 2014,
+            height: 1363
           },
           constraints: {
             vertical: "TOP",
             horizontal: "LEFT"
           },
-          relativeTransform: [[1, 0, 3171], [0, 1, 7373]],
+          relativeTransform: [[1, 0, 1378], [0, 1, -825]],
           size: {
-            x: 1920,
-            y: 1080
+            x: 2014,
+            y: 1363
           },
           backgroundColor: {
             r: 1,
@@ -388,16 +319,7 @@ export default {
             a: 1
           },
           clipsContent: true,
-          exportSettings: [
-            {
-              suffix: "",
-              format: "SVG",
-              constraint: {
-                type: "SCALE",
-                value: 1
-              }
-            }
-          ],
+          exportSettings: [],
           effects: []
         }
       ],

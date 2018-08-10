@@ -1,4 +1,5 @@
 import FrameBase from "./FrameBase";
+import { isRoot } from "@/editor/tree-helpers";
 
 export default class Frame extends FrameBase {
   constructor(opts) {
@@ -22,8 +23,14 @@ export default class Frame extends FrameBase {
   draw(htmlTree) {
     let el = super.draw(htmlTree);
     el.style.position = "relative";
-    el.style.top = 0;
-    el.style.left = 0;
+    el.style.top = isRoot(this)
+      ? 0
+      : `${this.absoluteBoundingBox.y -
+          this.parentNode.absoluteBoundingBox.y}px`;
+    el.style.left = isRoot(this)
+      ? 0
+      : `${this.absoluteBoundingBox.x -
+          this.parentNode.absoluteBoundingBox.x}px`;
 
     if (this.clipsContent) {
       el.style.overflow = "hidden";

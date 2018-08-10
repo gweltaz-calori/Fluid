@@ -22,6 +22,7 @@ export const isVisible = node => {
 };
 
 export function getPosition(node) {
+  const { x, y } = node.getAbsoluteTranslation();
   return {
     x:
       node.absoluteBoundingBox.x -
@@ -32,8 +33,8 @@ export function getPosition(node) {
     width: node.size.x,
     height: node.size.y,
     relativeTransform: {
-      x: node.relativeTransform[0][2],
-      y: node.relativeTransform[1][2]
+      x,
+      y
     }
     //todo retrieve parent relative transform
   };

@@ -97,7 +97,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["fluid"]),
+    ...mapGetters(["fluid", "selectedLayersFromTree"]),
     availableAnimations() {
       return AVAILAIBLE_ANIMATION_PROPERTIES;
     },

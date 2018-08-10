@@ -1,5 +1,6 @@
 import SuperMath from "../utils/SuperMath";
 import Fluid from "../external/Fluid";
+import { isRoot } from "../../editor/tree-helpers";
 
 export default class Global {
   constructor(id, name, type, visible, relativeTransform) {
@@ -10,6 +11,25 @@ export default class Global {
     this.fluid = new Fluid();
     this.relativeTransform = relativeTransform || [[1, 0, 0], [0, 1, 0]];
     this.relativeTransform.push([0, 0, 1]); //add the transform for 3 axis (z)
+  }
+
+  getAbsoluteTranslation() {
+    let x = isRoot(this) ? 0 : this.relativeTransform[0][2];
+    let y = isRoot(this) ? 0 : this.relativeTransform[1][2];
+
+    let parentTranslation = {
+      x: 0,
+      y: 0
+    };
+
+    if (this.parentNode && this.parentNode.getAbsoluteTranslation) {
+      parentTranslation = this.parentNode.getAbsoluteTranslation();
+    }
+
+    return {
+      x: parentTranslation.x + x,
+      y: parentTranslation.y + y
+    };
   }
 
   getSVGTransform() {

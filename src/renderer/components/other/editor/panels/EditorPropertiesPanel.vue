@@ -11,21 +11,21 @@
 
 <script>
 import FormatMenu from "@/components/other/editor/menus/FormatMenu.vue";
-import AnimateMenu from "@/components/other/editor/menus/AnimateMenu.vue";
+import AnimateMenuV2 from "@/components/other/editor/menus/AnimateMenuV2.vue";
 import { AnimationType } from "@/models/types";
 export default {
   components: {
     FormatMenu,
-    AnimateMenu
+    AnimateMenuV2
   },
   data() {
     return {
       menuOptions: [
         {
           name: "animate in",
-          key: AnimationType.ANIMATE_IN,
-          value: "AnimateMenu"
-        },
+          key: "animateIn",
+          value: "AnimateMenuV2"
+        } /* 
         {
           name: "animate out",
           key: AnimationType.ANIMATE_OUT,
@@ -35,12 +35,12 @@ export default {
           name: "format",
           key: "FORMAT",
           value: "FormatMenu"
-        }
+        } */
       ],
       selectedMenu: {
         name: "animate in",
-        key: AnimationType.ANIMATE_IN,
-        value: "AnimateMenu"
+        key: "animateIn",
+        value: "AnimateMenuV2"
       }
     };
   }
