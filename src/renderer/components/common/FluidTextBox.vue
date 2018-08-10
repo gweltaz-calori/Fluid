@@ -1,9 +1,10 @@
 <template>
-    <input @keyup.enter="exitInput($event)" @click="click" :value="value" @blur="validateValue($event)" :placeholder="placeholder" type="text">
+    <input @click="click"  @blur="validateInput($event.target.value)" ref="input" :value="value" :placeholder="placeholder" type="text">
 </template>
 
 <script>
 import SuperMath from "@/js/math";
+
 export default {
   props: {
     min: {
@@ -16,32 +17,34 @@ export default {
     },
     value: {},
     placeholder: {},
-    unit: {},
-    hasMaxium: {
-      default: true
-    },
-    fallbackValue: {
-      default: "max"
+    formatter: {
+      required: false
     }
   },
-
   methods: {
     click(e) {
       e.target.setSelectionRange(0, e.target.value.length);
     },
-    exitInput(event) {
-      event.target.blur();
-      this.validateValue(event);
-    },
-    validateValue(event) {
-      event.target.value = SuperMath.clamp(
-        event.target.value,
-        this.min,
-        this.max,
-        this.fallbackValue === "max"
-      );
+    validateInput(value) {
+      let val = this.value;
 
-      this.$emit("input", event.target.value);
+      if (this.formatter) {
+        try {
+          val = this.formatter.parse(value);
+        } catch (e) {
+          if (val) {
+            val = this.formatter.parse(val);
+          }
+        }
+
+        val = this.formatter.format(SuperMath.clamp(val, this.min, this.max));
+      } else {
+        val = SuperMath.clamp(val, this.min, this.max);
+      }
+
+      this.$refs.input.value = val;
+
+      this.$emit("input", val);
     }
   }
 };
@@ -49,15 +52,26 @@ export default {
 
 <style scoped>
 input {
-  background-color: transparent;
+  width: 48.56px;
+  height: 24px;
+  padding: 6.43px 4.12px;
+
+  background: rgba(34, 34, 34, 1);
+  border-radius: 3px;
 
   font-family: Exo;
   font-style: normal;
   font-weight: normal;
   line-height: normal;
-  font-size: 11px;
+  font-size: 13.4435px;
 
   color: #ffffff;
-  width: 30px;
+  border: solid transparent 1px;
+
+  cursor: default;
+}
+
+input:focus {
+  border: solid #1f8aff 1px;
 }
 </style>

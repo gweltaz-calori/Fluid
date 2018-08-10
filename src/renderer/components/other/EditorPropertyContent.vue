@@ -10,6 +10,7 @@ export default {};
 
 <style scoped>
 .property-content {
-  padding: 0 6px;
+  /*   padding: 0 6px;
+ */
 }
 </style>

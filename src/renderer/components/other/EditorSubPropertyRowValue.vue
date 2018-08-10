@@ -1,36 +1,34 @@
 <template>
     <div class="sub-property-value-container">
         <div class="range-value-type" v-if="type === 'range'">
-            <fluid-text-box-v-2 :formatter="formatter" class="range-value-type-textbox" :value="value" @input="changeValue"></fluid-text-box-v-2>
-            <fluid-range-2 :formatter="formatter" :value="value" @input="changeValue"></fluid-range-2 >
+            <fluid-text-box :fallback-value="fallbackValue" :max="max" :min="min" :formatter="formatter" class="range-value-type-textbox" :value="value" @input="changeValue"></fluid-text-box>
+            <fluid-range :max="max" :min="min" :formatter="formatter" :value="value" @input="changeValue"></fluid-range>
         </div>
         <fluid-check-box v-else-if="type === 'checkbox'" :value="value" @input="changeValue"></fluid-check-box>
         <div v-else-if="type === 'textbox'" class="text-box-container">
-          <fluid-text-box-v-2 :fallback-value="fallbackValue" :max="max" :min="min" :formatter="formatter" :value="value" @input="changeValue"></fluid-text-box-v-2>
+          <fluid-text-box :fallback-value="fallbackValue" :max="max" :min="min" :formatter="formatter" :value="value" @input="changeValue"></fluid-text-box>
         </div>
         <div v-else>
-            <fluid-combo-box-2 :value="value" :options="options" @input="changeValue"></fluid-combo-box-2>
+            <fluid-combo-box :model-property="modelProperty" :label="label" :track-by="trackBy" :value="value" :options="options" @input="changeValue"></fluid-combo-box>
         </div>
     </div>
 </template>
 
 <script>
-import FluidRange from "@/components/common/FluidRange.vue";
-import FluidTextBox from "@/components/common/FluidTextBox.vue";
-import FluidComboBox from "@/components/common/FluidComboBox.vue";
-import FluidCheckBox from "@/components/common/FluidCheckBox.vue";
 export default {
-  components: { FluidRange, FluidTextBox, FluidComboBox, FluidCheckBox },
   props: {
     type: {
       type: String
     },
+    label: {},
+    trackBy: {},
     value: {},
     options: {},
     max: {},
     min: {},
     formatter: {},
-    fallbackValue: {}
+    fallbackValue: {},
+    modelProperty: {}
   },
   methods: {
     changeValue(value) {

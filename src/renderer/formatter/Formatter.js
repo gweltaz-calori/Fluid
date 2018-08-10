@@ -1,8 +1,5 @@
 export default class Formatter {
-  constructor(min, max) {
-    this.min = min;
-    this.max = max;
-  }
+  constructor() {}
 
   parse(stringValue) {
     let value = stringValue.replace(new RegExp(this.units, "g"), "");

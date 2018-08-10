@@ -1,5 +1,5 @@
 <template>
-    <div class="sub-property">
+    <div class="animated-sub-property">
         <slot></slot>
     </div>
 </template>
@@ -9,7 +9,7 @@ export default {};
 </script>
 
 <style scoped>
-.sub-property {
+.animated-sub-property {
   display: flex;
   align-items: center;
   margin: 4.5px 0;

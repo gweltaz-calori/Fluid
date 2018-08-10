@@ -1,12 +1,12 @@
 import Formatter from "./Formatter";
 
 export default class SeconderFormatter extends Formatter {
-  constructor(min, max) {
-    super(min, max);
+  constructor() {
+    super();
     this.units = "s";
   }
 
   format(value) {
-    return null == value ? "" : `${parseFloat(value.toFixed(2))}s`;
+    return null == value ? "" : `${Math.abs(parseFloat(value)).toFixed(1)}s`;
   }
 }

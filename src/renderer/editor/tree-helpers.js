@@ -36,7 +36,6 @@ export function getPosition(node) {
       x,
       y
     }
-    //todo retrieve parent relative transform
   };
 }
 

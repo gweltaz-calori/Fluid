@@ -1,8 +1,8 @@
 import Formatter from "./Formatter";
 
 export default class AngleFormatter extends Formatter {
-  constructor(min, max) {
-    super(min, max);
+  constructor() {
+    super();
     this.units = "°|deg";
   }
 
@@ -11,6 +11,6 @@ export default class AngleFormatter extends Formatter {
       ? ""
       : ((value = ((value + 180 + 360) % 360) - 180),
         value === -180 && (value = 180),
-        `${parseFloat(value.toFixed(2))}°`);
+        `${parseFloat(value).toFixed(2)}°`);
   }
 }

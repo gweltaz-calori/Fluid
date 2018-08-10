@@ -1,28 +1,28 @@
 <template>
-    <div class="combo" @click="showOptions" v-on-clickaway="closeOptions">
-        <div class="combo-value">{{value.name}}</div>
-        <fluid-icon-chevron @click="showOptions"></fluid-icon-chevron>
+    <div class="combo" @mousedown="showOptions" v-on-mousedownaway="closeOptions">
+        <div class="combo-value">{{getLabel(value)}}</div>
+        <fluid-icon-chevron class="combo-chevron" @click="showOptions"></fluid-icon-chevron>
         <div v-show="optionsVisible" class="combo-options" :style="comboOptionsStyle">
-            <div class="combo-option" @click.stop="changeValue(option)" v-for="option in options" :key="option.name">
-              <div class="combo-option-check" :class="{'checked':option.name == value.name}">
+            <div class="combo-option" @mousedown.stop="changeValue(option)" v-for="option in options" :key="getKey(option)">
+              <div class="combo-option-check" :class="{'checked':getLabel(option) == getLabel(value)}">
                 <fluid-icon-check></fluid-icon-check>
               </div>
-              <div class="combo-option-text" :class="{'active':option.name == value.name}">{{option.name}}</div>
+              <div class="combo-option-text" :class="{'active':getLabel(option) == getLabel(value)}">{{getLabel(option)}}</div>
             </div>
         </div>
     </div>
 </template>
 
 <script>
-import { mixin as clickaway } from "vue-clickaway";
+import { mixin as mousedownaway } from "@/directives/mouse-away";
 
 import FluidIconChevron from "@/components/icons/FluidIconChevron.vue";
 import FluidIconCheck from "@/components/icons/FluidIconCheck.vue";
 
 export default {
-  mixins: [clickaway],
+  mixins: [mousedownaway],
   components: { FluidIconChevron, FluidIconCheck },
-  props: ["value", "options"],
+  props: ["value", "options", "label", "track-by", "modelProperty"],
   data() {
     return {
       optionsVisible: false
@@ -30,7 +30,11 @@ export default {
   },
   methods: {
     changeValue(option) {
-      this.$emit("input", option);
+      if (this.modelProperty && typeof option === "object") {
+        this.$emit("input", option[this.modelProperty]);
+      } else {
+        this.$emit("input", option);
+      }
       this.closeOptions();
     },
     showOptions() {
@@ -38,11 +42,24 @@ export default {
     },
     closeOptions() {
       this.optionsVisible = false;
+    },
+    getKey(value) {
+      if (typeof value === "object" && this.trackBy) return value[this.trackBy];
+
+      return value;
+    },
+    getLabel(value) {
+      if (typeof value === "object" && this.label) return value[this.label];
+
+      return value;
     }
   },
   computed: {
     comboOptionsStyle() {
-      let index = this.options.findIndex(option => option == this.value);
+      let index = this.options.findIndex(
+        option => this.getLabel(option) === this.getLabel(this.value)
+      );
+
       return {
         top: `${-(index * 29) - 4}px`
       };
@@ -58,6 +75,11 @@ export default {
   display: flex;
   align-items: center;
   position: relative;
+  background: rgba(34, 34, 34, 1);
+  border-radius: 3px;
+  padding: 2.59px 7.08px;
+  width: 136.7px;
+  height: 24px;
 }
 
 .combo-options {
@@ -86,6 +108,10 @@ export default {
   pointer-events: none;
 }
 
+.combo-chevron {
+  margin-left: auto;
+}
+
 .combo-option-check.checked {
   opacity: 1;
 }
@@ -101,7 +127,11 @@ export default {
 }
 
 .combo-value {
-  margin-right: 7px;
+  font-family: Exo;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  font-size: 11px;
 
   color: #ffffff;
 }
