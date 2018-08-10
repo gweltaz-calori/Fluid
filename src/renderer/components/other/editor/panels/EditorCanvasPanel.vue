@@ -12,7 +12,9 @@ import Mouse from "@/js/mouse";
 
 export default {
   data() {
-    return {};
+    return {
+      canvasMargin: 20
+    };
   },
   computed: {
     ...mapGetters(["zoomLevel", "currentSlide", "highlightedLayer"])
@@ -83,8 +85,10 @@ export default {
       const slideBounds = this.currentSlide.absoluteBoundingBox;
       const panelDimensions = this.$el.getBoundingClientRect();
 
-      this.$refs.canvas.style.transform = `scale(${panelDimensions.width /
-        slideBounds.width})`;
+      this.$refs.canvas.style.transform = `scale(${Math.min(
+        (panelDimensions.width - 2 * this.canvasMargin) / slideBounds.width,
+        (panelDimensions.height - 2 * this.canvasMargin) / slideBounds.height
+      )})`;
     },
     onResize() {
       this.setDimensions();
