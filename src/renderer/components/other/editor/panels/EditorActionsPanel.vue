@@ -1,8 +1,5 @@
 <template>
     <div class="panel">
-      <div class="left-actions">
-        <fluid-select-input v-model="zoomLevel" :options="availableZoomLevels" unit="%" :min="10" :max="100"></fluid-select-input>
-      </div>
       <input placeholder="file name" type="text">
       <div class="right-actions">
         <fluid-text-button>Sync</fluid-text-button>
@@ -47,6 +44,8 @@ export default {
   background: #181818;
   height: 70px;
   display: flex;
+  z-index: 1;
+
   align-items: center;
 }
 

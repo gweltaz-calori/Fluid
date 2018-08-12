@@ -85,6 +85,53 @@ function rotateAroundPoint({ x, y }, radianAngle) {
   };
 }
 
+function isValueInRange(value, min, max) {
+  return value >= min && value <= max;
+}
+
+//use in case of multiselection
+export function rectOverlap(node, point, selectionRect) {
+  const position = getPositionRelativeToCanvas(node);
+
+  const pointRectBounds = {
+    topLeft: { x: position.x, y: position.y },
+    topRight: { x: position.x + position.width, y: position.y },
+    bottomRight: {
+      x: position.x + position.width,
+      y: position.y + position.height
+    },
+    bottomLeft: { x: position.x, y: position.y + position.height }
+  };
+
+  const selectionOrigin = {
+    x: Math.min(point.x, selectionRect.x),
+    y: Math.min(point.y, selectionRect.y)
+  };
+
+  const selectionRectBounds = {
+    topLeft: { x: selectionOrigin.x, y: selectionOrigin.y },
+    topRight: {
+      x: selectionOrigin.x + Math.abs(selectionRect.width),
+      y: selectionOrigin.y
+    },
+    bottomRight: {
+      x: selectionOrigin.x + Math.abs(selectionRect.width),
+      y: selectionOrigin.y + Math.abs(selectionRect.height)
+    },
+    bottomLeft: {
+      x: selectionOrigin.x,
+      y: selectionOrigin.y + Math.abs(selectionRect.height)
+    }
+  };
+
+  return (
+    selectionRectBounds.topLeft.x < pointRectBounds.topRight.x &&
+    selectionRectBounds.topRight.x > pointRectBounds.topLeft.x &&
+    selectionRectBounds.topLeft.y < pointRectBounds.bottomRight.y &&
+    selectionRectBounds.bottomRight.y > pointRectBounds.topLeft.y
+  );
+}
+
 export function containsPoint(node, point) {
   const position = getPosition(node);
   const { rotation } = node.getSVGTransform();

@@ -1,6 +1,7 @@
 <template>
-    <div ref="panel" class="panel" @mousedown="deselectAllNodes">
-        <div @mousedown.stop ref="canvas" class="canvas" ></div>
+    <div ref="panel" class="panel" >
+        <div ref="canvas" class="canvas" ></div>
+        <fluid-canvas-selection-marquee :is-dragging="isDragging" :position="position" :origin="origin"></fluid-canvas-selection-marquee>
     </div>
 </template>
 
@@ -9,11 +10,22 @@ import { mapGetters, mapActions } from "vuex";
 import { getNodeFromEvent } from "@/editor/tree-actions";
 import Importer from "@/importer/Importer";
 import Mouse from "@/js/mouse";
+import FluidCanvasSelectionMarquee from "@/components/other/editor/layers/FluidCanvasSelectionMarquee.vue";
 
 export default {
+  components: { FluidCanvasSelectionMarquee },
   data() {
     return {
-      canvasMargin: 20
+      canvasMargin: 20,
+      isDragging: false,
+      position: {
+        x: 0,
+        y: 0
+      },
+      origin: {
+        x: 0,
+        y: 0
+      }
     };
   },
   computed: {
@@ -33,13 +45,16 @@ export default {
       "setNodesTree",
       "setHighlightedLayer",
       "setCanvasBounds",
-      "setNodesTreeHtmlRefs"
+      "setNodesTreeHtmlRefs",
+      "addNodeToSelection"
     ]),
     hover(e) {
-      const node = getNodeFromEvent(e, this.$refs.canvas);
+      if (this.isDragging) return; //disable hove if the user is trying to do a multiselection
 
-      if (node) {
-        this.setHighlightedLayer(node.id);
+      const nodes = getNodeFromEvent(e, this.$refs.canvas);
+
+      if (nodes.length > 0) {
+        this.setHighlightedLayer(nodes[0].id);
       } else {
         this.setHighlightedLayer();
       }
@@ -63,22 +78,66 @@ export default {
       e.target.__oldTime = performance.now();
     },
     onClick(e) {
-      const node = getNodeFromEvent(e, this.$refs.canvas);
-      if (node) {
-        this.selectNodes([node.id]);
+      const nodes = getNodeFromEvent(e, this.$refs.canvas);
+      if (nodes.length > 0) {
+        this.selectNodes(nodes.map(node => node.id));
       } else {
         this.deselectAllNodes();
+        const isLeftClick = e.which === 3;
+        if (this.isDragging || isLeftClick) return;
+        this.isDragging = true;
+        const { x, y } = e;
+
+        this.origin.x = x;
+        this.origin.y = y;
       }
     },
     onMouseMove(e) {
       this.hover(e);
     },
     onDoubleClick(e) {
-      const node = getNodeFromEvent(e, this.$refs.canvas);
-      if (node) {
-        this.selectNodes([node.id]);
+      const nodes = getNodeFromEvent(e, this.$refs.canvas);
+      if (nodes.length > 0) {
+        this.selectNodes(nodes.map(node => node.id));
 
-        this.setHighlightedLayer(node.id);
+        this.setHighlightedLayer(nodes.map(node => node.id)[0]);
+      }
+    },
+    onMovePanel(e) {
+      if (this.$el !== e.target) return;
+
+      this.setHighlightedLayer();
+    },
+    onDropWindow(e) {
+      if (!this.isDragging) return;
+      this.isDragging = false;
+    },
+    onMoveWindow(e) {
+      if (!this.isDragging) return;
+      const { x, y } = e;
+
+      this.position.x = x;
+      this.position.y = y;
+
+      const nodes = getNodeFromEvent(
+        e,
+        this.$refs.canvas,
+        {
+          x: this.origin.x,
+          y: this.origin.y,
+          width: this.position.x - this.origin.x,
+          height: this.position.y - this.origin.y
+        },
+        {
+          x: this.position.x,
+          y: this.position.y
+        }
+      );
+
+      if (nodes.length > 0) {
+        this.selectNodes(nodes.map(node => node.id));
+      } else {
+        this.deselectAllNodes();
       }
     },
     setDimensions() {
@@ -95,19 +154,24 @@ export default {
       this.setCanvasBounds(this.$refs.canvas.getBoundingClientRect());
     },
     addListeners() {
-      this.$refs.canvas.addEventListener("mousedown", this.onMouseDown);
+      this.$el.addEventListener("mousedown", this.onMouseDown);
       this.$refs.canvas.addEventListener("mousemove", this.onMouseMove);
-      document.addEventListener("keydown", this.onKeyDown);
-      document.addEventListener("keyup", this.onKeyUp);
+      window.addEventListener("keydown", this.onKeyDown);
+      window.addEventListener("keyup", this.onKeyUp);
       window.addEventListener("resize", this.onResize);
+
+      window.addEventListener("mouseup", this.onDropWindow);
+      window.addEventListener("mousemove", this.onMoveWindow);
       Mouse.start();
     },
     removeListeners() {
-      this.$refs.canvas.removeEventListener("mousedown", this.onMouseDown);
+      this.$el.removeEventListener("mousedown", this.onMouseDown);
       this.$refs.canvas.removeEventListener("mousemove", this.onMouseMove);
-      document.removeEventListener("keydown", this.onKeyDown);
-      document.removeEventListener("keyup", this.onKeyUp);
+      window.removeEventListener("keydown", this.onKeyDown);
+      window.removeEventListener("keyup", this.onKeyUp);
       window.removeEventListener("resize", this.onResize);
+      window.removeEventListener("mouseup", this.onDropWindow);
+      window.removeEventListener("mousemove", this.onMoveWindow);
       Mouse.stop();
     },
     drawCanvas() {
@@ -141,23 +205,23 @@ export default {
           blendMode: "PASS_THROUGH",
           children: [
             {
-              id: "1:4",
+              id: "1:3",
               name: "Rectangle",
               type: "RECTANGLE",
               blendMode: "PASS_THROUGH",
               absoluteBoundingBox: {
-                x: -137.99999725818634,
-                y: -420,
-                width: 506.2884466648102,
-                height: 506.2884466648102
+                x: -63.85577392578127,
+                y: -345.85577392578125,
+                width: 358,
+                height: 358
               },
               constraints: {
                 vertical: "TOP",
                 horizontal: "LEFT"
               },
               relativeTransform: [
-                [0.7071067690849304, -0.7071067690849304, 791.1442260742188],
-                [0.7071067690849304, 0.7071067690849304, 405]
+                [1, -5.551115123125783e-17, 612.1442260742188],
+                [5.551115123125783e-17, 1, 479.14422607421875]
               ],
               size: {
                 x: 358,
@@ -185,6 +249,182 @@ export default {
               strokeWeight: 1,
               strokeAlign: "INSIDE",
               strokeGeometry: [],
+              exportSettings: [],
+              effects: []
+            },
+            {
+              id: "5:2",
+              name: "Rectangle",
+              type: "RECTANGLE",
+              blendMode: "PASS_THROUGH",
+              absoluteBoundingBox: {
+                x: 690,
+                y: -34,
+                width: 358,
+                height: 358
+              },
+              constraints: {
+                vertical: "TOP",
+                horizontal: "LEFT"
+              },
+              relativeTransform: [
+                [1, -5.551115123125783e-17, 1366],
+                [5.551115123125783e-17, 1, 791]
+              ],
+              size: {
+                x: 358,
+                y: 358
+              },
+              fills: [
+                {
+                  type: "SOLID",
+                  blendMode: "NORMAL",
+                  color: {
+                    r: 1,
+                    g: 0.42745098039215684,
+                    b: 0.42745098039215684,
+                    a: 1
+                  }
+                }
+              ],
+              fillGeometry: [
+                {
+                  path: "M 0 0 L 358 0 L 358 358 L 0 358 L 0 0 Z",
+                  windingRule: "NONZERO"
+                }
+              ],
+              strokes: [],
+              strokeWeight: 1,
+              strokeAlign: "INSIDE",
+              strokeGeometry: [],
+              exportSettings: [],
+              effects: []
+            },
+            {
+              id: "5:5",
+              name: "Group",
+              type: "GROUP",
+              blendMode: "PASS_THROUGH",
+              children: [
+                {
+                  id: "5:3",
+                  name: "Rectangle",
+                  type: "RECTANGLE",
+                  blendMode: "PASS_THROUGH",
+                  absoluteBoundingBox: {
+                    x: 672,
+                    y: -692,
+                    width: 102,
+                    height: 102
+                  },
+                  constraints: {
+                    vertical: "TOP",
+                    horizontal: "LEFT"
+                  },
+                  relativeTransform: [
+                    [1, -5.551115123125783e-17, 0],
+                    [5.551115123125783e-17, 1, 0]
+                  ],
+                  size: {
+                    x: 102,
+                    y: 102
+                  },
+                  fills: [
+                    {
+                      type: "SOLID",
+                      blendMode: "NORMAL",
+                      color: {
+                        r: 0.7686274509803922,
+                        g: 0.7686274509803922,
+                        b: 0.7686274509803922,
+                        a: 1
+                      }
+                    }
+                  ],
+                  fillGeometry: [
+                    {
+                      path: "M 0 0 L 102 0 L 102 102 L 0 102 L 0 0 Z",
+                      windingRule: "NONZERO"
+                    }
+                  ],
+                  strokes: [],
+                  strokeWeight: 1,
+                  strokeAlign: "INSIDE",
+                  strokeGeometry: [],
+                  exportSettings: [],
+                  effects: []
+                },
+                {
+                  id: "5:4",
+                  name: "Rectangle",
+                  type: "RECTANGLE",
+                  blendMode: "PASS_THROUGH",
+                  absoluteBoundingBox: {
+                    x: 1015,
+                    y: -623,
+                    width: 66,
+                    height: 66
+                  },
+                  constraints: {
+                    vertical: "TOP",
+                    horizontal: "LEFT"
+                  },
+                  relativeTransform: [
+                    [1, 5.551115123125783e-17, 343],
+                    [5.551115123125783e-17, -1, 135]
+                  ],
+                  size: {
+                    x: 66,
+                    y: 66
+                  },
+                  fills: [
+                    {
+                      type: "SOLID",
+                      blendMode: "NORMAL",
+                      color: {
+                        r: 1,
+                        g: 0.42745098039215684,
+                        b: 0.42745098039215684,
+                        a: 1
+                      }
+                    }
+                  ],
+                  fillGeometry: [
+                    {
+                      path: "M 0 0 L 66 0 L 66 66 L 0 66 L 0 0 Z",
+                      windingRule: "NONZERO"
+                    }
+                  ],
+                  strokes: [],
+                  strokeWeight: 1,
+                  strokeAlign: "INSIDE",
+                  strokeGeometry: [],
+                  exportSettings: [],
+                  effects: []
+                }
+              ],
+              absoluteBoundingBox: {
+                x: 672,
+                y: -692,
+                width: 409,
+                height: 135
+              },
+              constraints: {
+                vertical: "TOP",
+                horizontal: "LEFT"
+              },
+              relativeTransform: [[1, 0, 1348], [0, 1, 133]],
+              size: {
+                x: 409,
+                y: 135
+              },
+              backgroundColor: {
+                r: 0,
+                g: 0,
+                b: 0,
+                a: 0
+              },
+              clipsContent: false,
               exportSettings: [],
               effects: []
             }
@@ -215,35 +455,35 @@ export default {
           effects: []
         },
         {
-          id: "1:3",
+          id: "1:4",
           name: "Frame",
           type: "FRAME",
           blendMode: "PASS_THROUGH",
           children: [
             {
-              id: "1:6",
+              id: "1:5",
               name: "Frame",
               type: "FRAME",
               blendMode: "PASS_THROUGH",
               children: [
                 {
-                  id: "1:5",
+                  id: "1:6",
                   name: "Rectangle",
                   type: "RECTANGLE",
                   blendMode: "PASS_THROUGH",
                   absoluteBoundingBox: {
-                    x: 2802.0000203847885,
-                    y: -816.3743286132812,
-                    width: 489.0370783209801,
-                    height: 489.0370783209801
+                    x: 2867.5185546875,
+                    y: -750.8557815551758,
+                    width: 358,
+                    height: 358
                   },
                   constraints: {
                     vertical: "TOP",
                     horizontal: "LEFT"
                   },
                   relativeTransform: [
-                    [0.4999999701976776, -0.8660253882408142, 709.037109375],
-                    [0.8660253882408142, 0.4999999701976776, 8.62567138671875]
+                    [1, -5.551115123125783e-17, 464.5185546875],
+                    [5.551115123125783e-17, 1, 74.14421844482422]
                   ],
                   size: {
                     x: 358,

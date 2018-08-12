@@ -68,8 +68,7 @@ export default {
       return isRoot(this.layer);
     },
     hasAnimations() {
-      this.layer.fluid.animationsIn.length > 0 ||
-        this.layer.fluid.animationsOut.length > 0;
+      return this.layer.fluid.animationIn;
     }
   },
   methods: {

@@ -1,11 +1,12 @@
 <template>
     <div class="panel">
-        <fluid-scrollable-container height="100%" class="properties-container">
+        <fluid-scrollable-container height="100%" class="properties-container" v-if="selectedLayers.length > 0">
           <fluid-menu class="menu" v-model="selectedMenu" :options="menuOptions"></fluid-menu>
           <keep-alive>
             <component :animation-type="selectedMenu.key" :is="selectedMenu.value"></component>
           </keep-alive>
         </fluid-scrollable-container>
+        <fluid-text-info v-else class="properties-info" >Select a SLIDE or a NODE</fluid-text-info>
     </div>
 </template>
 
@@ -13,6 +14,7 @@
 import FormatMenu from "@/components/other/editor/menus/FormatMenu.vue";
 import AnimateMenuV2 from "@/components/other/editor/menus/AnimateMenuV2.vue";
 import { AnimationType } from "@/models/types";
+import { mapGetters } from "vuex";
 export default {
   components: {
     FormatMenu,
@@ -25,17 +27,7 @@ export default {
           name: "animate in",
           key: "animateIn",
           value: "AnimateMenuV2"
-        } /* 
-        {
-          name: "animate out",
-          key: AnimationType.ANIMATE_OUT,
-          value: "AnimateMenu"
-        },
-        {
-          name: "format",
-          key: "FORMAT",
-          value: "FormatMenu"
-        } */
+        }
       ],
       selectedMenu: {
         name: "animate in",
@@ -43,6 +35,9 @@ export default {
         value: "AnimateMenuV2"
       }
     };
+  },
+  computed: {
+    ...mapGetters(["selectedLayers"])
   }
 };
 </script>

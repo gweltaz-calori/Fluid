@@ -21,7 +21,7 @@ export default {
         if (isRoot(node)) return;
 
         const bounds = getPositionRelativeToCanvas(node);
-
+        this.clear(this.highlightCtx, this.$refs.highlightCanvas);
         this.draw(bounds, this.highlightCtx, this.$refs.highlightCanvas);
       } else {
         this.clear(this.highlightCtx, this.$refs.highlightCanvas);
@@ -32,9 +32,10 @@ export default {
         const nodes = this.selectedLayers.map(
           layerId => this.nodesTree[layerId]
         );
+        this.clear(this.selectionCtx, this.$refs.selectionCanvas);
+
         for (let node of nodes) {
           if (isRoot(node)) {
-            this.clear(this.selectionCtx, this.$refs.selectionCanvas);
             return;
           }
           const bounds = getPositionRelativeToCanvas(node);
@@ -47,8 +48,6 @@ export default {
   },
   methods: {
     draw(bounds, ctx, canvas) {
-      this.clear(ctx, canvas);
-
       ctx.strokeStyle = "#1f8aff";
       ctx.lineWidth = 2;
 
@@ -75,7 +74,7 @@ export default {
     }
   },
   beforeDestroy() {
-    window.removeEventListener("resize", this.onResize);
+    window.removeEventListener("resize", this.setDimensions);
   },
   mounted() {
     this.selectionCtx = this.$refs.selectionCanvas.getContext("2d");
@@ -89,7 +88,7 @@ export default {
 
 <style scoped>
 .canvas-container {
-  position: relative;
+  position: absolute;
   width: 100%;
   height: 100%;
   pointer-events: none;

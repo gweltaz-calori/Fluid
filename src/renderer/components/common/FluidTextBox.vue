@@ -1,5 +1,5 @@
 <template>
-    <input @click="click"  @blur="validateInput($event.target.value)" ref="input" :value="value" :placeholder="placeholder" type="text">
+    <input @click="click" @keydown.enter="exit" @keydown.esc="exit"  @blur="validateInput($event.target.value)" ref="input" :value="value" :placeholder="placeholder" type="text">
 </template>
 
 <script>
@@ -45,6 +45,9 @@ export default {
       this.$refs.input.value = val;
 
       this.$emit("input", val);
+    },
+    exit(e) {
+      e.target.blur();
     }
   }
 };

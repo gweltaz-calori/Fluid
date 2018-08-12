@@ -1,4 +1,4 @@
-enum PresetType {
+export enum PresetType {
   CUSTOM = "Custom",
   POP = "Pop",
   BOTTOM_SLIDE = "BottomSlide",
@@ -12,7 +12,7 @@ enum EaseType {
   QUAD_IN_OUT = "QuadInOut"
 }
 
-enum AnimatedPropertyType {
+export enum AnimatedPropertyType {
   OPACITY = "Opacity",
   SCALE = "Scale",
   MOVE_Y = "MoveY",
@@ -20,7 +20,7 @@ enum AnimatedPropertyType {
   ROTATE = "Rotate"
 }
 
-class AnimatedProperty {
+export class AnimatedProperty {
   name: AnimatedPropertyType;
   from: number;
 
@@ -66,14 +66,6 @@ class Preset {
     }
 
     this.properties.push(new AnimatedProperty(propertyType));
-  }
-
-  public removeProperty(index: number) {
-    this.properties.splice(index, 1);
-  }
-
-  public popProperty() {
-    this.properties.pop();
   }
 
   public hasAllProperties() {

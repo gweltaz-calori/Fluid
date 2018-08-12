@@ -78,10 +78,10 @@ export default {
       x: this.getValue() * this.draggable.maxX / this.max
     });
 
-    this.$emit(
+    /*  this.$emit(
       "input",
       this.formatter.format(String(this.value * this.draggable.maxX / this.max))
-    );
+    ); */
   }
 };
 </script>

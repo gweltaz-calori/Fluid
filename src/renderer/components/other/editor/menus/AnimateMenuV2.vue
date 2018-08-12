@@ -7,7 +7,7 @@
             <editor-property-action >
                 <fluid-icon-preset-library></fluid-icon-preset-library>
             </editor-property-action>
-            <editor-property-action v-if="animation" @mousedown.native="removeAnimation">
+            <editor-property-action v-if="name" @mousedown.native="removeAnimation">
               <fluid-icon-minus></fluid-icon-minus>
             </editor-property-action>
             <editor-property-action v-else @mousedown.native="addAnimation">
@@ -15,46 +15,46 @@
             </editor-property-action>
           </editor-property-actions>
         </editor-property-header>
-        <editor-property-content v-if="animation">
+        <editor-property-content v-if="name">
           <editor-sub-property>
             <editor-sub-property-row>
               <editor-sub-property-row-name>Name</editor-sub-property-row-name>
-              <editor-sub-property-row-value label="value" track-by="key" :options="PRESETS" :value="animation.name" @input="onPresetChanged" type="combo"></editor-sub-property-row-value>
+              <editor-sub-property-row-value label="value" track-by="key" :options="PRESETS" v-model="name" type="combo"></editor-sub-property-row-value>
             </editor-sub-property-row>
             <editor-sub-property-row>
               <editor-sub-property-row-name>Duration</editor-sub-property-row-name>
-              <editor-sub-property-row-value :formatter="secondFormatter" fallback-value="min" :max="20" v-model="animation.duration"  type="range"></editor-sub-property-row-value>
+              <editor-sub-property-row-value :formatter="secondFormatter" fallback-value="min" :max="20" v-model="duration"  type="range"></editor-sub-property-row-value>
             </editor-sub-property-row>
             <editor-sub-property-row>
               <editor-sub-property-row-name>Delay</editor-sub-property-row-name>
-              <editor-sub-property-row-value :formatter="secondFormatter" fallback-value="min" :max="20"  v-model="animation.delay" type="range"></editor-sub-property-row-value>
+              <editor-sub-property-row-value :formatter="secondFormatter" fallback-value="min" :max="20"  v-model="delay" type="range"></editor-sub-property-row-value>
             </editor-sub-property-row>
             <editor-sub-property-row>
               <editor-sub-property-row-name>Ease</editor-sub-property-row-name>
-              <editor-sub-property-row-value label="value" model-property="value" track-by="key" :options="EASINGS" v-model="animation.ease" type="combo"></editor-sub-property-row-value>
+              <editor-sub-property-row-value label="value" model-property="value" track-by="key" :options="EASINGS" v-model="ease" type="combo"></editor-sub-property-row-value>
             </editor-sub-property-row>
           </editor-sub-property>
         </editor-property-content>
       </editor-property>
-      <editor-property v-if="animation">
+      <editor-property v-if="name">
         <editor-property-header>
           <editor-property-title>PROPERTIES</editor-property-title>
           <editor-property-actions>
-            <editor-property-action @mousedown.native="animation.popProperty" v-if="animation.properties.length > 0">
+            <editor-property-action @mousedown.native="popAnimatedProperty" v-if="properties.length > 0">
               <fluid-icon-minus></fluid-icon-minus>
             </editor-property-action>
-            <editor-property-action v-if="!animation.hasAllProperties()" @mousedown.native="animation.addProperty">
+            <editor-property-action @mousedown.native="addAnimatedProperty">
                 <fluid-icon-add ></fluid-icon-add>
             </editor-property-action>
           </editor-property-actions>
         </editor-property-header>
-        <editor-property-content v-if="animation.properties.length > 0">
+        <editor-property-content v-if="properties.length > 0">
           <editor-animated-sub-property>
-            <editor-animated-property-row v-for="(animatedProperty,index) in animation.properties" :key="animatedProperty.name">
-              <fluid-combo-box label="value" model-property="value" v-model="animatedProperty.name" track-by="key" :options="animation.getRemainingProperties(animatedProperty.name)"></fluid-combo-box>
+            <editor-animated-property-row v-for="(animatedProperty,index) in properties" :key="animatedProperty.name">
+              <fluid-combo-box label="value" model-property="value" @input="updateAnimatedSubProperty('name',index,$event)" :value="animatedProperty.name" track-by="key" :options="remainingAnimatedProperties(animatedProperty.name)"></fluid-combo-box>
               <fluid-text-box class="animated-property-value" :max="1000" :min="-1000" :value="animatedProperty.from" ></fluid-text-box>
               <editor-animated-property-row-actions>
-                <editor-property-action  @mousedown.native="animation.removeProperty(index)">
+                <editor-property-action  @mousedown.native="removeAnimatedProperty(index)">
                   <fluid-icon-minus></fluid-icon-minus>
                 </editor-property-action>
               </editor-animated-property-row-actions>
@@ -63,7 +63,7 @@
         </editor-property-content>
         <fluid-text-info v-else class="properties-info" >Add properties to animate by clicking the "+" icon</fluid-text-info>
       </editor-property>
-      
+
     </div>
 </template>
 
@@ -77,7 +77,7 @@ import {
 import SecondFormatter from "@/formatter/SecondFormatter";
 
 import { mapGetters, mapActions } from "vuex";
-
+import { mapFields } from "vuex-map-fields";
 import EditorProperty from "@/components/other/EditorProperty.vue";
 import EditorSubProperty from "@/components/other/EditorSubProperty.vue";
 import EditorSubPropertyRow from "@/components/other/EditorSubPropertyRow.vue";
@@ -91,6 +91,7 @@ import EditorPropertyAction from "@/components/other/EditorPropertyAction.vue";
 import EditorAnimatedPropertyRow from "@/components/other/EditorAnimatedPropertyRow.vue";
 import EditorAnimatedPropertyRowActions from "@/components/other/EditorAnimatedPropertyRowActions.vue";
 import EditorAnimatedSubProperty from "@/components/other/EditorAnimatedSubProperty.vue";
+import { FLUID_TYPES } from "../../../../store/helpers";
 
 export default {
   components: {
@@ -117,19 +118,132 @@ export default {
       animation: null
     };
   },
-  computed: {},
+  computed: {
+    duration: {
+      get() {
+        return this.$store.getters.fluidProperty({
+          type: FLUID_TYPES.ANIMATION_IN,
+          propertyName: "duration"
+        });
+      },
+      set(value) {
+        this.$store.commit("SET_FLUID_PROPERTY", {
+          type: FLUID_TYPES.ANIMATION_IN,
+          propertyName: "duration",
+          value
+        });
+      }
+    },
+    name: {
+      get() {
+        return this.$store.getters.fluidProperty({
+          type: FLUID_TYPES.ANIMATION_IN,
+          propertyName: "name"
+        });
+      },
+      set(presetType) {
+        this.setSelectionAnimation({
+          value: new PRESETS_FROM_TYPES[presetType.key](),
+          type: FLUID_TYPES.ANIMATION_IN
+        });
+      }
+    },
+    ease: {
+      get() {
+        return this.$store.getters.fluidProperty({
+          type: FLUID_TYPES.ANIMATION_IN,
+          propertyName: "ease"
+        });
+      },
+      set(ease) {
+        this.$store.commit("SET_FLUID_PROPERTY", {
+          type: FLUID_TYPES.ANIMATION_IN,
+          propertyName: "ease",
+          value: ease
+        });
+      }
+    },
+    delay: {
+      get() {
+        return this.$store.getters.fluidProperty({
+          type: FLUID_TYPES.ANIMATION_IN,
+          propertyName: "delay"
+        });
+      },
+      set(value) {
+        this.$store.commit("SET_FLUID_PROPERTY", {
+          type: FLUID_TYPES.ANIMATION_IN,
+          propertyName: "delay",
+          value
+        });
+      }
+    },
+    properties: {
+      get() {
+        return this.$store.getters.fluidProperty({
+          type: FLUID_TYPES.ANIMATION_IN,
+          propertyName: "properties"
+        });
+      },
+      set(value) {
+        this.$store.commit("SET_FLUID_PROPERTY", {
+          type: FLUID_TYPES.ANIMATION_IN,
+          propertyName: "properties",
+          value
+        });
+      }
+    }
+  },
   methods: {
+    ...mapActions([
+      "setSelectionAnimation",
+      "removeSelectionAnimation",
+      "addSelectionAnimatedProperty",
+      "removeSelectionAnimatedProperty",
+      "popSelectionAnimatedProperty",
+      "updateSelectionAnimatedProperty",
+      "updateSelectionAnimatedSubProperty"
+    ]),
     addAnimation() {
-      this.animation = new PRESETS_FROM_TYPES.CUSTOM();
+      this.setSelectionAnimation({
+        type: FLUID_TYPES.ANIMATION_IN,
+        value: new PRESETS_FROM_TYPES.CUSTOM()
+      });
     },
     removeAnimation() {
-      this.animation = null;
+      this.removeSelectionAnimation({
+        type: FLUID_TYPES.ANIMATION_IN
+      });
     },
-    onPresetChanged(presetType) {
-      this.animation = new PRESETS_FROM_TYPES[presetType.key]();
+    addAnimatedProperty() {
+      this.addSelectionAnimatedProperty({
+        type: FLUID_TYPES.ANIMATION_IN
+      });
     },
-    onEaseChanged(ease) {
-      this.animation.ease = ease.value;
+    removeAnimatedProperty(index) {
+      this.removeSelectionAnimatedProperty({
+        type: FLUID_TYPES.ANIMATION_IN,
+        index
+      });
+    },
+    popAnimatedProperty() {
+      this.popSelectionAnimatedProperty({
+        type: FLUID_TYPES.ANIMATION_IN
+      });
+    },
+    remainingAnimatedProperties(selectedName) {
+      return this.$store.getters.remainingAnimatedProperties({
+        type: FLUID_TYPES.ANIMATION_IN,
+        selectedName
+      });
+    },
+    updateAnimatedSubProperty(name, index, value) {
+      this.updateSelectionAnimatedSubProperty({
+        type: FLUID_TYPES.ANIMATION_IN,
+        propertyName: name,
+        value,
+        index
+      });
     }
   }
 };

@@ -1,15 +1,28 @@
-import { isLeaf, isRoot, containsPoint, isVisible } from "./tree-helpers";
+import {
+  isLeaf,
+  isRoot,
+  containsPoint,
+  isVisible,
+  rectOverlap,
+  isCanvas
+} from "./tree-helpers";
 import TreeWalker from "./tree-walker";
 import Mouse from "@/js/mouse";
 
 import store from "@/store";
 
-export function getNodeFromEvent(e, canvas) {
+export function getNodeFromEvent(
+  e,
+  canvas,
+  multiSelectionRect = null,
+  dragPoint = null
+) {
   let { x, y } = e;
   if (!x || !y) {
     x = Mouse.x;
     y = Mouse.y;
   }
+
   const { left, top, width, height } = canvas.getBoundingClientRect();
 
   const isDirect = e.ctrlKey || e.metaKey;
@@ -21,27 +34,33 @@ export function getNodeFromEvent(e, canvas) {
 
   let position = { x: (x - left) * scaleX, y: (y - top) * scaleY };
 
-  let node;
+  let nodes;
 
   if (isDoubleClick) {
     //we want to enter inside the group
-    node = getNodeAtPointInGroup(position);
+    nodes = getNodesAtPointInGroup(position);
   } else if (isDirect) {
     //user pressed CTRL or CMD we enter directly and ignore groups
-    node = getDirectNodeAtPoint(position);
+    nodes = getDirectNodesAtPoint(position, multiSelectionRect, dragPoint);
   } else {
-    node = getNodeAtPoint(position); //simple click just get the element / group
+    nodes = getNodesAtPoint(position, multiSelectionRect, dragPoint); //simple click just get the element / group
   }
 
-  return node;
+  return nodes;
 }
 
-function getCandidates(point) {
+function getCandidates(point, multiSelectionRect, dragPoint) {
   const candidates = [];
 
   TreeWalker.preOrder(store.getters.currentSlide, node => {
-    if (!isRoot(node) && isVisible(node) && containsPoint(node, point)) {
-      candidates.push(node);
+    if (!isRoot(node) && isVisible(node)) {
+      if (
+        (multiSelectionRect &&
+          rectOverlap(node, dragPoint, multiSelectionRect)) ||
+        containsPoint(node, point)
+      ) {
+        candidates.push(node);
+      }
     }
   });
 
@@ -58,24 +77,37 @@ function getCandidates(point) {
 }
 
 //select directly by ignoring group
-function getDirectNodeAtPoint(point) {
-  const candidates = getCandidates(point);
-  let result = candidates.shift();
-  while (candidates.length > 0) {
-    if (isLeaf(result)) {
-      break;
+function getDirectNodesAtPoint(point, multiSelectionRect, dragPoint) {
+  const candidates = getCandidates(point, multiSelectionRect, dragPoint);
+  const isMultiSelection = multiSelectionRect;
+  let nodes = [];
+
+  if (isMultiSelection) {
+    nodes = candidates.filter(candidate => isLeaf(candidate));
+  } else {
+    let result = candidates.shift();
+    while (candidates.length > 0) {
+      if (isLeaf(result)) {
+        break;
+      }
+      result = candidates.shift();
     }
-    result = candidates.shift();
+
+    if (result) {
+      nodes.push(result);
+    }
   }
 
-  return result;
+  return nodes;
 }
 
 //we want to enter inside the group
-function getNodeAtPointInGroup(point) {
+function getNodesAtPointInGroup(point) {
   const candidates = getCandidates(point);
-  let result = candidates.shift();
 
+  let nodes = [];
+
+  let result = candidates.shift();
   while (candidates.length > 0) {
     if (store.getters.selectedLayers.includes(result.parentId)) {
       break;
@@ -83,23 +115,40 @@ function getNodeAtPointInGroup(point) {
     result = candidates.shift();
   }
 
-  return result;
+  if (result) {
+    nodes.push(result);
+  }
+
+  return nodes;
 }
 
-function getNodeAtPoint(point) {
+function getNodesAtPoint(point, multiSelectionRect, dragPoint) {
   const nodesWithSelectedDescendants = parentIdsWithSelectedDescendants(
     store.getters.selectedLayers
   );
-  const candidates = getCandidates(point);
-  let currentCandidate = candidates.shift();
-  while (candidates.length > 0) {
-    if (!nodesWithSelectedDescendants.includes(currentCandidate.id)) {
-      break;
+  const candidates = getCandidates(point, multiSelectionRect, dragPoint);
+  const isMultiSelection = multiSelectionRect;
+
+  let nodes = [];
+
+  if (isMultiSelection) {
+    nodes = candidates.filter(candidate => isRoot(candidate.parentNode));
+  } else {
+    let currentCandidate = candidates.shift();
+
+    while (candidates.length > 0) {
+      if (!nodesWithSelectedDescendants.includes(currentCandidate.id)) {
+        break;
+      }
+      currentCandidate = candidates.shift();
     }
-    currentCandidate = candidates.shift();
+
+    if (currentCandidate) {
+      nodes.push(currentCandidate);
+    }
   }
 
-  return currentCandidate;
+  return nodes;
 }
 
 //retrieve all the parents nodes that have descendants selected
@@ -109,7 +158,7 @@ function parentIdsWithSelectedDescendants(selectedNodes) {
   for (let nodeId of selectedNodes) {
     let node = store.getters.nodesTree[nodeId];
     let nodeParent = node.parentNode;
-    while (nodeParent) {
+    while (nodeParent && !isCanvas(nodeParent)) {
       parents.push(nodeParent.id);
       nodeParent = nodeParent.parentNode;
     }
