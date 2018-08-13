@@ -30,7 +30,8 @@ const parseNode = (node, tree) => {
 const setTree = (node, tree) => {};
 
 export default class Importer {
-  static loadPage(page) {
+  static loadPage(project, pageIndex = 0) {
+    const page = project.document.children[pageIndex];
     let tree = {};
     let parsedPage = parseNode(page, tree);
 

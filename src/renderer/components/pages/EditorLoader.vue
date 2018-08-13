@@ -51,7 +51,7 @@ export default {
     }
   },
   async beforeMount() {
-    this.currentStep = this.steps[2];
+    /* this.currentStep = this.steps[2];
     const pages = await getPages(this.$route.params.key);
     this.currentStep = this.steps[1];
 
@@ -61,7 +61,7 @@ export default {
     await this.animateLoaderOut();
     this.$router.push({
       name: "Editor"
-    });
+    }); */
   },
   mounted() {
     this.animateLoaderIn();

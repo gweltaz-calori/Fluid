@@ -3,6 +3,7 @@
         <editor-actions-panel></editor-actions-panel>
         <editor-slides-panel></editor-slides-panel>
         <editor-canvas-panel></editor-canvas-panel>
+        <editor-build-order-panel></editor-build-order-panel>
         <editor-properties-panel></editor-properties-panel>
         <fluid-layer-selection></fluid-layer-selection>
     </div>
@@ -15,6 +16,7 @@ import EditorPropertiesPanel from "@/components/other/editor/panels/EditorProper
 import EditorSlidesPanel from "@/components/other/editor/panels/EditorSlidesPanel.vue";
 import EditorActionsPanel from "@/components/other/editor/panels/EditorActionsPanel.vue";
 import EditorCanvasPanel from "@/components/other/editor/panels/EditorCanvasPanel.vue";
+import EditorBuildOrderPanel from "@/components/other/editor/panels/EditorBuildOrderPanel.vue";
 import { mapActions, mapGetters } from "vuex";
 
 export default {
@@ -23,7 +25,8 @@ export default {
     EditorSlidesPanel,
     EditorActionsPanel,
     EditorCanvasPanel,
-    FluidLayerSelection
+    FluidLayerSelection,
+    EditorBuildOrderPanel
   }
 };
 </script>

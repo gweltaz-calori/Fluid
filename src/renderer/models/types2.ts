@@ -33,12 +33,19 @@ export class AnimatedProperty {
   }
 }
 
+enum PresetTriggerType {
+  ON_CLICK = "On Click",
+  AFTER = "After",
+  WITH = "With"
+}
+
 class Preset {
   name?: PresetType;
   duration: number = 1;
   delay: number = 0;
   ease: EaseType = EaseType.LINEAR;
   properties?: AnimatedProperty[];
+  trigger?: PresetTriggerType = PresetTriggerType.ON_CLICK;
 
   constructor(
     name: PresetType = PresetType.CUSTOM,
@@ -140,6 +147,11 @@ export const PRESETS = Object.keys(PresetType).map(
       key: presetKey,
       value: PresetType[presetKey]
     };
+  }
+);
+export const TRIGGERS = Object.keys(PresetTriggerType).map(
+  (triggerKey: keyof typeof PresetTriggerType) => {
+    return { key: triggerKey, value: PresetTriggerType[triggerKey] };
   }
 );
 export const EASINGS = Object.keys(EaseType).map(

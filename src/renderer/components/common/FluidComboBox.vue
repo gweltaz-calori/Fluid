@@ -75,7 +75,7 @@ export default {
   display: flex;
   align-items: center;
   position: relative;
-  background: rgba(34, 34, 34, 1);
+  background: rgba(255, 255, 255, 0.15);
   border-radius: 3px;
   padding: 2.59px 7.08px;
   width: 136.7px;

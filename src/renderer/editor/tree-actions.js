@@ -11,12 +11,7 @@ import Mouse from "@/js/mouse";
 
 import store from "@/store";
 
-export function getNodeFromEvent(
-  e,
-  canvas,
-  multiSelectionRect = null,
-  dragPoint = null
-) {
+export function getNodeFromEvent(e, canvas, origin = null) {
   let { x, y } = e;
   if (!x || !y) {
     x = Mouse.x;
@@ -34,6 +29,15 @@ export function getNodeFromEvent(
 
   let position = { x: (x - left) * scaleX, y: (y - top) * scaleY };
 
+  if (origin) {
+    origin = {
+      x: (origin.x - left) * scaleX,
+      y: (origin.y - top) * scaleY,
+      width: position.x - (origin.x - left) * scaleX,
+      height: position.y - (origin.y - top) * scaleY
+    };
+  }
+
   let nodes;
 
   if (isDoubleClick) {
@@ -41,9 +45,9 @@ export function getNodeFromEvent(
     nodes = getNodesAtPointInGroup(position);
   } else if (isDirect) {
     //user pressed CTRL or CMD we enter directly and ignore groups
-    nodes = getDirectNodesAtPoint(position, multiSelectionRect, dragPoint);
+    nodes = getDirectNodesAtPoint(position, origin);
   } else {
-    nodes = getNodesAtPoint(position, multiSelectionRect, dragPoint); //simple click just get the element / group
+    nodes = getNodesAtPoint(position, origin); //simple click just get the element / group
   }
 
   return nodes;
@@ -55,8 +59,7 @@ function getCandidates(point, multiSelectionRect, dragPoint) {
   TreeWalker.preOrder(store.getters.currentSlide, node => {
     if (!isRoot(node) && isVisible(node)) {
       if (
-        (multiSelectionRect &&
-          rectOverlap(node, dragPoint, multiSelectionRect)) ||
+        (multiSelectionRect && rectOverlap(node, point, multiSelectionRect)) ||
         containsPoint(node, point)
       ) {
         candidates.push(node);
@@ -77,8 +80,8 @@ function getCandidates(point, multiSelectionRect, dragPoint) {
 }
 
 //select directly by ignoring group
-function getDirectNodesAtPoint(point, multiSelectionRect, dragPoint) {
-  const candidates = getCandidates(point, multiSelectionRect, dragPoint);
+function getDirectNodesAtPoint(point, multiSelectionRect) {
+  const candidates = getCandidates(point, multiSelectionRect);
   const isMultiSelection = multiSelectionRect;
   let nodes = [];
 
@@ -122,11 +125,11 @@ function getNodesAtPointInGroup(point) {
   return nodes;
 }
 
-function getNodesAtPoint(point, multiSelectionRect, dragPoint) {
+function getNodesAtPoint(point, multiSelectionRect) {
   const nodesWithSelectedDescendants = parentIdsWithSelectedDescendants(
     store.getters.selectedLayers
   );
-  const candidates = getCandidates(point, multiSelectionRect, dragPoint);
+  const candidates = getCandidates(point, multiSelectionRect);
   const isMultiSelection = multiSelectionRect;
 
   let nodes = [];

@@ -46,6 +46,7 @@ export function getPositionRelativeToCanvas(node) {
   const scaleY = store.getters.currentSlide.absoluteBoundingBox.height / height;
 
   const transform = node.getSVGTransform();
+  const { x, y } = node.getAbsoluteTranslation();
 
   return {
     width: node.size.x / scaleX,
@@ -71,7 +72,8 @@ export function getPositionRelativeToCanvas(node) {
     absoluteBoundingBox: {
       width: node.absoluteBoundingBox.width / scaleX,
       height: node.absoluteBoundingBox.height / scaleY
-    }
+    },
+    relativeTransform: { x: x / scaleX, y: y / scaleY }
   };
 }
 
@@ -91,17 +93,8 @@ function isValueInRange(value, min, max) {
 
 //use in case of multiselection
 export function rectOverlap(node, point, selectionRect) {
-  const position = getPositionRelativeToCanvas(node);
-
-  const pointRectBounds = {
-    topLeft: { x: position.x, y: position.y },
-    topRight: { x: position.x + position.width, y: position.y },
-    bottomRight: {
-      x: position.x + position.width,
-      y: position.y + position.height
-    },
-    bottomLeft: { x: position.x, y: position.y + position.height }
-  };
+  const position = getPosition(node);
+  const { rotation } = node.getSVGTransform();
 
   const selectionOrigin = {
     x: Math.min(point.x, selectionRect.x),
@@ -109,27 +102,22 @@ export function rectOverlap(node, point, selectionRect) {
   };
 
   const selectionRectBounds = {
-    topLeft: { x: selectionOrigin.x, y: selectionOrigin.y },
-    topRight: {
-      x: selectionOrigin.x + Math.abs(selectionRect.width),
-      y: selectionOrigin.y
-    },
-    bottomRight: {
-      x: selectionOrigin.x + Math.abs(selectionRect.width),
-      y: selectionOrigin.y + Math.abs(selectionRect.height)
-    },
-    bottomLeft: {
-      x: selectionOrigin.x,
-      y: selectionOrigin.y + Math.abs(selectionRect.height)
-    }
+    x: selectionOrigin.x,
+    y: selectionOrigin.y,
+    width: Math.abs(selectionRect.width),
+    height: Math.abs(selectionRect.height)
   };
 
-  return (
-    selectionRectBounds.topLeft.x < pointRectBounds.topRight.x &&
-    selectionRectBounds.topRight.x > pointRectBounds.topLeft.x &&
-    selectionRectBounds.topLeft.y < pointRectBounds.bottomRight.y &&
-    selectionRectBounds.bottomRight.y > pointRectBounds.topLeft.y
-  );
+  if (rotation === 0) {
+    return (
+      selectionRectBounds.x < position.x + position.width &&
+      selectionRectBounds.x + selectionRectBounds.width > position.x &&
+      selectionRectBounds.y < position.y + position.height &&
+      selectionRectBounds.y + selectionRectBounds.height > position.y
+    );
+  } else {
+    //todo implement SAT ALGORITHM to detect colision
+  }
 }
 
 export function containsPoint(node, point) {

@@ -52,7 +52,7 @@ export default {
 
 .menu-option.active {
   color: rgba(255, 255, 255, 0.84);
-  background: rgba(169, 169, 169, 0.07);
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .menu-option:hover {

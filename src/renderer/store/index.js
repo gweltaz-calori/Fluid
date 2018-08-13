@@ -1,19 +1,16 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import { ipcRenderer } from "electron";
-import { access } from "fs";
 import {
   getValueFromSelectionObject,
   isMixed,
   mergeProperty,
-  animatedPropertyAlreadyExists
+  animatedPropertyAlreadyExists,
+  FLUID_TYPES
 } from "./helpers";
-import {
-  PresetType,
-  ANIMATED_PROPERTIES,
-  AnimatedPropertyType,
-  AnimatedProperty
-} from "../models/types2";
+import { ANIMATED_PROPERTIES } from "../models/types2";
+import { isCanvas, isRoot } from "../editor/tree-helpers";
+import TreeWalker from "../editor/tree-walker";
 
 const state = {
   editor: {
@@ -261,6 +258,18 @@ const getters = {
 
       return !found || props.selectedName === possibleProperty.value;
     });
+  },
+  animatedLayers: state => type => {
+    const animatedLayers = [];
+    if (state.editor.selectedFrame.children) {
+      TreeWalker.preOrder(state.editor.selectedFrame, node => {
+        if (!isRoot(node) && node.fluid[type]) {
+          animatedLayers.push(node);
+        }
+      });
+    }
+
+    return animatedLayers;
   }
 };
 

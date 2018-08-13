@@ -23,11 +23,11 @@
             </editor-sub-property-row>
             <editor-sub-property-row>
               <editor-sub-property-row-name>Duration</editor-sub-property-row-name>
-              <editor-sub-property-row-value :formatter="secondFormatter" fallback-value="min" :max="20" v-model="duration"  type="range"></editor-sub-property-row-value>
+              <editor-sub-property-row-value :formatter="secondFormatter" :min="0" :max="30" v-model="duration"  type="range"></editor-sub-property-row-value>
             </editor-sub-property-row>
             <editor-sub-property-row>
               <editor-sub-property-row-name>Delay</editor-sub-property-row-name>
-              <editor-sub-property-row-value :formatter="secondFormatter" fallback-value="min" :max="20"  v-model="delay" type="range"></editor-sub-property-row-value>
+              <editor-sub-property-row-value :formatter="secondFormatter" :min="0" :max="30"  v-model="delay" type="range"></editor-sub-property-row-value>
             </editor-sub-property-row>
             <editor-sub-property-row>
               <editor-sub-property-row-name>Ease</editor-sub-property-row-name>

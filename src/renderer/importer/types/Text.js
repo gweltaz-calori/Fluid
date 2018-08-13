@@ -27,6 +27,18 @@ export default class Text extends Vector {
     el.style.fontFamily = this.style.fontFamily;
     el.style.fontWeight = this.style.fontWeight;
     el.style.userSelect = "none";
+    el.style.display = "flex";
+
+    if (this.style.textAlignHorizontal === "CENTER") {
+      el.style.justifyContent = "center";
+    } else if (this.style.textAlignHorizontal === "RIGHT") {
+      el.style.justifyContent = "flex-end";
+    }
+    if (this.style.textAlignVertical === "CENTER") {
+      el.style.alignItems = "center";
+    } else if (this.style.textAlignHorizontal === "RIGHT") {
+      el.style.alignItems = "flex-end";
+    }
 
     for (let fill of this.fills) {
       el.style.color = fill.apply();

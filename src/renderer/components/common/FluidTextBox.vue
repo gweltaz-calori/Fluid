@@ -59,7 +59,7 @@ input {
   height: 24px;
   padding: 6.43px 4.12px;
 
-  background: rgba(34, 34, 34, 1);
+  background: rgba(255, 255, 255, 0.15);
   border-radius: 3px;
 
   font-family: Exo;
