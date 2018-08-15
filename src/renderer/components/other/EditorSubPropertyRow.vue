@@ -12,7 +12,7 @@ export default {};
 .sub-property {
   display: flex;
   align-items: center;
-  margin: 4.5px 0;
+  padding: 4.5px 0;
 
   position: relative;
 }

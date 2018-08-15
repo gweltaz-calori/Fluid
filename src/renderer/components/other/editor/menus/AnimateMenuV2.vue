@@ -81,7 +81,6 @@ import {
 import SecondFormatter from "@/formatter/SecondFormatter";
 
 import { mapGetters, mapActions } from "vuex";
-import { mapFields } from "vuex-map-fields";
 import EditorProperty from "@/components/other/EditorProperty.vue";
 import EditorSubProperty from "@/components/other/EditorSubProperty.vue";
 import EditorSubPropertyRow from "@/components/other/EditorSubPropertyRow.vue";

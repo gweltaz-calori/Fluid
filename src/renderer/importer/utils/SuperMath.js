@@ -3,6 +3,10 @@ export default class SuperMath {
     return Math.min(Math.max(value, min), max);
   }
 
+  static range(value, oldMin = -1, oldMax = 1, newMin = 0, newMax = 1) {
+    return ((value - oldMin) * (newMax - newMin)) / (oldMax - oldMin) + newMin;
+  }
+
   static toDegrees(radians) {
     return (radians * 180) / Math.PI;
   }

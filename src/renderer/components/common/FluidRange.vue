@@ -1,15 +1,17 @@
 <template>
     <div ref="rangeContainer" class="range">
-        <span  class="range-bar-wrapper" @mousedown="onClick"><div :style="barStyle" class="range-bar" ></div></span>
+        <span class="range-bar-wrapper" >
+          <div :style="barStyle" class="range-bar" ></div>
+        </span>
         <div class="range-background" :style="backgroundWidth"></div>
         <div :style="indicatorStyle" ref="indicator" class="range-indicator"></div>
     </div>
 </template>
 
 <script>
-import Draggable from "gsap/Draggable";
-import TweenMax from "gsap/TweenMax";
+import Draggable from "@/lib/draggable";
 import { mapGetters } from "vuex";
+import SuperMath from "../../importer/utils/SuperMath";
 export default {
   props: {
     max: {
@@ -25,26 +27,27 @@ export default {
   },
   data() {
     return {
-      draggable: null,
       backgroundRatio: 0
     };
   },
   watch: {
     value() {
-      if (this.draggable.isDragging) return;
-
-      TweenMax.set(this.draggable.target, {
-        x: this.getValue() * this.draggable.maxX / this.max,
-        onUpdate: this.draggable.update,
-        onUpdateScope: this.draggable
-      });
+      if (this.draggable && this.draggable.isDragging) return;
+      // value changed without dragging
+      this.setValue();
     }
   },
   computed: {
     ...mapGetters(["themeColors"]),
     backgroundWidth() {
       return {
-        width: `${this.getValue() / this.max * 100}%`
+        width: `${SuperMath.range(
+          this.formatter.parse(this.value.toString()),
+          this.min,
+          this.max,
+          0,
+          1
+        ) * 100}%`
       };
     },
     indicatorStyle() {
@@ -60,41 +63,35 @@ export default {
     }
   },
   methods: {
-    getValue() {
-      return this.formatter
-        ? this.formatter.parse(String(this.value))
-        : this.value;
+    setValue() {
+      const value = this.formatter.parse(this.value.toString());
+      const valueInRange = SuperMath.range(value, this.min, this.max, 0, 1);
+      this.draggable.set({
+        x: valueInRange
+      });
     },
-    onDrag() {
+    onDrag(e) {
       this.$emit(
         "input",
-        this.formatter.format(this.draggable.x / this.draggable.maxX * this.max)
+        this.formatter.format(
+          SuperMath.range(e.x / e.maxX, 0, 1, this.min, this.max)
+        )
       );
-    },
-    onClick(e) {
-      this.$emit("input", e.offsetX / e.target.clientWidth * this.max);
     }
   },
   beforeDestroy() {
-    this.draggable.removeEventListener("drag", this.onDrag);
+    this.draggable.off();
   },
   mounted() {
-    this.draggable = Draggable.create(this.$refs.indicator, {
-      cursor: "default",
-      type: "x",
-      bounds: this.$refs.rangeContainer
-    })[0];
-
-    this.draggable.addEventListener("drag", this.onDrag);
-
-    TweenMax.set(this.draggable.target, {
-      x: this.getValue() * this.draggable.maxX / this.max
+    this.draggable = new Draggable({
+      axises: ["x"],
+      el: this.$refs.indicator,
+      boundsElement: this.$refs.rangeContainer
     });
 
-    /*  this.$emit(
-      "input",
-      this.formatter.format(String(this.value * this.draggable.maxX / this.max))
-    ); */
+    this.draggable.on("drag", this.onDrag);
+
+    this.setValue();
   }
 };
 </script>
