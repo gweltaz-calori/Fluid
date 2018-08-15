@@ -1,11 +1,21 @@
 <template>
-    <div class="sub-property-title">
+    <div class="sub-property-title" :style="style">
         <slot></slot>
     </div>
 </template>
 
 <script>
-export default {};
+import { mapGetters } from "vuex";
+export default {
+  computed: {
+    ...mapGetters(["themeColors"]),
+    style() {
+      return {
+        color: this.themeColors.text
+      };
+    }
+  }
+};
 </script>
 
 <style scoped>
@@ -17,7 +27,7 @@ export default {};
   font-size: 13.4435px;
   margin-right: 21px;
 
-  color: rgba(255, 255, 255, 0.5);
+  opacity: 0.6;
   width: 44px;
 }
 </style>

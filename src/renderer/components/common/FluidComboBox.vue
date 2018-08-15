@@ -1,7 +1,7 @@
 <template>
-    <div class="combo" @mousedown="showOptions" v-on-mousedownaway="closeOptions">
-        <div class="combo-value">{{getLabel(value)}}</div>
-        <fluid-icon-chevron class="combo-chevron" @click="showOptions"></fluid-icon-chevron>
+    <div class="combo" @mousedown="showOptions" v-on-mousedownaway="closeOptions" :style="comboBackgroundStyle">
+        <div class="combo-value" :style="comboValueStyle">{{getLabel(value)}}</div>
+        <fluid-icon-chevron :tint="themeColors.text" class="combo-chevron" @click="showOptions"></fluid-icon-chevron>
         <div v-show="optionsVisible" class="combo-options" :style="comboOptionsStyle">
             <div class="combo-option" @mousedown.stop="changeValue(option)" v-for="option in options" :key="getKey(option)">
               <div class="combo-option-check" :class="{'checked':getLabel(option) == getLabel(value)}">
@@ -14,6 +14,7 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import { mixin as mousedownaway } from "@/directives/mouse-away";
 
 import FluidIconChevron from "@/components/icons/FluidIconChevron.vue";
@@ -55,6 +56,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(["themeColors"]),
     comboOptionsStyle() {
       let index = this.options.findIndex(
         option => this.getLabel(option) === this.getLabel(this.value)
@@ -62,6 +64,16 @@ export default {
 
       return {
         top: `${-(index * 29) - 4}px`
+      };
+    },
+    comboBackgroundStyle() {
+      return {
+        background: this.themeColors.highlight
+      };
+    },
+    comboValueStyle() {
+      return {
+        color: this.themeColors.text
       };
     }
   },
@@ -75,11 +87,20 @@ export default {
   display: flex;
   align-items: center;
   position: relative;
-  background: rgba(255, 255, 255, 0.15);
   border-radius: 3px;
   padding: 2.59px 7.08px;
   width: 136.7px;
   height: 24px;
+}
+
+.combo-backgroud {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 3px;
+  pointer-events: none;
 }
 
 .combo-options {
@@ -129,11 +150,9 @@ export default {
 .combo-value {
   font-family: Exo;
   font-style: normal;
-  font-weight: 500;
+  font-weight: 700;
   line-height: normal;
   font-size: 11px;
-
-  color: #ffffff;
 }
 
 .combo-option-text.active {

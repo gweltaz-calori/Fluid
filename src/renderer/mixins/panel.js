@@ -10,7 +10,7 @@ export default {
     panelBorderStyle() {
       return {
         background: this.$store.getters.themeColors.text,
-        opacity: 0.11
+        opacity: 0.05
       };
     }
   }

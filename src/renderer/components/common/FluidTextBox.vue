@@ -1,9 +1,10 @@
 <template>
-    <input @click="click" @keydown.enter="exit" @keydown.esc="exit"  @blur="validateInput($event.target.value)" ref="input" :value="value" :placeholder="placeholder" type="text">
+    <input :style="style" @click="click" @keydown.enter="exit" @keydown.esc="exit"  @blur="validateInput($event.target.value)" ref="input" :value="value" :placeholder="placeholder" type="text">
 </template>
 
 <script>
 import SuperMath from "@/js/math";
+import { mapGetters } from "vuex";
 
 export default {
   props: {
@@ -19,6 +20,15 @@ export default {
     placeholder: {},
     formatter: {
       required: false
+    }
+  },
+  computed: {
+    ...mapGetters(["themeColors"]),
+    style() {
+      return {
+        background: this.themeColors.highlight,
+        color: this.themeColors.text
+      };
     }
   },
   methods: {
@@ -59,16 +69,14 @@ input {
   height: 24px;
   padding: 6.43px 4.12px;
 
-  background: rgba(255, 255, 255, 0.15);
   border-radius: 3px;
 
   font-family: Exo;
   font-style: normal;
-  font-weight: normal;
+  font-weight: 600;
   line-height: normal;
   font-size: 13.4435px;
 
-  color: #ffffff;
   border: solid transparent 1px;
 
   cursor: default;

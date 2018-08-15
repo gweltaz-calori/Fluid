@@ -61,7 +61,7 @@
             </editor-animated-property-row>
           </editor-animated-sub-property>
         </editor-property-content>
-        <fluid-text-info v-else class="properties-info" >Add properties to animate by clicking the "+" icon</fluid-text-info>
+        <fluid-text-info :style="propertiesInfoStyle" v-else class="properties-info" >Add properties to animate by clicking the "+" icon</fluid-text-info>
       </editor-property>
 
     </div>
@@ -135,6 +135,11 @@ export default {
     ...mapGetters(["themeColors"]),
     iconTint() {
       return this.themeColors.text;
+    },
+    propertiesInfoStyle() {
+      return {
+        color: this.themeColors.highlightSecondary
+      };
     },
     duration: {
       get() {

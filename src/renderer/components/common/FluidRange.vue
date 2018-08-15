@@ -1,14 +1,15 @@
 <template>
     <div ref="rangeContainer" class="range">
-        <span class="range-bar-wrapper" @mousedown="onClick"><div class="range-bar" ></div></span>
+        <span  class="range-bar-wrapper" @mousedown="onClick"><div :style="barStyle" class="range-bar" ></div></span>
         <div class="range-background" :style="backgroundWidth"></div>
-        <div ref="indicator" class="range-indicator"></div>
+        <div :style="indicatorStyle" ref="indicator" class="range-indicator"></div>
     </div>
 </template>
 
 <script>
 import Draggable from "gsap/Draggable";
 import TweenMax from "gsap/TweenMax";
+import { mapGetters } from "vuex";
 export default {
   props: {
     max: {
@@ -40,9 +41,21 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(["themeColors"]),
     backgroundWidth() {
       return {
         width: `${this.getValue() / this.max * 100}%`
+      };
+    },
+    indicatorStyle() {
+      return {
+        background: this.themeColors.text
+      };
+    },
+
+    barStyle() {
+      return {
+        background: this.themeColors.highlight
       };
     }
   },
@@ -98,7 +111,6 @@ export default {
 .range-bar {
   height: 2.34px;
   width: 80.05px;
-  background: rgba(255, 255, 255, 0.59);
   border-radius: 37.3431px;
 }
 
@@ -124,7 +136,5 @@ export default {
   height: 13px;
   width: 13px;
   border-radius: 50%;
-
-  background: #ffffff;
 }
 </style>
