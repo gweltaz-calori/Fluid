@@ -1,5 +1,5 @@
 <template>
-    <div class="panel" :style="panelStyle">
+    <div class="panel" :style="style">
         <div class="header">
           <div class="preview-button">
             <fluid-icon-dark-preview></fluid-icon-dark-preview>
@@ -17,8 +17,9 @@
 import SuperMath from "../../../../js/math";
 import { FLUID_TYPES } from "../../../../store/helpers";
 import BuildOrderTimeline from "../timeline/BuildOrderTimeline.vue";
-
+import panelMixin from "@/mixins/panel";
 export default {
+  mixins: [panelMixin],
   components: { BuildOrderTimeline },
   data() {
     const menuOptions = [
@@ -50,8 +51,8 @@ export default {
   },
 
   computed: {
-    panelStyle() {
-      return { height: `${this.height}px` };
+    style() {
+      return { height: `${this.height}px`, ...this.panelStyle };
     }
   },
   methods: {
@@ -103,7 +104,6 @@ export default {
   bottom: 0;
   left: 0;
   right: 305px;
-  background: #181818;
   height: 230px;
   z-index: 1;
   padding: 20px;

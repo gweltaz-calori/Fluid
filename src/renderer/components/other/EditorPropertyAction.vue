@@ -1,15 +1,24 @@
 <template>
     <div class="property-action" :class="{'visible':visible}">
         <slot></slot> 
-        <div class="property-action-background"></div>
+        <div class="property-action-background" :style="backgroundStyle"></div>
     </div>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 export default {
   props: {
     visible: {
       default: true
+    }
+  },
+  computed: {
+    ...mapGetters(["themeColors"]),
+    backgroundStyle() {
+      return {
+        backgroundColor: this.themeColors.text
+      };
     }
   }
 };
@@ -32,7 +41,6 @@ export default {
 
 .property-action-background {
   position: absolute;
-  background-color: rgba(169, 169, 169, 0.04);
   border-radius: 39px;
   padding: 15px;
   height: 100%;
@@ -42,7 +50,7 @@ export default {
 }
 
 .property-action-background:hover {
-  opacity: 1;
+  opacity: 0.04;
 }
 
 .property-action.visible {

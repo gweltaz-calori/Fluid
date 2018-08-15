@@ -1,27 +1,27 @@
 <template>
-    <div class="layer" :class="{'selected':isCurrentSelectedLayer,'parent-selected':isParentSelected}">
+    <div class="layer" :class="{'selected':isCurrentSelectedLayer}">
         <span >
           <div @mousedown.stop="onHeaderClick" class="layer-header" @mouseenter.stop="enter" @mouseleave.stop="leave">
             <span class="layer-indentations">
                 
               <span class="layer-indent" v-for="(indent,index) in indentLevel" :key="index"></span>
               <div @mousedown.stop="toggleOpening" class="layer-icon-arrow-wrapper" :class="{'hidden':layer.visible === false}" v-if="isContainer">
-                  <fluid-icon-arrow-down class="layer-icon-arrow" :class="{'opened':open}"></fluid-icon-arrow-down>
+                  <fluid-icon-arrow-down :tint="iconTint" class="layer-icon-arrow" :class="{'opened':open}"></fluid-icon-arrow-down>
               </div> 
             </span>
             <div v-if="isHighlightedLayer" class="layer-header-overlay"></div>
             
-            <span :class="{'hidden':layer.visible === false}" class="layer-name">{{layer.name}}</span>
+            <span :class="{'hidden':layer.visible === false}" :style="layerNameStyle" class="layer-name">{{layer.name}}</span>
             <div :class="{'hidden':layer.visible === false}" class="layer-actions">
                 <div @mousedown.stop="toggleVisibility" class="visibility-icon-wrapper" v-if="hovered && !isRoot">
-                    <fluid-icon-eye class="layer-action layer-icon-visibility"></fluid-icon-eye>
+                    <fluid-icon-eye :tint="iconTint" class="layer-action layer-icon-visibility"></fluid-icon-eye>
                 </div>
                 <div v-if="hasAnimations" class="is-animated-icon-wrapper">
-                    <fluid-icon-is-animated class="layer-action layer-icon-is-animated"></fluid-icon-is-animated>
+                    <fluid-icon-is-animated :tint="iconTint" class="layer-action layer-icon-is-animated"></fluid-icon-is-animated>
                 </div>
             </div>
             
-            <div :class="{'root-layer':isRoot}" class="layer-header-background"></div>
+            <div :style="layerBackgroundStyle" class="layer-header-background"></div>
           </div>
           <div :class="{'hidden':layer.visible === false}" class="layer-content" v-if="isContainer && open">
               <fluid-layer-item :indent-level="indentLevel+1" :is-parent-selected="isCurrentSelectedLayer" v-for="(subLayer) in layer.children" :layer="subLayer" :key="subLayer.id"></fluid-layer-item>
@@ -54,7 +54,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["selectedLayers", "highlightedLayer"]),
+    ...mapGetters(["selectedLayers", "highlightedLayer", "themeColors"]),
     isContainer() {
       return this.layer.children;
     },
@@ -69,6 +69,58 @@ export default {
     },
     hasAnimations() {
       return this.layer.fluid.animationIn;
+    },
+    rootLayerStyle() {
+      return {
+        opacity: 0.015,
+        background: this.themeColors.text,
+        zIndex: -1
+      };
+    },
+    layerSelectedBackgroundStyle() {
+      return {
+        opacity: 1,
+        background: this.themeColors.selection,
+        zIndex: -1
+      };
+    },
+    parentSelectedBackgroundStyle() {
+      return {
+        zIndex: -1,
+        opacity: 0.05,
+        background: this.themeColors.selection
+      };
+    },
+    layerBackgroundStyle() {
+      if (this.isRoot) {
+        return this.rootLayerStyle;
+      }
+
+      if (this.isCurrentSelectedLayer) {
+        return this.layerSelectedBackgroundStyle;
+      }
+
+      if (this.isParentSelected) {
+        return this.parentSelectedBackgroundStyle;
+      }
+    },
+    layerNameStyle() {
+      if (this.isCurrentSelectedLayer) {
+        return {
+          color: "#FFFFFF"
+        };
+      }
+
+      return {
+        color: this.themeColors.text
+      };
+    },
+    iconTint() {
+      if (this.isCurrentSelectedLayer) {
+        return "#FFFFFF";
+      }
+
+      return this.themeColors.text;
     }
   },
   methods: {
@@ -138,7 +190,6 @@ export default {
   text-overflow: ellipsis;
   overflow: hidden;
   width: 100%;
-  color: #ffffff;
 }
 
 .layer-header,
@@ -233,22 +284,5 @@ export default {
   justify-content: center;
   box-sizing: border-box;
   flex-shrink: 0;
-}
-
-.root-layer {
-  background: rgba(169, 169, 169, 0.03);
-  z-index: -1;
-}
-
-.layer.selected .layer-header-background {
-  background: #1f8aff;
-
-  z-index: -1;
-}
-
-.layer.parent-selected .layer-header-background {
-  background: rgba(31, 138, 255, 0.05);
-
-  z-index: -1;
 }
 </style>

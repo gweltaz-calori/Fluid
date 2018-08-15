@@ -2,7 +2,10 @@
   <div class="slide-wrapper" :class="{'selected':selected}">
     <div class="background"></div>
     <div ref="slide" class="slide" >
-        <div ref="canvas"></div>
+        <div class="canvas" ref="canvas"></div>
+    </div>
+    <div ref="shadow" class="slide-shadow">
+
     </div>
   </div>
 </template>
@@ -24,6 +27,15 @@ export default {
       this.$refs.slide.style.height = `${this.$refs.slide.clientWidth /
         this.slide.absoluteBoundingBox.width *
         this.slide.absoluteBoundingBox.height}px`;
+
+      this.$refs.shadow.style.width = `${this.$refs.slide.clientHeight /
+        this.slide.absoluteBoundingBox.height *
+        this.slide.absoluteBoundingBox.width}px`;
+
+      this.$refs.shadow.style.height = `${this.$refs.slide.clientWidth /
+        this.slide.absoluteBoundingBox.width *
+        this.slide.absoluteBoundingBox.height}px`;
+
       this.$refs.slide.style.transform = `scale(${this.$refs.slide.clientWidth /
         this.slide.absoluteBoundingBox.width})`;
     }
@@ -64,5 +76,13 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
+}
+.canvas {
+}
+
+.slide-shadow {
+  box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.07);
+  position: absolute;
+  margin: auto;
 }
 </style>

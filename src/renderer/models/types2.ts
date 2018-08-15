@@ -33,7 +33,7 @@ export class AnimatedProperty {
   }
 }
 
-enum PresetTriggerType {
+export enum PresetTriggerType {
   ON_CLICK = "On Click",
   AFTER = "After",
   WITH = "With"
@@ -172,3 +172,9 @@ export const PRESETS_FROM_TYPES = {
   LEFT_SLIDE: LeftSlidePreset,
   TOP_SLIDE: TopSlidePreset
 };
+
+export const MAX_DURATION = 25;
+export const MIN_DURATION = 0;
+
+export const MAX_DELAY = 30;
+export const MIN_DELAY = 0;

@@ -8,17 +8,19 @@
             </div>
         </div>
         <div class="animated-layer-properties">
-            <div class="animated-layer-trigger animated-layer-property">
-               <fluid-icon-click-trigger></fluid-icon-click-trigger>
+            <div class="animated-layer-trigger-wrapper animated-layer-property">
+              <div class="animated-layer-trigger" v-if="animation.trigger === PresetTriggerType.ON_CLICK">
+                <fluid-icon-click-trigger></fluid-icon-click-trigger>
+              </div>
+              <div class="animated-layer-trigger " v-else-if="animation.trigger === PresetTriggerType.AFTER">
+                <fluid-icon-time-trigger></fluid-icon-time-trigger>
+              </div>
             </div>
-            <div class="animated-layer-trigger animated-layer-property">
-               <fluid-icon-time-trigger></fluid-icon-time-trigger>
-            </div>
-            <fluid-combo-box class="animated-layer-property" label="value" track-by="key" :options="TRIGGERS" ></fluid-combo-box>
-            <!-- Todo constant for min max -->
-            <editor-sub-property-row-value class="animated-layer-property" :formatter="secondFormatter" :value="0" type="range" :min="0" :max="30"></editor-sub-property-row-value>
-            <editor-sub-property-row-value class="animated-layer-property" :formatter="secondFormatter" :value="0" type="range" :min="0" :max="30"></editor-sub-property-row-value>
-            <fluid-combo-box class="animated-layer-property" :options="['EaseIn','EaseOut','EaseInOut']" value="EaseIn"></fluid-combo-box>
+            <fluid-combo-box class="animated-layer-property" label="value" track-by="key" model-property="value" v-model="trigger" :options="TRIGGERS" ></fluid-combo-box>
+
+            <editor-sub-property-row-value class="animated-layer-property" :formatter="secondFormatter"  v-model="duration" type="range" :min="MIN_DURATION" :max="MAX_DURATION"></editor-sub-property-row-value>
+            <editor-sub-property-row-value class="animated-layer-property" :formatter="secondFormatter"  v-model="delay" type="range" :min="MIN_DELAY" :max="MAX_DELAY"></editor-sub-property-row-value>
+            <fluid-combo-box class="animated-layer-property" label="value" model-property="value" track-by="key" v-model="ease" :options="EASINGS"></fluid-combo-box>
         </div>
     </div>
 </template>
@@ -26,33 +28,97 @@
 <script>
 import EditorSubPropertyRowValue from "@/components/other/EditorSubPropertyRowValue.vue";
 import SeconderFormatter from "../../../../formatter/SecondFormatter";
-import { TRIGGERS } from "../../../../models/types2";
+import {
+  TRIGGERS,
+  EASINGS,
+  MAX_DURATION,
+  MIN_DURATION,
+  MAX_DELAY,
+  MIN_DELAY,
+  PresetTriggerType
+} from "../../../../models/types2";
+import { FLUID_TYPES } from "../../../../store/helpers";
 
 export default {
   components: { EditorSubPropertyRowValue },
   props: {
     selected: {
       default: false
-    }
+    },
+    animationType: {
+      default: FLUID_TYPES.ANIMATION_IN
+    },
+    animation: {}
   },
   data() {
     return {
       secondFormatter: new SeconderFormatter(),
-      TRIGGERS
+      TRIGGERS,
+      EASINGS,
+      MAX_DURATION,
+      MIN_DURATION,
+      MAX_DELAY,
+      MIN_DELAY,
+      PresetTriggerType
     };
   },
   computed: {
     trigger: {
       get() {
         return this.$store.getters.fluidProperty({
-          type: FLUID_TYPES.ANIMATION_IN,
+          type: this.animationType,
           propertyName: "trigger"
         });
       },
       set(value) {
         this.$store.commit("SET_FLUID_PROPERTY", {
-          type: FLUID_TYPES.ANIMATION_IN,
+          type: this.animationType,
           propertyName: "trigger",
+          value
+        });
+      }
+    },
+    ease: {
+      get() {
+        return this.$store.getters.fluidProperty({
+          type: this.animationType,
+          propertyName: "ease"
+        });
+      },
+      set(value) {
+        this.$store.commit("SET_FLUID_PROPERTY", {
+          type: this.animationType,
+          propertyName: "ease",
+          value
+        });
+      }
+    },
+    duration: {
+      get() {
+        return this.$store.getters.fluidProperty({
+          type: this.animationType,
+          propertyName: "duration"
+        });
+      },
+      set(value) {
+        this.$store.commit("SET_FLUID_PROPERTY", {
+          type: this.animationType,
+          propertyName: "duration",
+          value
+        });
+      }
+    },
+    delay: {
+      get() {
+        return this.$store.getters.fluidProperty({
+          type: this.animationType,
+          propertyName: "delay"
+        });
+      },
+      set(value) {
+        this.$store.commit("SET_FLUID_PROPERTY", {
+          type: this.animationType,
+          propertyName: "delay",
           value
         });
       }
@@ -104,6 +170,11 @@ export default {
 
 .animated-layer-property {
   margin-left: 15px;
+}
+
+.animated-layer-trigger-wrapper {
+  width: 26px;
+  height: 26px;
 }
 
 .animated-layer-trigger {

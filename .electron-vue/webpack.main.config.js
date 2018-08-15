@@ -37,6 +37,9 @@ let mainConfig = {
   },
   plugins: [new webpack.NoEmitOnErrorsPlugin()],
   resolve: {
+    alias: {
+      shared: path.join(__dirname, "../src/shared")
+    },
     extensions: [".js", ".json", ".node"]
   },
   target: "electron-main"

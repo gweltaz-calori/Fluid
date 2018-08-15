@@ -5,13 +5,13 @@
           <editor-property-title>PRESET</editor-property-title>
           <editor-property-actions>
             <editor-property-action >
-                <fluid-icon-preset-library></fluid-icon-preset-library>
+                <fluid-icon-preset-library :tint="iconTint"></fluid-icon-preset-library>
             </editor-property-action>
             <editor-property-action v-if="name" @mousedown.native="removeAnimation">
-              <fluid-icon-minus></fluid-icon-minus>
+              <fluid-icon-minus :tint="iconTint"></fluid-icon-minus>
             </editor-property-action>
             <editor-property-action v-else @mousedown.native="addAnimation">
-                <fluid-icon-add ></fluid-icon-add>
+                <fluid-icon-add :tint="iconTint"></fluid-icon-add>
             </editor-property-action>
           </editor-property-actions>
         </editor-property-header>
@@ -41,10 +41,10 @@
           <editor-property-title>PROPERTIES</editor-property-title>
           <editor-property-actions>
             <editor-property-action @mousedown.native="popAnimatedProperty" v-if="properties.length > 0">
-              <fluid-icon-minus></fluid-icon-minus>
+              <fluid-icon-minus :tint="iconTint"></fluid-icon-minus>
             </editor-property-action>
             <editor-property-action @mousedown.native="addAnimatedProperty">
-                <fluid-icon-add ></fluid-icon-add>
+                <fluid-icon-add :tint="iconTint"></fluid-icon-add>
             </editor-property-action>
           </editor-property-actions>
         </editor-property-header>
@@ -55,7 +55,7 @@
               <fluid-text-box class="animated-property-value" :max="1000" :min="-1000" :value="animatedProperty.from" ></fluid-text-box>
               <editor-animated-property-row-actions>
                 <editor-property-action  @mousedown.native="removeAnimatedProperty(index)">
-                  <fluid-icon-minus></fluid-icon-minus>
+                  <fluid-icon-minus :tint="iconTint"></fluid-icon-minus>
                 </editor-property-action>
               </editor-animated-property-row-actions>
             </editor-animated-property-row>
@@ -72,7 +72,11 @@ import {
   PRESETS,
   EASINGS,
   ANIMATED_PROPERTIES,
-  PRESETS_FROM_TYPES
+  PRESETS_FROM_TYPES,
+  MAX_DURATION,
+  MIN_DURATION,
+  MAX_DELAY,
+  MIN_DELAY
 } from "@/models/types2.ts";
 import SecondFormatter from "@/formatter/SecondFormatter";
 
@@ -109,26 +113,39 @@ export default {
     EditorAnimatedPropertyRowActions,
     EditorAnimatedSubProperty
   },
+  props: {
+    animationType: {
+      default: this.animationType
+    }
+  },
   data() {
     return {
       PRESETS,
       EASINGS,
       ANIMATED_PROPERTIES,
       secondFormatter: new SecondFormatter(),
-      animation: null
+      animation: null,
+      MAX_DURATION,
+      MIN_DURATION,
+      MAX_DELAY,
+      MIN_DELAY
     };
   },
   computed: {
+    ...mapGetters(["themeColors"]),
+    iconTint() {
+      return this.themeColors.text;
+    },
     duration: {
       get() {
         return this.$store.getters.fluidProperty({
-          type: FLUID_TYPES.ANIMATION_IN,
+          type: this.animationType,
           propertyName: "duration"
         });
       },
       set(value) {
         this.$store.commit("SET_FLUID_PROPERTY", {
-          type: FLUID_TYPES.ANIMATION_IN,
+          type: this.animationType,
           propertyName: "duration",
           value
         });
@@ -137,27 +154,27 @@ export default {
     name: {
       get() {
         return this.$store.getters.fluidProperty({
-          type: FLUID_TYPES.ANIMATION_IN,
+          type: this.animationType,
           propertyName: "name"
         });
       },
       set(presetType) {
         this.setSelectionAnimation({
           value: new PRESETS_FROM_TYPES[presetType.key](),
-          type: FLUID_TYPES.ANIMATION_IN
+          type: this.animationType
         });
       }
     },
     ease: {
       get() {
         return this.$store.getters.fluidProperty({
-          type: FLUID_TYPES.ANIMATION_IN,
+          type: this.animationType,
           propertyName: "ease"
         });
       },
       set(ease) {
         this.$store.commit("SET_FLUID_PROPERTY", {
-          type: FLUID_TYPES.ANIMATION_IN,
+          type: this.animationType,
           propertyName: "ease",
           value: ease
         });
@@ -166,13 +183,13 @@ export default {
     delay: {
       get() {
         return this.$store.getters.fluidProperty({
-          type: FLUID_TYPES.ANIMATION_IN,
+          type: this.animationType,
           propertyName: "delay"
         });
       },
       set(value) {
         this.$store.commit("SET_FLUID_PROPERTY", {
-          type: FLUID_TYPES.ANIMATION_IN,
+          type: this.animationType,
           propertyName: "delay",
           value
         });
@@ -181,13 +198,13 @@ export default {
     properties: {
       get() {
         return this.$store.getters.fluidProperty({
-          type: FLUID_TYPES.ANIMATION_IN,
+          type: this.animationType,
           propertyName: "properties"
         });
       },
       set(value) {
         this.$store.commit("SET_FLUID_PROPERTY", {
-          type: FLUID_TYPES.ANIMATION_IN,
+          type: this.animationType,
           propertyName: "properties",
           value
         });
@@ -206,40 +223,40 @@ export default {
     ]),
     addAnimation() {
       this.setSelectionAnimation({
-        type: FLUID_TYPES.ANIMATION_IN,
+        type: this.animationType,
         value: new PRESETS_FROM_TYPES.CUSTOM()
       });
     },
     removeAnimation() {
       this.removeSelectionAnimation({
-        type: FLUID_TYPES.ANIMATION_IN
+        type: this.animationType
       });
     },
     addAnimatedProperty() {
       this.addSelectionAnimatedProperty({
-        type: FLUID_TYPES.ANIMATION_IN
+        type: this.animationType
       });
     },
     removeAnimatedProperty(index) {
       this.removeSelectionAnimatedProperty({
-        type: FLUID_TYPES.ANIMATION_IN,
+        type: this.animationType,
         index
       });
     },
     popAnimatedProperty() {
       this.popSelectionAnimatedProperty({
-        type: FLUID_TYPES.ANIMATION_IN
+        type: this.animationType
       });
     },
     remainingAnimatedProperties(selectedName) {
       return this.$store.getters.remainingAnimatedProperties({
-        type: FLUID_TYPES.ANIMATION_IN,
+        type: this.animationType,
         selectedName
       });
     },
     updateAnimatedSubProperty(name, index, value) {
       this.updateSelectionAnimatedSubProperty({
-        type: FLUID_TYPES.ANIMATION_IN,
+        type: this.animationType,
         propertyName: name,
         value,
         index

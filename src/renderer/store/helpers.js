@@ -1,3 +1,4 @@
+import themes from "@/themes/index";
 const MIXED_CONTENT = "Mixed";
 
 export const FLUID_TYPES = {
@@ -22,4 +23,17 @@ export function mergeProperty(acc, currentValue) {
     acc = MIXED_CONTENT;
   }
   return acc;
+}
+
+export function getThemeFromPref(defaultTheme = "dark") {
+  const localStorageTheme = localStorage.getItem("theme");
+  if (localStorageTheme) {
+    return JSON.parse(localStorageTheme);
+  }
+
+  const themeInThemes = themes.find(theme => theme.name === defaultTheme);
+
+  localStorage.setItem("theme", JSON.stringify(themeInThemes));
+
+  return themeInThemes;
 }

@@ -1,10 +1,10 @@
 <template>
-    <div class="panel">
-      <input placeholder="file name" type="text">
+    <div class="panel" :style="panelStyle">
       <div class="right-actions">
-        <fluid-text-button>Sync</fluid-text-button>
-        <fluid-text-button @click.native="enterPlayerMode" :icon="PlayIcon" focus="true">Play</fluid-text-button>
+        <fluid-text-button :style="buttonStyle">Sync</fluid-text-button>
+        <fluid-text-button @click.native="enterPlayerMode" :icon="PlayIcon" :style="buttonStyle">Play</fluid-text-button>
       </div>
+      <div class="panel-border" :style="panelBorderStyle"></div>
     </div>
 </template>
 
@@ -12,22 +12,21 @@
 import { mapGetters, mapActions } from "vuex";
 import PlayIcon from "@/assets/icons/play.svg";
 
+import panelMixin from "@/mixins/panel";
 export default {
+  mixins: [panelMixin],
   data() {
     return {
       PlayIcon
     };
   },
   computed: {
-    zoomLevel: {
-      get() {
-        return this.$store.state.editor.settings.zoomLevel;
-      },
-      set(value) {
-        this.$store.commit("setZoomLevel", value);
-      }
-    },
-    ...mapGetters(["availableZoomLevels"])
+    ...mapGetters(["themeColors"]),
+    buttonStyle() {
+      return {
+        color: this.themeColors.text
+      };
+    }
   },
   methods: {
     ...mapActions(["enterPlayerMode"])
@@ -41,12 +40,19 @@ export default {
   top: 0;
   left: 246px;
   right: 305px;
-  background: #181818;
   height: 70px;
   display: flex;
   z-index: 1;
 
   align-items: center;
+}
+
+.panel-border {
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  right: 0;
+  height: 1px;
 }
 
 input {

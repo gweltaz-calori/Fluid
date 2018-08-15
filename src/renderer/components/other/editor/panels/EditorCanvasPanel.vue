@@ -1,5 +1,5 @@
 <template>
-    <div ref="panel" class="panel" >
+    <div ref="panel" class="panel" :style="{'background-color' : themeColors.background}">
         <div ref="canvas" class="canvas" ></div>
         <fluid-canvas-selection-marquee :is-dragging="isDragging" :position="position" :origin="origin"></fluid-canvas-selection-marquee>
     </div>
@@ -13,7 +13,6 @@ import Mouse from "@/js/mouse";
 import FluidCanvasSelectionMarquee from "@/components/other/editor/layers/FluidCanvasSelectionMarquee.vue";
 
 import canvasJson from "@/data/canvas.json";
-
 export default {
   components: { FluidCanvasSelectionMarquee },
   data() {
@@ -31,7 +30,12 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["zoomLevel", "currentSlide", "highlightedLayer"])
+    ...mapGetters([
+      "zoomLevel",
+      "currentSlide",
+      "highlightedLayer",
+      "themeColors"
+    ])
   },
   watch: {
     currentSlide() {
@@ -85,14 +89,17 @@ export default {
         this.selectNodes(nodes.map(node => node.id));
       } else {
         this.deselectAllNodes();
-        const isLeftClick = e.which === 3;
-        if (this.isDragging || isLeftClick) return;
-        this.isDragging = true;
-        const { x, y } = e;
-
-        this.origin.x = x;
-        this.origin.y = y;
+        this.startDrag(e);
       }
+    },
+    startDrag(e) {
+      const isLeftClick = e.which === 3;
+      if (this.isDragging || isLeftClick) return;
+      this.isDragging = true;
+      const { x, y } = e;
+
+      this.origin.x = x;
+      this.origin.y = y;
     },
     onMouseMove(e) {
       this.hover(e);
@@ -103,6 +110,8 @@ export default {
         this.selectNodes(nodes.map(node => node.id));
 
         this.setHighlightedLayer(nodes.map(node => node.id)[0]);
+      } else {
+        this.startDrag(e);
       }
     },
     onMovePanel(e) {

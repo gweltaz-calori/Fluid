@@ -3,18 +3,29 @@
         <div class="property-container">
           <slot></slot>
         </div>  
-        <div class="border"></div>  
+        <div class="border" :style="borderStyle"></div>  
     </div>
 </template>
 
 <script>
-export default {};
+import { mapGetters } from "vuex";
+
+export default {
+  computed: {
+    ...mapGetters(["themeColors"]),
+    borderStyle() {
+      return {
+        backgroundColor: this.themeColors.text
+      };
+    }
+  }
+};
 </script>
 
 <style scoped>
 .border {
   height: 0.8px;
-  background-color: rgba(255, 255, 255, 0.04);
+  opacity: 0.1;
   width: 100%;
 }
 

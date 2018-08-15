@@ -1,6 +1,6 @@
 <template>
     <div v-if="animatedLayers.length > 0">
-        <fluid-animated-layer-row @mousedown.native="selectNodes([layer.id])" :selected="isCurrentSelectedLayer(layer)" :key="layer.id" v-for="layer in animatedLayers"></fluid-animated-layer-row>
+        <fluid-animated-layer-row :animation-type="animationType" @mousedown.native="selectNodes([layer.id])" :selected="isCurrentSelectedLayer(layer)" :key="layer.id" v-for="layer in animatedLayers" :animation="layer.fluid[animationType]"></fluid-animated-layer-row>
     </div>
     <fluid-text-info class="info" v-else>No Animations found for this slide yet</fluid-text-info>
 </template>

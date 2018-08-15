@@ -1,11 +1,12 @@
 <template>
-    <div class="panel" @mousedown="deselectAllNodes">
-      <fluid-scrollable-container height="100%" class="slides">
+    <div class="panel" @mousedown="deselectAllNodes" :style="panelStyle">
+      <div height="100%" class="slides">
         <fluid-menu class="menu" v-model="selectedMenu" :options="menuOptions"></fluid-menu>
         <keep-alive>
             <component :is="selectedMenu.value"></component>
         </keep-alive>
-      </fluid-scrollable-container>
+      </div>
+      <div class="panel-border" :style="panelBorderStyle"></div>
     </div>
 </template>
 
@@ -13,8 +14,10 @@
 import SlidesMenu from "@/components/other/editor/menus/SlidesMenu.vue";
 import LayersMenu from "@/components/other/editor/menus/LayersMenu.vue";
 import { mapActions } from "vuex";
+import panelMixin from "@/mixins/panel";
 
 export default {
+  mixins: [panelMixin],
   components: {
     SlidesMenu,
     LayersMenu
@@ -49,13 +52,19 @@ export default {
 <style scoped>
 .panel {
   position: absolute;
-  padding: 18px 0;
   z-index: 1;
   top: 0;
   left: 0;
   bottom: 0;
   width: 246px;
-  background: #181818;
+}
+
+.panel-border {
+  position: absolute;
+  top: 70px;
+  right: -1px;
+  bottom: 0;
+  width: 1px;
 }
 
 .slide {
@@ -65,6 +74,6 @@ export default {
 }
 
 .menu {
-  margin-bottom: 18px;
+  height: 70px;
 }
 </style>

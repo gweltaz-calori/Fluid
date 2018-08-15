@@ -29,7 +29,6 @@ export default {
 }
 
 .slides {
-  margin-top: 26px;
   height: 100%;
 }
 .slides-info {

@@ -1,0 +1,2 @@
+export const IMPORT_FROM_FIGMA = "IMPORT_FROM_FIGMA";
+export const CHANGE_THEME = "CHANGE_THEME";
