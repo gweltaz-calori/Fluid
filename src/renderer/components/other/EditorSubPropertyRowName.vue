@@ -26,7 +26,7 @@ export default {
   line-height: normal;
   font-size: 13.4435px;
   margin-right: 21px;
-
+  user-select: none;
   opacity: 0.6;
   width: 44px;
 }

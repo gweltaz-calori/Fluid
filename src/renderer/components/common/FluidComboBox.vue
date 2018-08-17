@@ -150,9 +150,10 @@ export default {
 .combo-value {
   font-family: Exo;
   font-style: normal;
-  font-weight: 700;
+  font-weight: 600;
   line-height: normal;
-  font-size: 11px;
+
+  font-size: 13.4435px;
 }
 
 .combo-option-text.active {

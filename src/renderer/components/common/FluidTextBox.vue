@@ -1,10 +1,21 @@
 <template>
-    <input :style="style" @click="click" @keydown.enter="exit" @keydown.esc="exit"  @blur="validateInput($event.target.value)" ref="input" :value="value" :placeholder="placeholder" type="text">
+    <input 
+      :style="style" 
+      @click="click" 
+      @keydown.enter="exit"
+      @keydown.esc="exit" 
+      @blur="$emit('blur')"
+      @input="change"
+      ref="input" 
+      :value="value" 
+      :placeholder="placeholder" 
+      type="text">
 </template>
 
 <script>
 import SuperMath from "@/js/math";
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
+import { isMixed } from "../../store/helpers";
 
 export default {
   props: {
@@ -32,13 +43,20 @@ export default {
     }
   },
   methods: {
+    ...mapActions(["setEditingValue"]),
     click(e) {
       e.target.setSelectionRange(0, e.target.value.length);
+    },
+    blur(e) {
+      this.validateInput(e.target.value);
+    },
+    change() {
+      console.log("on change");
     },
     validateInput(value) {
       let val = this.value;
 
-      if (this.formatter) {
+      if (this.formatter && !isMixed(value)) {
         try {
           val = this.formatter.parse(value);
         } catch (e) {
@@ -58,6 +76,7 @@ export default {
     },
     exit(e) {
       e.target.blur();
+      this.validateInput(this.$refs.input.value);
     }
   }
 };

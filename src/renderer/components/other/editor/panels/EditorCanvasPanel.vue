@@ -1,6 +1,6 @@
 <template>
     <div ref="panel" class="panel" :style="{'background-color' : themeColors.background}">
-        <div ref="canvas" class="canvas" ></div>
+        <div ref="canvas" class="canvas"></div>
         <fluid-canvas-selection-marquee :is-dragging="isDragging" :position="position" :origin="origin"></fluid-canvas-selection-marquee>
     </div>
 </template>
@@ -74,6 +74,8 @@ export default {
       this.hover(e);
     },
     onMouseDown(e) {
+      e.stopPropagation();
+
       let time = performance.now();
       if (e.target && time - e.target.__oldTime <= 400) {
         e.__type = "dblclick";

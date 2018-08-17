@@ -1,6 +1,6 @@
 <template>
     <div ref="rangeContainer" class="range">
-        <span class="range-bar-wrapper" >
+        <span class="range-bar-wrapper" @mousedown="onBarClick" >
           <div :style="barStyle" class="range-bar" ></div>
         </span>
         <div class="range-background" :style="backgroundWidth"></div>
@@ -12,6 +12,7 @@
 import Draggable from "@/lib/draggable";
 import { mapGetters } from "vuex";
 import SuperMath from "../../importer/utils/SuperMath";
+import { isMixed } from "../../store/helpers";
 export default {
   props: {
     max: {
@@ -64,7 +65,9 @@ export default {
   },
   methods: {
     setValue() {
-      const value = this.formatter.parse(this.value.toString());
+      const value = !isMixed(this.value)
+        ? this.formatter.parse(this.value.toString())
+        : 0;
       const valueInRange = SuperMath.range(value, this.min, this.max, 0, 1);
       this.draggable.set({
         x: valueInRange
@@ -75,6 +78,34 @@ export default {
         "input",
         this.formatter.format(
           SuperMath.range(e.x / e.maxX, 0, 1, this.min, this.max)
+        )
+      );
+    },
+    onBarClick(e) {
+      const { offsetX } = e;
+      const valueInRange = SuperMath.range(
+        offsetX,
+        0,
+        e.target.clientWidth,
+        0,
+        1
+      );
+      this.draggable.set({
+        x: valueInRange
+      });
+
+      this.draggable.move(e);
+
+      this.$emit(
+        "input",
+        this.formatter.format(
+          SuperMath.range(
+            this.draggable.getBounds().x / this.draggable.getBounds().maxX,
+            0,
+            1,
+            this.min,
+            this.max
+          )
         )
       );
     }

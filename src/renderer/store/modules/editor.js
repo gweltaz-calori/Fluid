@@ -1,7 +1,7 @@
 import { ipcRenderer } from "electron";
-import { mergeProperty, getThemeFromPref } from "../helpers";
+import { mergeProperty, getThemeFromPref, isMixed } from "../helpers";
 import TreeWalker from "../../editor/tree-walker";
-import { ANIMATED_PROPERTIES } from "../../models/types2";
+import { ANIMATED_PROPERTIES, PRESETS_FROM_TYPES } from "../../models/types2";
 import { isRoot } from "../../editor/tree-helpers";
 
 const state = {
@@ -21,7 +21,8 @@ const state = {
     y: 0,
     width: 0,
     height: 0
-  }
+  },
+  editingValue: null
 };
 
 const mutations = {
@@ -72,7 +73,10 @@ const mutations = {
   },
   SET_SELECTION_ANIMATION(state, props) {
     state.selectedLayers.map(
-      id => (state.nodesTree[id].fluid[props.type] = props.value)
+      id =>
+        (state.nodesTree[id].fluid[props.type] = new PRESETS_FROM_TYPES[
+          props.value
+        ]())
     );
   },
   REMOVE_SELECTION_ANIMATION(state, props) {
@@ -120,6 +124,9 @@ const mutations = {
   SET_THEME(state, theme) {
     state.settings.currentTheme = theme;
     localStorage.setItem("theme", JSON.stringify(theme));
+  },
+  SET_EDITING_VALUE(state, value = null) {
+    state.editingValue = value;
   }
 };
 
@@ -162,6 +169,7 @@ const actions = {
     }
   },
   deselectAllNodes({ commit }) {
+    //before deselecting we need to make sure we are not editing a property because mousedown is trigger before blur
     if (state.selectedLayers[0] !== state.selectedFrame.id) {
       commit("DESELECT_ALL_NODES");
     }
@@ -213,6 +221,9 @@ const actions = {
   },
   setTheme({ commit }, theme) {
     commit("SET_THEME", theme);
+  },
+  setEditingValue({ commit }, value) {
+    commit("SET_EDITING_VALUE", value);
   }
 };
 
@@ -238,18 +249,21 @@ const getters = {
     return value;
   },
   remainingAnimatedProperties: (state, getters) => props => {
-    return ANIMATED_PROPERTIES.filter(possibleProperty => {
+    return ANIMATED_PROPERTIES;
+    /* return ANIMATED_PROPERTIES.filter(possibleProperty => {
       let properties = getters.fluidProperty({
         type: props.type,
         propertyName: "properties"
       });
+
+      console.log(properties);
 
       let found = properties.find(
         property => property.name === possibleProperty.value
       );
 
       return !found || props.selectedName === possibleProperty.value;
-    });
+    }); */
   },
   animatedLayers: state => type => {
     const animatedLayers = [];
@@ -263,7 +277,8 @@ const getters = {
 
     return animatedLayers;
   },
-  themeColors: state => state.settings.currentTheme.colors
+  themeColors: state => state.settings.currentTheme.colors,
+  editingValue: state => state.editingValue
 };
 
 export default {

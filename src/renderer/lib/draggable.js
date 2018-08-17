@@ -79,12 +79,16 @@ export default class Draggable {
 
     this._setElStyle();
 
-    this._callCallbackFromEvent("drag", {
+    this._callCallbackFromEvent("drag", this.getBounds());
+  }
+
+  getBounds() {
+    return {
       maxX: this._max.x,
       maxY: this._max.y,
       x: this._position.x,
       y: this._position.y
-    });
+    };
   }
 
   _onMouseUp(e) {
@@ -103,5 +107,9 @@ export default class Draggable {
     }
 
     this._setElStyle();
+  }
+
+  move(e) {
+    this._onMouseDown(e);
   }
 }

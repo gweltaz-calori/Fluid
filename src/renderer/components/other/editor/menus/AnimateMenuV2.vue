@@ -164,7 +164,7 @@ export default {
       },
       set(presetType) {
         this.setSelectionAnimation({
-          value: new PRESETS_FROM_TYPES[presetType.key](),
+          value: presetType.key,
           type: this.animationType
         });
       }
@@ -228,7 +228,7 @@ export default {
     addAnimation() {
       this.setSelectionAnimation({
         type: this.animationType,
-        value: new PRESETS_FROM_TYPES.CUSTOM()
+        value: "CUSTOM"
       });
     },
     removeAnimation() {

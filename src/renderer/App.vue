@@ -117,6 +117,8 @@ export default {};
   font-family: "Exo";
   text-decoration: none;
   user-select: none;
+
+  cursor: default;
 }
 
 *:focus {
