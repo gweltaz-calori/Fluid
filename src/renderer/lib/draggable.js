@@ -99,10 +99,10 @@ export default class Draggable {
   }
 
   set({ x, y }) {
-    if (x) {
+    if (void 0 !== x) {
       this._position.x = x * this._max.x;
     }
-    if (y) {
+    if (void 0 !== y) {
       this._position.y = y * this._max.y;
     }
 

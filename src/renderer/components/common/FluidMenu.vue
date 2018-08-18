@@ -1,7 +1,5 @@
 <template>
-
     <div class="menu">
-        
         <div :style="menuItemStyle" :class="{'active':isActive(option.key)}" @mousedown.stop="changeActiveMenuItem(option)" v-for="option in options" :key="option.key" class="menu-option">
             <div class="menu-option-background" :style="activeBackground(option.key)"></div>
             {{option.name}}

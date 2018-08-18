@@ -11,9 +11,8 @@ Vue.use(Router);
 export default new Router({
   routes: [
     {
-      name: "Home",
-      component: Home,
-      path: "/"
+      path: "/",
+      redirect: "/edit"
     },
     {
       name: "Player",
@@ -24,11 +23,11 @@ export default new Router({
       name: "Editor",
       component: Editor,
       path: "/edit"
-    },
-    {
+    }
+    /* {
       name: "EditorLoader",
       component: EditorLoader,
       path: "/edit/:key"
-    }
+    } */
   ]
 });

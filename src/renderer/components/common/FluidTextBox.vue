@@ -61,26 +61,27 @@ export default {
     onFocus() {
       this.focused = true;
     },
-    validateInput(value) {
-      let val = this.value;
+    validateInput(newValue) {
+      let oldValue = this.value;
 
-      if (this.formatter && !isMixed(value)) {
+      if (this.formatter) {
         try {
-          val = this.formatter.parse(value);
+          //the parsing succeed
+          const parsedValue = this.formatter.parse(newValue);
+          newValue = this.formatter.format(
+            SuperMath.clamp(parsedValue, this.min, this.max)
+          );
         } catch (e) {
-          if (val) {
-            val = this.formatter.parse(val);
-          }
+          //parsing failed so set the old value back
+          newValue = oldValue;
         }
-
-        val = this.formatter.format(SuperMath.clamp(val, this.min, this.max));
       } else {
-        val = SuperMath.clamp(val, this.min, this.max);
+        //no need to make any formatting on the value
+        newValue = SuperMath.clamp(newValue, this.min, this.max);
       }
 
-      this.$refs.input.value = val;
-
-      this.$emit("input", val);
+      this.$refs.input.value = newValue;
+      this.$emit("input", newValue);
     },
     exit(e) {
       e.target.blur();

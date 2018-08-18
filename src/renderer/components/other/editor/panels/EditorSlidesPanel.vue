@@ -47,7 +47,6 @@ export default {
   methods: {
     ...mapActions(["selectRootNode"]),
     clearSelection() {
-      Bus.$emit("before-selection-changed");
       this.selectRootNode();
     }
   }

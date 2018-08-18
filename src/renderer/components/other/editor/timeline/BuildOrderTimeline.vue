@@ -31,7 +31,6 @@ export default {
       return !isRoot(layer) && this.selectedLayers.includes(layer.id);
     },
     selectNodeFromId(id) {
-      Bus.$emit("before-selection-changed");
       this.selectNodes([id]);
     }
   }

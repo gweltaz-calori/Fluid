@@ -161,7 +161,6 @@ export default {
       if (this.isRoot || this.disabled) {
         return;
       }
-      Bus.$emit("before-selection-changed");
       this.selectNodes([this.layer.id]);
     }
   }

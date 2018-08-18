@@ -48,7 +48,7 @@
             </editor-property-action>
           </editor-property-actions>
         </editor-property-header>
-        <editor-property-content v-if="properties.length > 0">
+        <editor-property-content v-if="!isMixed(properties) && properties.length > 0">
           <editor-animated-sub-property>
             <editor-animated-property-row v-for="(animatedProperty,index) in properties" :key="animatedProperty.name">
               <fluid-combo-box label="value" model-property="value" @input="updateAnimatedSubProperty('name',index,$event)" :value="animatedProperty.name" track-by="key" :options="remainingAnimatedProperties(animatedProperty.name)"></fluid-combo-box>
@@ -61,6 +61,7 @@
             </editor-animated-property-row>
           </editor-animated-sub-property>
         </editor-property-content>
+        <fluid-text-info :style="propertiesInfoStyle" v-else-if="isMixed(properties)" class="properties-info" >Click + to replace mixed content</fluid-text-info>
         <fluid-text-info :style="propertiesInfoStyle" v-else class="properties-info" >Add properties to animate by clicking the "+" icon</fluid-text-info>
       </editor-property>
 
@@ -96,7 +97,7 @@ import EditorPropertyAction from "@/components/other/EditorPropertyAction.vue";
 import EditorAnimatedPropertyRow from "@/components/other/EditorAnimatedPropertyRow.vue";
 import EditorAnimatedPropertyRowActions from "@/components/other/EditorAnimatedPropertyRowActions.vue";
 import EditorAnimatedSubProperty from "@/components/other/EditorAnimatedSubProperty.vue";
-import { FLUID_TYPES } from "../../../../store/helpers";
+import { FLUID_TYPES, isMixed } from "../../../../store/helpers";
 
 export default {
   components: {
@@ -276,6 +277,9 @@ export default {
           }
         });
       }
+    },
+    isMixed(value) {
+      return isMixed(value);
     }
   },
   beforeDestroy() {

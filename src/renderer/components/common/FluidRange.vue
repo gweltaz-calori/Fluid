@@ -1,5 +1,5 @@
 <template>
-    <div ref="rangeContainer" class="range">
+    <div ref="rangeContainer" class="range" >
         <span class="range-bar-wrapper" @mousedown="onBarClick" >
           <div :style="barStyle" class="range-bar" ></div>
         </span>
@@ -24,7 +24,10 @@ export default {
       default: 0
     },
     value: {},
-    formatter: {}
+    formatter: {},
+    disabled: {
+      default: false
+    }
   },
   data() {
     return {
@@ -164,5 +167,10 @@ export default {
   height: 13px;
   width: 13px;
   border-radius: 50%;
+}
+
+.disabled {
+  pointer-events: none;
+  opacity: 0.3;
 }
 </style>

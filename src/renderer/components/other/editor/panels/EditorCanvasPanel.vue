@@ -77,8 +77,6 @@ export default {
     onMouseDown(e) {
       e.stopPropagation();
 
-      Bus.$emit("before-selection-changed");
-
       let time = performance.now();
       if (e.target && time - e.target.__oldTime <= 400) {
         e.__type = "dblclick";

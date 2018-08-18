@@ -3,6 +3,12 @@
         <div class="combo-value" :style="comboValueStyle">{{getLabel(value)}}</div>
         <fluid-icon-chevron :tint="themeColors.text" class="combo-chevron" @click="showOptions"></fluid-icon-chevron>
         <div v-show="optionsVisible" class="combo-options" :style="comboOptionsStyle">
+            <div class="combo-option disabled" v-if="isMixed">
+              <div class="combo-option-check checked" >
+                <fluid-icon-check></fluid-icon-check>
+              </div>
+              <div class="combo-option-text" >{{getLabel(value)}}</div>
+            </div>
             <div class="combo-option" @mousedown.stop="changeValue(option)" v-for="option in options" :key="getKey(option)">
               <div class="combo-option-check" :class="{'checked':getLabel(option) == getLabel(value)}">
                 <fluid-icon-check></fluid-icon-check>
@@ -19,6 +25,7 @@ import { mixin as mousedownaway } from "@/directives/mouse-away";
 
 import FluidIconChevron from "@/components/icons/FluidIconChevron.vue";
 import FluidIconCheck from "@/components/icons/FluidIconCheck.vue";
+import { isMixed } from "../../store/helpers";
 
 export default {
   mixins: [mousedownaway],
@@ -62,6 +69,12 @@ export default {
         option => this.getLabel(option) === this.getLabel(this.value)
       );
 
+      if (index === -1) {
+        return {
+          top: `${-(0 * 29) - 4}px`
+        };
+      }
+
       return {
         top: `${-(index * 29) - 4}px`
       };
@@ -75,6 +88,9 @@ export default {
       return {
         color: this.themeColors.text
       };
+    },
+    isMixed() {
+      return isMixed(this.value);
     }
   },
   mounted() {}
@@ -143,7 +159,7 @@ export default {
   font-style: normal;
   font-weight: bold;
   line-height: normal;
-  font-size: 11px;
+  font-size: 11.4435px;
   cursor: default;
 }
 
@@ -166,5 +182,10 @@ export default {
 
 .combo-option.active {
   color: rgba(255, 255, 255, 1);
+}
+
+.disabled {
+  pointer-events: none;
+  opacity: 0.3;
 }
 </style>

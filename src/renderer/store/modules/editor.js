@@ -4,6 +4,8 @@ import TreeWalker from "../../editor/tree-walker";
 import { ANIMATED_PROPERTIES, PRESETS_FROM_TYPES } from "../../models/types2";
 import { isRoot } from "../../editor/tree-helpers";
 
+import Bus from "@/bus";
+
 const state = {
   settings: {
     currentTheme: getThemeFromPref("light")
@@ -136,6 +138,8 @@ const actions = {
   },
   setSelectedFrame({ commit }, index) {
     commit("SET_SELECTED_FRAME", index);
+
+    Bus.$emit("before-selection-changed");
     commit("SELECT_ROOT_NODE");
   },
   enterPlayerMode({ commit }) {
@@ -159,6 +163,7 @@ const actions = {
       missingItems.length > 0 ||
       nodeIds.length !== state.selectedLayers.length
     ) {
+      Bus.$emit("before-selection-changed");
       commit("SELECT_NODES", nodeIds);
     }
   },
@@ -169,7 +174,7 @@ const actions = {
   },
   selectRootNode({ commit }) {
     if (state.selectedLayers[0] !== state.selectedFrame.id) {
-      //we need to save the value of potential input since blur is called after
+      Bus.$emit("before-selection-changed");
       commit("SELECT_ROOT_NODE");
     }
   },

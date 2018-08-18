@@ -16,9 +16,13 @@ export function animatedPropertyAlreadyExists(name, properties) {
 
 //this will reduce to one value with mixed in case of mixed content
 export function mergeProperty(acc, currentValue) {
+  console.log(acc, currentValue);
   if (acc === undefined || acc === null) {
     acc = currentValue;
   } else if (acc !== currentValue && currentValue !== MIXED_CONTENT) {
+    const isSameArray =
+      Array.isArray(acc) && acc.length === 0 && currentValue.length === 0;
+
     //if we have a property but it's not the same, that's mixed content
     acc = MIXED_CONTENT;
   }
