@@ -1,12 +1,12 @@
 <template>
     <div class="sub-property-value-container">
         <div class="range-value-type" v-if="type === 'range'">
-            <fluid-text-box @blur="$emit('blur')" :fallback-value="fallbackValue" :max="max" :min="min" :formatter="formatter" class="range-value-type-textbox" :value="value" @input="changeValue"></fluid-text-box>
+            <fluid-text-box ref="textBox" :fallback-value="fallbackValue" :max="max" :min="min" :formatter="formatter" class="range-value-type-textbox" :value="value" @input="changeValue"></fluid-text-box>
             <fluid-range v-if="!isMixed" :max="max" :min="min" :formatter="formatter" :value="value" @input="changeValue"></fluid-range>
         </div>
         <fluid-check-box v-else-if="type === 'checkbox'" :value="value" @input="changeValue"></fluid-check-box>
         <div v-else-if="type === 'textbox'" class="text-box-container">
-          <fluid-text-box @blur="$emit('blur')" :fallback-value="fallbackValue" :max="max" :min="min" :formatter="formatter" :value="value" @input="changeValue"></fluid-text-box>
+          <fluid-text-box ref="textBox" :fallback-value="fallbackValue" :max="max" :min="min" :formatter="formatter" :value="value" @input="changeValue"></fluid-text-box>
         </div>
         <div v-else>
             <fluid-combo-box :model-property="modelProperty" :label="label" :track-by="trackBy" :value="value" :options="options" @input="changeValue"></fluid-combo-box>
@@ -35,6 +35,18 @@ export default {
   methods: {
     changeValue(value) {
       this.$emit("input", value);
+    },
+    flush() {
+      if (this.$refs.textBox) {
+        this.$refs.textBox.flush();
+      }
+    },
+    isFocused() {
+      if (this.$refs.textBox) {
+        return this.$refs.textBox.focused;
+      }
+
+      return false;
     }
   },
   computed: {

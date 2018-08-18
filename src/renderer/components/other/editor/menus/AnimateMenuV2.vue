@@ -23,11 +23,11 @@
             </editor-sub-property-row>
             <editor-sub-property-row>
               <editor-sub-property-row-name>Duration</editor-sub-property-row-name>
-              <editor-sub-property-row-value :formatter="secondFormatter" :min="0" :max="30" v-model="duration"  type="range"></editor-sub-property-row-value>
+              <editor-sub-property-row-value ref="durationRef" :formatter="secondFormatter" :min="0" :max="30" v-model="duration"  type="range"></editor-sub-property-row-value>
             </editor-sub-property-row>
             <editor-sub-property-row>
               <editor-sub-property-row-name>Delay</editor-sub-property-row-name>
-              <editor-sub-property-row-value :formatter="secondFormatter" :min="0" :max="30"  v-model="delay" type="range"></editor-sub-property-row-value>
+              <editor-sub-property-row-value ref="delayRef" :formatter="secondFormatter" :min="0" :max="30"  v-model="delay" type="range"></editor-sub-property-row-value>
             </editor-sub-property-row>
             <editor-sub-property-row>
               <editor-sub-property-row-name>Ease</editor-sub-property-row-name>
@@ -80,6 +80,8 @@ import {
 } from "@/models/types2.ts";
 import SecondFormatter from "@/formatter/SecondFormatter";
 
+import Bus from "@/bus";
+
 import { mapGetters, mapActions } from "vuex";
 import EditorProperty from "@/components/other/EditorProperty.vue";
 import EditorSubProperty from "@/components/other/EditorSubProperty.vue";
@@ -131,7 +133,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["themeColors"]),
+    ...mapGetters(["themeColors", "selectedLayers"]),
     iconTint() {
       return this.themeColors.text;
     },
@@ -265,7 +267,22 @@ export default {
         value,
         index
       });
+    },
+    beforeSelectionChanged() {
+      if (this.$refs.durationRef && this.$refs.delayRef) {
+        [this.$refs.durationRef, this.$refs.delayRef].map(ref => {
+          if (ref.isFocused()) {
+            ref.flush();
+          }
+        });
+      }
     }
+  },
+  beforeDestroy() {
+    Bus.$off("before-selection-changed", this.beforeSelectionChanged);
+  },
+  mounted() {
+    Bus.$on("before-selection-changed", this.beforeSelectionChanged);
   }
 };
 </script>

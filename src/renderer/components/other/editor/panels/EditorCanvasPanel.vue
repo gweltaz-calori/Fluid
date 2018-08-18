@@ -6,6 +6,7 @@
 </template>
 
 <script>
+import Bus from "@/bus";
 import { mapGetters, mapActions } from "vuex";
 import { getNodeFromEvent } from "@/editor/tree-actions";
 import Importer from "@/importer/Importer";
@@ -47,7 +48,7 @@ export default {
       "setFrames",
       "setSelectedFrame",
       "selectNodes",
-      "deselectAllNodes",
+      "selectRootNode",
       "setNodesTree",
       "setHighlightedLayer",
       "setCanvasBounds",
@@ -76,6 +77,8 @@ export default {
     onMouseDown(e) {
       e.stopPropagation();
 
+      Bus.$emit("before-selection-changed");
+
       let time = performance.now();
       if (e.target && time - e.target.__oldTime <= 400) {
         e.__type = "dblclick";
@@ -90,7 +93,7 @@ export default {
       if (nodes.length > 0) {
         this.selectNodes(nodes.map(node => node.id));
       } else {
-        this.deselectAllNodes();
+        this.selectRootNode();
         this.startDrag(e);
       }
     },
@@ -137,7 +140,7 @@ export default {
       if (nodes.length > 0) {
         this.selectNodes(nodes.map(node => node.id));
       } else {
-        this.deselectAllNodes();
+        this.selectRootNode();
       }
     },
     setDimensions() {

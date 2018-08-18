@@ -1,5 +1,5 @@
 <template>
-    <div class="panel" @mousedown="deselectAllNodes" :style="panelStyle">
+    <div class="panel" @mousedown="clearSelection" :style="panelStyle">
       <div height="100%" class="slides">
         <fluid-menu class="menu" v-model="selectedMenu" :options="menuOptions"></fluid-menu>
         <keep-alive>
@@ -11,6 +11,7 @@
 </template>
 
 <script>
+import Bus from "@/bus";
 import SlidesMenu from "@/components/other/editor/menus/SlidesMenu.vue";
 import LayersMenu from "@/components/other/editor/menus/LayersMenu.vue";
 import { mapActions } from "vuex";
@@ -44,7 +45,11 @@ export default {
     };
   },
   methods: {
-    ...mapActions(["deselectAllNodes"])
+    ...mapActions(["selectRootNode"]),
+    clearSelection() {
+      Bus.$emit("before-selection-changed");
+      this.selectRootNode();
+    }
   }
 };
 </script>

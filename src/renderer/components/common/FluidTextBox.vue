@@ -4,8 +4,8 @@
       @click="click" 
       @keydown.enter="exit"
       @keydown.esc="exit" 
-      @blur="$emit('blur')"
-      @input="change"
+      @blur="blur($event.target.value)"
+      @focus="onFocus"
       ref="input" 
       :value="value" 
       :placeholder="placeholder" 
@@ -33,6 +33,11 @@ export default {
       required: false
     }
   },
+  data() {
+    return {
+      focused: false
+    };
+  },
   computed: {
     ...mapGetters(["themeColors"]),
     style() {
@@ -43,15 +48,18 @@ export default {
     }
   },
   methods: {
-    ...mapActions(["setEditingValue"]),
+    ...mapActions(["setFocusedTextboxRef"]),
     click(e) {
       e.target.setSelectionRange(0, e.target.value.length);
     },
-    blur(e) {
-      this.validateInput(e.target.value);
+    blur(value) {
+      if (!this.focused) return;
+
+      this.focused = false;
+      this.validateInput(value);
     },
-    change() {
-      console.log("on change");
+    onFocus() {
+      this.focused = true;
     },
     validateInput(value) {
       let val = this.value;
@@ -77,6 +85,9 @@ export default {
     exit(e) {
       e.target.blur();
       this.validateInput(this.$refs.input.value);
+    },
+    flush() {
+      this.blur(this.$refs.input.value);
     }
   }
 };

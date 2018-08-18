@@ -31,6 +31,7 @@
 </template>
 
 <script>
+import Bus from "@/bus";
 import FluidLayerItem from "@/components/other/editor/layers/FluidLayerItem.vue";
 import { mapActions, mapGetters } from "vuex";
 import { isRoot } from "@/editor/tree-helpers";
@@ -160,7 +161,7 @@ export default {
       if (this.isRoot || this.disabled) {
         return;
       }
-
+      Bus.$emit("before-selection-changed");
       this.selectNodes([this.layer.id]);
     }
   }

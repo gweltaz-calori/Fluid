@@ -21,8 +21,7 @@ const state = {
     y: 0,
     width: 0,
     height: 0
-  },
-  editingValue: null
+  }
 };
 
 const mutations = {
@@ -43,7 +42,7 @@ const mutations = {
   ADD_NODES_TO_SELECTION(state, nodeId) {
     state.selectedLayers.push(nodeId);
   },
-  DESELECT_ALL_NODES(state) {
+  SELECT_ROOT_NODE(state) {
     state.selectedLayers = [state.selectedFrame.id];
   },
   SELECT_NODES(state, nodeIds) {
@@ -125,8 +124,8 @@ const mutations = {
     state.settings.currentTheme = theme;
     localStorage.setItem("theme", JSON.stringify(theme));
   },
-  SET_EDITING_VALUE(state, value = null) {
-    state.editingValue = value;
+  SET_FOCUSED_TEXTBOX_REF(state, ref = null) {
+    state.focusedTextBoxRef = ref;
   }
 };
 
@@ -137,7 +136,7 @@ const actions = {
   },
   setSelectedFrame({ commit }, index) {
     commit("SET_SELECTED_FRAME", index);
-    commit("DESELECT_ALL_NODES");
+    commit("SELECT_ROOT_NODE");
   },
   enterPlayerMode({ commit }) {
     commit("ENTERING_PLAY_MODE");
@@ -168,10 +167,10 @@ const actions = {
       commit("ADD_NODES_TO_SELECTION", nodeId);
     }
   },
-  deselectAllNodes({ commit }) {
-    //before deselecting we need to make sure we are not editing a property because mousedown is trigger before blur
+  selectRootNode({ commit }) {
     if (state.selectedLayers[0] !== state.selectedFrame.id) {
-      commit("DESELECT_ALL_NODES");
+      //we need to save the value of potential input since blur is called after
+      commit("SELECT_ROOT_NODE");
     }
   },
   toggleNodeVisibility({ commit }, nodeId) {
@@ -221,9 +220,6 @@ const actions = {
   },
   setTheme({ commit }, theme) {
     commit("SET_THEME", theme);
-  },
-  setEditingValue({ commit }, value) {
-    commit("SET_EDITING_VALUE", value);
   }
 };
 
