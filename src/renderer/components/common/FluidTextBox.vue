@@ -90,6 +90,12 @@ export default {
     flush() {
       this.blur(this.$refs.input.value);
     }
+  },
+  mounted() {
+    this.validateInput(this.$refs.input.value);
+  },
+  updated() {
+    this.validateInput(this.$refs.input.value);
   }
 };
 </script>

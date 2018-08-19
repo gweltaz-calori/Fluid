@@ -29,11 +29,6 @@ export default {
       default: false
     }
   },
-  data() {
-    return {
-      backgroundRatio: 0
-    };
-  },
   watch: {
     value() {
       if (this.draggable && this.draggable.isDragging) return;
@@ -71,6 +66,7 @@ export default {
       const value = !isMixed(this.value)
         ? this.formatter.parse(this.value.toString())
         : 0;
+
       const valueInRange = SuperMath.range(value, this.min, this.max, 0, 1);
       this.draggable.set({
         x: valueInRange

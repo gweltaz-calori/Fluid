@@ -1,5 +1,10 @@
 import { ipcRenderer } from "electron";
-import { mergeProperty, getThemeFromPref, isMixed } from "../helpers";
+import {
+  mergeProperty,
+  getThemeFromPref,
+  isMixed,
+  MIXED_CONTENT
+} from "../helpers";
 import TreeWalker from "../../editor/tree-walker";
 import { ANIMATED_PROPERTIES, PRESETS_FROM_TYPES } from "../../models/types2";
 import { isRoot } from "../../editor/tree-helpers";
@@ -86,11 +91,14 @@ const mutations = {
     );
   },
   SET_FLUID_PROPERTY(state, props) {
-    state.selectedLayers.map(
-      id =>
-        (state.nodesTree[id].fluid[props.type][props.propertyName] =
-          props.value)
-    );
+    state.selectedLayers.map(id => {
+      if (
+        state.nodesTree[id].fluid[props.type] &&
+        void 0 !== state.nodesTree[id].fluid[props.type][props.propertyName]
+      ) {
+        state.nodesTree[id].fluid[props.type][props.propertyName] = props.value;
+      }
+    });
   },
   ADD_SELECTION_ANIMATED_PROPERTY(state, props) {
     state.selectedLayers.map(id => {
@@ -112,6 +120,11 @@ const mutations = {
   POP_SELECTION_ANIMATED_PROPERTY(state, props) {
     state.selectedLayers.map(id =>
       state.nodesTree[id].fluid[props.type].properties.pop()
+    );
+  },
+  CLEAR_SELECTION_ANIMATED_PROPERTY(state, props) {
+    state.selectedLayers.map(
+      id => (state.nodesTree[id].fluid[props.type].properties = [])
     );
   },
   UPDATE_SELECTION_ANIMATED_SUB_PROPERTY(state, props) {
@@ -214,12 +227,17 @@ const actions = {
     
         commit("ADD_SELECTION_ANIMATED_PROPERTY", props); */
   },
+  replaceSelectionAnimatedProperty({ commit }, props) {},
   removeSelectionAnimatedProperty({ commit }, props) {
     commit("REMOVE_SELECTION_ANIMATED_PROPERTY", props);
   },
   popSelectionAnimatedProperty({ commit }, props) {
     commit("POP_SELECTION_ANIMATED_PROPERTY", props);
   },
+  clearSelectionAnimatedProperty({ commit }, props) {
+    commit("CLEAR_SELECTION_ANIMATED_PROPERTY", props);
+  },
+
   updateSelectionAnimatedSubProperty({ commit }, props) {
     commit("UPDATE_SELECTION_ANIMATED_SUB_PROPERTY", props);
   },
@@ -237,22 +255,31 @@ const getters = {
   highlightedLayer: state => state.highlightedLayer,
   nodesTree: state => state.nodesTree,
   canvasBounds: state => state.canvasBounds,
-  fluidProperty: state => props => {
-    const value = state.selectedLayers
-      .map(
-        id =>
-          state.nodesTree[id].fluid[props.type]
-            ? state.nodesTree[id].fluid[props.type][props.propertyName]
-            : null
-      )
-      .reduce(mergeProperty); //retrieve all selected properties so we can compare to get one value
+  fluidSubProperty: state => props => {
+    const value = state.selectedLayers.map(
+      id =>
+        state.nodesTree[id].fluid[props.type]
+          ? state.nodesTree[id].fluid[props.type][props.propertyName]
+          : null
+    );
 
-    return value;
+    return value.reduce(mergeProperty);
+  },
+  //In case we have multiple elements selected we dont want to have  one of the element to be null because the setter will failed by setting properties on a null object
+  isFluidPropertyMixed: state => props => {
+    const selectedFluids = state.selectedLayers.map(
+      id => state.nodesTree[id].fluid[props.type]
+    );
+
+    return selectedFluids.includes(null) &&
+      selectedFluids.find(fluid => fluid !== null)
+      ? true
+      : false;
   },
   remainingAnimatedProperties: (state, getters) => props => {
     return ANIMATED_PROPERTIES;
     /* return ANIMATED_PROPERTIES.filter(possibleProperty => {
-      let properties = getters.fluidProperty({
+      let properties = getters.fluidSubProperty({
         type: props.type,
         propertyName: "properties"
       });

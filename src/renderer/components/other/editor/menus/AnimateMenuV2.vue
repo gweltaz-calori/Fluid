@@ -10,12 +10,12 @@
             <editor-property-action v-if="name" @mousedown.native="removeAnimation">
               <fluid-icon-minus :tint="iconTint"></fluid-icon-minus>
             </editor-property-action>
-            <editor-property-action v-else @mousedown.native="addAnimation">
+            <editor-property-action v-if="!name || isFluidPropertyMixed" @mousedown.native="addAnimation">
                 <fluid-icon-add :tint="iconTint"></fluid-icon-add>
             </editor-property-action>
           </editor-property-actions>
         </editor-property-header>
-        <editor-property-content v-if="name">
+        <editor-property-content v-if="!isFluidPropertyMixed && name">
           <editor-sub-property>
             <editor-sub-property-row>
               <editor-sub-property-row-name>Name</editor-sub-property-row-name>
@@ -35,8 +35,9 @@
             </editor-sub-property-row>
           </editor-sub-property>
         </editor-property-content>
+        <fluid-text-info :style="propertiesInfoStyle" v-else-if="isFluidPropertyMixed" class="properties-info" >Click + to replace mixed property</fluid-text-info>
       </editor-property>
-      <editor-property v-if="name">
+      <editor-property v-if="!isFluidPropertyMixed && name">
         <editor-property-header>
           <editor-property-title>PROPERTIES</editor-property-title>
           <editor-property-actions>
@@ -64,7 +65,6 @@
         <fluid-text-info :style="propertiesInfoStyle" v-else-if="isMixed(properties)" class="properties-info" >Click + to replace mixed content</fluid-text-info>
         <fluid-text-info :style="propertiesInfoStyle" v-else class="properties-info" >Add properties to animate by clicking the "+" icon</fluid-text-info>
       </editor-property>
-
     </div>
 </template>
 
@@ -97,7 +97,7 @@ import EditorPropertyAction from "@/components/other/EditorPropertyAction.vue";
 import EditorAnimatedPropertyRow from "@/components/other/EditorAnimatedPropertyRow.vue";
 import EditorAnimatedPropertyRowActions from "@/components/other/EditorAnimatedPropertyRowActions.vue";
 import EditorAnimatedSubProperty from "@/components/other/EditorAnimatedSubProperty.vue";
-import { FLUID_TYPES, isMixed } from "../../../../store/helpers";
+import { FLUID_TYPES, isMixed, MIXED_CONTENT } from "../../../../store/helpers";
 
 export default {
   components: {
@@ -126,7 +126,6 @@ export default {
       EASINGS,
       ANIMATED_PROPERTIES,
       secondFormatter: new SecondFormatter(),
-      animation: null,
       MAX_DURATION,
       MIN_DURATION,
       MAX_DELAY,
@@ -143,9 +142,14 @@ export default {
         color: this.themeColors.highlightSecondary
       };
     },
+    isFluidPropertyMixed() {
+      return this.$store.getters.isFluidPropertyMixed({
+        type: this.animationType
+      });
+    },
     duration: {
       get() {
-        return this.$store.getters.fluidProperty({
+        return this.$store.getters.fluidSubProperty({
           type: this.animationType,
           propertyName: "duration"
         });
@@ -160,7 +164,7 @@ export default {
     },
     name: {
       get() {
-        return this.$store.getters.fluidProperty({
+        return this.$store.getters.fluidSubProperty({
           type: this.animationType,
           propertyName: "name"
         });
@@ -174,7 +178,7 @@ export default {
     },
     ease: {
       get() {
-        return this.$store.getters.fluidProperty({
+        return this.$store.getters.fluidSubProperty({
           type: this.animationType,
           propertyName: "ease"
         });
@@ -189,7 +193,7 @@ export default {
     },
     delay: {
       get() {
-        return this.$store.getters.fluidProperty({
+        return this.$store.getters.fluidSubProperty({
           type: this.animationType,
           propertyName: "delay"
         });
@@ -204,7 +208,7 @@ export default {
     },
     properties: {
       get() {
-        return this.$store.getters.fluidProperty({
+        return this.$store.getters.fluidSubProperty({
           type: this.animationType,
           propertyName: "properties"
         });
@@ -226,7 +230,9 @@ export default {
       "removeSelectionAnimatedProperty",
       "popSelectionAnimatedProperty",
       "updateSelectionAnimatedProperty",
-      "updateSelectionAnimatedSubProperty"
+      "updateSelectionAnimatedSubProperty",
+      "clearSelectionAnimatedProperty",
+      "replaceSelectionAnimatedProperty"
     ]),
     addAnimation() {
       this.setSelectionAnimation({
@@ -240,9 +246,15 @@ export default {
       });
     },
     addAnimatedProperty() {
-      this.addSelectionAnimatedProperty({
-        type: this.animationType
-      });
+      if (!this.isMixed(this.properties)) {
+        this.addSelectionAnimatedProperty({
+          type: this.animationType
+        });
+      } else {
+        this.replaceSelectionAnimatedProperty({
+          type: this.animationType
+        });
+      }
     },
     removeAnimatedProperty(index) {
       this.removeSelectionAnimatedProperty({
@@ -251,9 +263,15 @@ export default {
       });
     },
     popAnimatedProperty() {
-      this.popSelectionAnimatedProperty({
-        type: this.animationType
-      });
+      if (!this.isMixed(this.properties)) {
+        this.popSelectionAnimatedProperty({
+          type: this.animationType
+        });
+      } else {
+        this.clearSelectionAnimatedProperty({
+          type: this.animationType
+        });
+      }
     },
     remainingAnimatedProperties(selectedName) {
       return this.$store.getters.remainingAnimatedProperties({
@@ -307,7 +325,7 @@ export default {
   display: flex;
   text-align: center;
   justify-content: center;
-  padding: 10px 37px;
+  padding: 10px 34px;
 }
 
 .animated-property-value {

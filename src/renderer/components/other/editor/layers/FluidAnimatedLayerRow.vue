@@ -65,7 +65,7 @@ export default {
   computed: {
     trigger: {
       get() {
-        return this.$store.getters.fluidProperty({
+        return this.$store.getters.fluidSubProperty({
           type: this.animationType,
           propertyName: "trigger"
         });
@@ -80,7 +80,7 @@ export default {
     },
     ease: {
       get() {
-        return this.$store.getters.fluidProperty({
+        return this.$store.getters.fluidSubProperty({
           type: this.animationType,
           propertyName: "ease"
         });
@@ -95,7 +95,7 @@ export default {
     },
     duration: {
       get() {
-        return this.$store.getters.fluidProperty({
+        return this.$store.getters.fluidSubProperty({
           type: this.animationType,
           propertyName: "duration"
         });
@@ -110,7 +110,7 @@ export default {
     },
     delay: {
       get() {
-        return this.$store.getters.fluidProperty({
+        return this.$store.getters.fluidSubProperty({
           type: this.animationType,
           propertyName: "delay"
         });
