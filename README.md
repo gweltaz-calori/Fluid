@@ -4,6 +4,8 @@ WIP
 
 > Design in Figma, present with Fluid
 
+![Timeline](https://i.imgur.com/tX5YBPx.png)
+
 ## What is fluid
 
 Fluid is a desktop app for mac, windows and linux to create live presentations.
@@ -33,7 +35,3 @@ The goal is to embeded audios, videos, gif, animations, transitions and hero tra
 - Animations, Transitions preset library
 - Audio, GIF, Video
 - Editor Theme (Light, Dark) [DONE]
-
-## Some Screenshots
-
-![Timeline](https://i.imgur.com/tX5YBPx.png)
